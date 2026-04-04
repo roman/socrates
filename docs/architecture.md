@@ -61,7 +61,7 @@ End-of-session gate (ordered):
 
 ### Handoffs
 
-`docs/handoffs/YYYY-MM-DD-<topic>.md`. Written at session end. Contains: what was done,
+`docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md`. Written at session end. Contains: what was done,
 commits, decisions, what's next, blockers, learnings, gaps, tk IDs.
 
 ### `/harvest`
@@ -88,7 +88,7 @@ Key commands: `tk ready`, `tk start`, `tk close`, `tk dep`, `tk dep tree`.
         _overview.md  # D1-D5 journey, phase markers
         <hash>-<name>.md  # individual task files
     handoffs/
-      YYYY-MM-DD-<topic>.md
+      YYYY-MM-DD-HHmm-<topic>.md
   RALPH.md            # session protocol
   ralph.sh            # main loop
   ralph-once.sh       # single iteration

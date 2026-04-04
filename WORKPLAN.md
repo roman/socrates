@@ -13,13 +13,13 @@ handoffs + WORKPLAN).
 
 | Phase | Description | Status | Blocked By |
 |-------|-------------|--------|------------|
-| 0 | Spikes — validate load-bearing assumptions | NOT STARTED | — |
+| 0 | Spikes — validate assumptions & define protocol expectations | NOT STARTED | — |
 | 1 | Project scaffold & infrastructure | NOT STARTED | Phase 0 |
 | 2 | Shell scripts — ralph loop & formatting | NOT STARTED | Phase 1 |
 | 3 | `/init` command | NOT STARTED | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | NOT STARTED | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | NOT STARTED | Phase 4 |
-| 6 | RALPH.md protocol & handoff system | NOT STARTED | Phase 2 |
+| 6 | RALPH.md protocol & handoff system | NOT STARTED | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
 | 8 | Documentation | NOT STARTED | Phases 3-7 |
 | 9 | Skills & AI guidance | NOT STARTED | Phases 4, 6 |
@@ -46,6 +46,36 @@ Validate assumptions before building anything. Each spike is throwaway.
   line number, commit SHA, author, thread resolved status.
 - [ ] 0.4: **tk Nix packaging** — Write a Nix derivation for tk (single bash script + jq dep).
   Verify it works in a sandbox.
+- [ ] 0.5: **Protocol test harness** — Build the infrastructure to validate that
+  Claude sessions follow the protocol. Three components:
+  - **Hook-based sequence logging**: PreToolUse/PostToolUse hooks that append
+    tool calls (name, params, timestamp) to a JSON log. No blocking, just
+    recording. Proves we can capture a full session trace.
+  - **Artifact assertion script**: Post-session checks on files and git state.
+    Validate: ADR format (sections, frontmatter), handoff format (required
+    sections), commit messages (`Refs:` present), tk state transitions
+    (ready → in_progress → closed). Pure grep/jq — no LLM.
+  - **Sequence assertion script**: Parse the hook log and check ordering
+    invariants. Starting set:
+    - `Read RALPH.md` before any `Edit`
+    - `Read docs/handoffs/*` before any `Edit src/*` (bearings before implement)
+    - `tk ready` before `tk start`
+    - Handoff file written before session ends
+    - ADR file written when `docs/adrs/` was modified during session
+  These assertions define what "correct protocol behavior" means. They must
+  exist before Phase 6 writes the protocol specs, so that we can validate
+  the specs against concrete expectations as they are written.
+- [ ] 0.6: **Checkpoint fixtures** — Create git repo snapshots representing
+  distinct lifecycle states. Each fixture is a script that sets up a repo
+  with known tk state, file state, and git history. Starting set:
+  - `fresh-pour`: tickets exist, none started → expect Implementer triage
+  - `mid-implementation`: task in_progress, partial code → expect resume
+  - `review-pending`: implementation done, no review → expect Reviewer triage
+  - `blocked-deps`: all ready tasks have unmet deps → expect PM escalation
+  - `post-spec-no-pour`: approved tasks not poured → expect PM suggest pour
+  Each fixture includes: setup script, exercise prompt, expected sequence
+  invariants, expected artifacts. Test runner: setup → run claude →
+  assert sequence → assert artifacts → teardown.
 
 ---
 
@@ -229,7 +259,7 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   After addressing review feedback and PR is merged or closed, the ticket is
   closed. No separate review file pipeline — comments live on the ticket.
 - [ ] 6.3: **Handoff format** — Template for session handoff documents in
-  `docs/handoffs/YYYY-MM-DD-<topic>.md`. Includes:
+  `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md`. Includes:
   - What was done (summary, commits, decisions)
   - What's next (unresolved work, blockers)
   - Learnings section (patterns discovered, gotchas)
