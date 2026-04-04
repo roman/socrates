@@ -41,7 +41,7 @@ Validate assumptions before building anything. Each spike is throwaway.
   dependencies, and that `tk ready` correctly excludes tasks whose deps are not
   closed. Test: create A depends-on B, verify A does not appear in `tk ready`
   until B is closed.
-- [ ] 0.3: **gh API review metadata** — Run `gh api repos/<owner>/<repo>/pulls/<n>/comments`
+- [x] 0.3: **gh API review metadata** — Run `gh api repos/<owner>/<repo>/pulls/<n>/comments`
   on a real PR with line comments. Verify JSON contains: comment body, file path,
   line number, commit SHA, author, thread resolved status.
 - [ ] 0.4: **tk Nix packaging** — Write a Nix derivation for tk (single bash script + jq dep).
