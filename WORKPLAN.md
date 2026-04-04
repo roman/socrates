@@ -46,7 +46,7 @@ Validate assumptions before building anything. Each spike is throwaway.
   line number, commit SHA, author, thread resolved status.
 - [x] 0.4: **tk Nix packaging** — Write a Nix derivation for tk (single bash script + jq dep).
   Verify it works in a sandbox.
-- [ ] 0.5: **Protocol test harness** — Build the infrastructure to validate that
+- [x] 0.5: **Protocol test harness** — Build the infrastructure to validate that
   Claude sessions follow the protocol. Three components:
   - **Hook-based sequence logging**: PreToolUse/PostToolUse hooks that append
     tool calls (name, params, timestamp) to a JSON log. No blocking, just
