@@ -1,0 +1,7 @@
+# Nix
+result
+result-*
+
+# devenv
+.devenv/
+.pre-commit-config.yaml

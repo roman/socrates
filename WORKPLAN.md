@@ -265,6 +265,8 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   - Learnings section (patterns discovered, gotchas)
   - Gaps section (missing work identified)
   - Task references (tk IDs worked on)
+  - Scope constraint: all content must be portable — no references to
+    machine-local config, personal dotfiles, or single-developer setup
 - [ ] 6.4: **Phase sequence documentation** — Detailed protocol for each phase,
   with task-type-specific adaptations:
   - Feature tasks: full bearings → implement → verify → commit
@@ -277,6 +279,8 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   - Documentation before commit (handoff required)
   - Code review gate (spawn code-critic, max 2 rounds)
   - End-of-session checklist
+  - Documentation scope rule: project artifacts must be portable, never
+    reference machine-local configuration
 - [ ] 6.6: **`.msgs/` inbox** — Async human→agent communication. Same mechanism as
   project-status-sync. Write message to `.msgs/{id}.md`, agent reads and replies.
 - [ ] 6.7: **Stop file (`.ralph-stop`)** — Graceful loop exit mechanism.

@@ -22,7 +22,7 @@ without affecting the project.
 3. Read the 3 most recent handoffs in `docs/handoffs/`
 4. Identify what to work on based on phase status and blocking dependencies
 
-### End of session
+### Before committing
 
 1. **ADR check** — if architectural decisions were made (tool choices, protocol
    changes, structural changes, tradeoffs with alternatives), write an ADR to
@@ -31,6 +31,8 @@ without affecting the project.
    `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md` covering: what was done, key
    decisions, what's next, learnings, gaps.
 
+Handoffs and ADRs are committed together with the work they describe.
+
 ## Commits
 
 - Small and focused — one logical change per commit
@@ -38,6 +40,13 @@ without affecting the project.
 - Format: 50 char title, 72 char body wrap
 - Include `Refs: Phase X.Y` until tk ticket IDs exist
 - No `Co-Authored-By` or `Generated with` lines
+
+## Documentation Scope
+
+All project artifacts (commits, handoffs, ADRs, specs, protocol templates)
+must be portable. Never reference machine-local configuration, personal
+dotfiles, or single-developer environment setup. If something only applies
+to one machine, it does not belong in project history.
 
 ## Design Principles
 
