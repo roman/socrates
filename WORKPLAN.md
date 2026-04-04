@@ -30,14 +30,14 @@ handoffs + WORKPLAN).
 
 Validate assumptions before building anything. Each spike is throwaway.
 
-- [ ] 0.1: **tk reliability** — Install tk, create 20-30 tickets with deps, run
+- [x] 0.1: **tk reliability** — Install tk, create 20-30 tickets with deps, run
   `tk ready`, `tk close`, `tk dep tree`. Verify file writes are correct after each
   operation. Test concurrent access: run two simultaneous
   `tk ready -a ralph && tk start $(tk ready -a ralph | head -1 | awk '{print $1}')`
   in a tight loop 50 times, verify no task is started twice. Also verify that
   `tk ready` produces parseable output (JSON or stable table format) that
   ralph.sh can reliably extract task IDs from.
-- [ ] 0.2: **tk dependency support** — Verify that `tk dep` can express task-to-task
+- [x] 0.2: **tk dependency support** — Verify that `tk dep` can express task-to-task
   dependencies, and that `tk ready` correctly excludes tasks whose deps are not
   closed. Test: create A depends-on B, verify A does not appear in `tk ready`
   until B is closed.
