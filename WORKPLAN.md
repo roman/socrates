@@ -44,7 +44,7 @@ Validate assumptions before building anything. Each spike is throwaway.
 - [x] 0.3: **gh API review metadata** — Run `gh api repos/<owner>/<repo>/pulls/<n>/comments`
   on a real PR with line comments. Verify JSON contains: comment body, file path,
   line number, commit SHA, author, thread resolved status.
-- [ ] 0.4: **tk Nix packaging** — Write a Nix derivation for tk (single bash script + jq dep).
+- [x] 0.4: **tk Nix packaging** — Write a Nix derivation for tk (single bash script + jq dep).
   Verify it works in a sandbox.
 - [ ] 0.5: **Protocol test harness** — Build the infrastructure to validate that
   Claude sessions follow the protocol. Three components:
