@@ -16,7 +16,7 @@ handoffs + WORKPLAN).
 | 0 | Spikes — validate assumptions & define protocol expectations | COMPLETE | — |
 | 1 | Project scaffold & infrastructure | COMPLETE | Phase 0 |
 | 2 | Shell scripts — ralph loop & formatting | COMPLETE | Phase 1 |
-| 3 | `/init` command | NOT STARTED | Phase 1 |
+| 3 | `/init` command | COMPLETE | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | NOT STARTED | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | NOT STARTED | Phase 4 |
 | 6 | RALPH.md protocol & handoff system | NOT STARTED | Phases 0.5, 2 |
@@ -124,7 +124,7 @@ Adapt ralph loop scripts from choo-choo-ralph. These use `tk` instead of `bd`.
 
 Scaffold a project for Socrates. Replaces choo-choo-ralph's `/install`.
 
-- [ ] 3.1: **init.md command** — The command should:
+- [x] 3.1: **init.md command** — The command should:
   - Check prerequisites: `tk`, `claude`, `jq`, `gh`
   - Run `tk init` (initialize ticket tracker)
   - Copy shell scripts (ralph.sh, ralph-once.sh, ralph-format.sh)

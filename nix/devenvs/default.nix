@@ -4,11 +4,7 @@ inputs:
 {
   imports = [
     inputs.nixDir.devenvModules.nixdir-skill
-  ];
-
-  packages = [
-    inputs.self.packages.${pkgs.system}.ticket
-    pkgs.jq
+    (import ../modules/devenv/socrates.nix inputs)
   ];
 
   git-hooks.hooks.nixfmt = {
@@ -17,4 +13,5 @@ inputs:
   };
 
   claude.code.plugins.nixDir.enable = true;
+  claude.code.plugins.socrates.enable = true;
 }

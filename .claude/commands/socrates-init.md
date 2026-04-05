@@ -1,0 +1,1 @@
+/nix/store/3p1flsbrhaxbyqikh6awbnijif7br1v6-claude-commands-socrates-init.md
