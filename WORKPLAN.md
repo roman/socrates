@@ -18,7 +18,7 @@ handoffs + WORKPLAN).
 | 2 | Shell scripts — ralph loop & formatting | COMPLETE | Phase 1 |
 | 3 | `/init` command | COMPLETE | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | COMPLETE | Phase 1 |
-| 5 | `/pour` command — approved tasks → tk tickets | NOT STARTED | Phase 4 |
+| 5 | `/pour` command — approved tasks → tk tickets | COMPLETE | Phase 4 |
 | 6 | RALPH.md protocol & handoff system | NOT STARTED | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
 | 8 | Documentation | NOT STARTED | Phases 3-7 |
@@ -208,7 +208,7 @@ phase (task decomposition) is the natural final step of the same journey.
 Mechanical transformation: approved task files → tk tickets. Spec task files are
 frozen after pour (write-once spec artifacts). All mutable state lives in `.tickets/`.
 
-- [ ] 5.1: **pour.md command — ticket creation** — Reads task files with
+- [x] 5.1: **pour.md command — ticket creation** — Reads task files with
   `status: approved`, creates `tk` tickets:
   - `tk create "<title>" -t task -p <priority> -a ralph --tags <category>`
   - Sets description from task file content (steps + test_steps)
@@ -216,11 +216,11 @@ frozen after pour (write-once spec artifacts). All mutable state lives in `.tick
     runs `tk dep <new-id> <dep-id>` for each dependency
   - Updates task file frontmatter to `status: poured` with `ticket:` field
     referencing the tk ID. This is the last write to the spec file.
-- [ ] 5.2: **pour.md command — epic creation** — If multiple tasks belong to the same
+- [x] 5.2: **pour.md command — epic creation** — If multiple tasks belong to the same
   spec, creates a parent epic ticket. Child tasks get `--parent <epic-id>`.
-- [ ] 5.3: **pour.md command — partial pour** — Only pours `status: approved` tasks.
+- [x] 5.3: **pour.md command — partial pour** — Only pours `status: approved` tasks.
   Draft tasks are left alone. Can be run incrementally.
-- [ ] 5.4: **pour.md command — idempotency** — Tasks with `status: poured` are skipped.
+- [x] 5.4: **pour.md command — idempotency** — Tasks with `status: poured` are skipped.
   Safe to re-run.
 
 ---
