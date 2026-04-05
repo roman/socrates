@@ -20,7 +20,7 @@ handoffs + WORKPLAN).
 | 4 | `/spec` command — full Design in Practice journey | COMPLETE | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | COMPLETE | Phase 4 |
 | 6 | RALPH.md protocol & handoff system | COMPLETE | Phases 0.5, 2 |
-| 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
+| 7 | `/harvest` command — learnings from handoffs | COMPLETE | Phase 6 |
 | 8 | Documentation | NOT STARTED | Phases 3-7 |
 | 9 | Skills & AI guidance | NOT STARTED | Phases 4, 6 |
 
@@ -291,19 +291,19 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
 
 Extract learnings and gaps from handoffs into durable artifacts.
 
-- [ ] 7.1: **harvest.md command — scan handoffs** — Reads recent handoffs (since last
+- [x] 7.1: **harvest.md command — scan handoffs** — Reads recent handoffs (since last
   harvest), extracts `## Learnings` and `## Gaps` sections. Presents summary to
   user.
-- [ ] 7.2: **harvest.md command — promote learnings** — For each learning, user decides:
+- [x] 7.2: **harvest.md command — promote learnings** — For each learning, user decides:
   - Create/update a skill in `.claude/skills/`
   - Add to CLAUDE.md or folder CLAUDE.md
   - Add to `docs/`
   - Skip (not worth persisting)
-- [ ] 7.3: **harvest.md command — process gaps** — For each gap:
+- [x] 7.3: **harvest.md command — process gaps** — For each gap:
   - Create a new tk ticket
   - Add to an existing spec for the next `/spec` Design phase
   - Skip
-- [ ] 7.4: **harvest.md command — mark harvested** — Track which handoffs have been
+- [x] 7.4: **harvest.md command — mark harvested** — Track which handoffs have been
   processed to avoid re-harvesting. Use a `.last-harvest` marker file with the
   most recent handoff timestamp/filename.
 
