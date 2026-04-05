@@ -85,21 +85,18 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
    mkdir -p docs/specs docs/handoffs .msgs
    ```
 
-3. **Generate starter RALPH.md** (if not Nix-managed): Create a minimal
-   protocol file with:
-   - Startup checklist (read RALPH.md, check .msgs/, read handoffs, triage)
-   - Role triage placeholder (PM, Implementer, Reviewer)
-   - Phase sequence reference (bearings → implement → verify → commit)
-   - End-of-session gate (ADR check → handoff → tk updates)
+3. **Copy RALPH.md** (if not Nix-managed): Copy from the template:
+   ```bash
+   cp "${TEMPLATE_DIR}/RALPH.md" ./RALPH.md
+   ```
 
-4. **Generate CLAUDE.md additions**: Append discipline gates to CLAUDE.md
-   (or create if it doesn't exist). Skip if CLAUDE.md is Nix-managed —
-   in that case, print a message telling the user to add these to their
-   Nix source instead:
-   - Read RALPH.md before starting work
-   - Documentation before commit (handoff required)
-   - End-of-session checklist
-   - Documentation scope rule: project artifacts must be portable
+4. **Append CLAUDE.md discipline gates**: Read the gates template and append
+   to CLAUDE.md (or create if it doesn't exist). Skip if CLAUDE.md is
+   Nix-managed — in that case, print a message telling the user to add
+   these to their Nix source instead:
+   ```bash
+   cat "${TEMPLATE_DIR}/claude-gates.md" >> CLAUDE.md
+   ```
 
 5. **Install commit-msg hook** (warning only, does not block):
    Skip if `.git/hooks/commit-msg` is Nix-managed.
