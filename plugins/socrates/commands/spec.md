@@ -124,8 +124,61 @@ markers.
 
 ## Step 4 — Diagnose Phase
 
-> **Not yet implemented.** Tell the user this phase is coming soon and stop here.
-> Do NOT proceed past the Describe phase.
+**Goal**: Identify the real problem beneath the situation. Challenge surface-level
+assertions and test hypotheses.
+
+**Technique**: Scientific Method — form hypotheses about what's wrong, test them
+against evidence, reject the ones that don't hold up.
+
+### Core Principle
+
+"We don't have feature X" is NEVER a valid problem statement. Always dig deeper:
+- Why is feature X needed? What user objective is unmet?
+- What is the actual impact of the current situation?
+- Is the assumed cause actually the cause?
+
+### Interview Process
+
+Start from the Describe section. Identify assertions and assumptions that need
+testing. Use AskUserQuestion to probe:
+
+1. **Challenge surface assertions** — For each "we need X" statement, ask: "What
+   happens to users because X doesn't exist? What are they trying to accomplish?"
+
+2. **Form hypotheses** — Based on the situation, propose 2-3 possible root causes.
+   Present them to the user and ask which resonates, or if there's another angle.
+
+3. **Test with evidence** — For each hypothesis, ask: "What evidence supports this?
+   What would disprove it?" If the user can't distinguish between hypotheses,
+   explore the codebase or docs to find evidence (use Grep/Read tools).
+
+4. **Identify root causes** — Converge on the actual problems. There may be more
+   than one. Distinguish between root causes and symptoms.
+
+**Guidelines**:
+- Be respectfully skeptical — the first explanation is rarely the deepest one
+- If the user says "we just need to build X", redirect: "Let's make sure X
+  solves the right problem before we design it"
+- Look for problems behind problems — technical debt, missing abstractions,
+  process gaps, unclear ownership
+- Note any constraints discovered (timeline, compatibility, team capacity)
+- 3-5 questions is typical for this phase
+
+### Writing the Diagnose Section
+
+When root causes are identified:
+
+1. Draft the `## Diagnose` section content — structured as:
+   - Hypotheses considered (what was tested)
+   - Evidence for/against each
+   - Root causes identified (the real problems)
+   - Symptoms vs causes (what looked like the problem vs what actually is)
+2. Present draft to user for review
+3. Write to overview: replace `## Diagnose [DRAFT]` content, update marker to
+   `## Diagnose [COMPLETE]`
+4. Confirm completion and preview Delimit phase
+
+**Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.
 
 ## Step 5 — Delimit Phase (strict gate)
 

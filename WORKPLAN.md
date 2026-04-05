@@ -157,7 +157,7 @@ phase (task decomposition) is the natural final step of the same journey.
   Captures the situation without interpreting. Uses Reflective Inquiry technique
   ("where are you at? what do you know? what do you need to know?").
   Output: `## Describe [COMPLETE]` section in `docs/specs/<name>/_overview.md`.
-- [ ] 4.2: **Diagnose phase** — AI probes for the real problem. Uses Scientific Method
+- [x] 4.2: **Diagnose phase** — AI probes for the real problem. Uses Scientific Method
   (form hypotheses, test them). Challenges "we need feature X" assertions —
   "we don't have feature X" is never a valid problem statement.
   Output: `## Diagnose [COMPLETE]` section added to overview.
