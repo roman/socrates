@@ -17,7 +17,7 @@ handoffs + WORKPLAN).
 | 1 | Project scaffold & infrastructure | COMPLETE | Phase 0 |
 | 2 | Shell scripts — ralph loop & formatting | COMPLETE | Phase 1 |
 | 3 | `/init` command | COMPLETE | Phase 1 |
-| 4 | `/spec` command — full Design in Practice journey | IN PROGRESS | Phase 1 |
+| 4 | `/spec` command — full Design in Practice journey | COMPLETE | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | NOT STARTED | Phase 4 |
 | 6 | RALPH.md protocol & handoff system | NOT STARTED | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
@@ -197,7 +197,7 @@ phase (task decomposition) is the natural final step of the same journey.
 - [x] 4.8: **Approval workflow** — User changes `status: draft` to `status: approved`
   on individual task files. `/spec` can show summary of task statuses
   (how many draft/approved/poured).
-- [ ] 4.9: **Source doc mode** — When a source document is provided (PRD, ticket URL,
+- [x] 4.9: **Source doc mode** — When a source document is provided (PRD, ticket URL,
   notes file), AI reads it first, pre-fills what it can, then asks clarifying
   questions for gaps.
 
