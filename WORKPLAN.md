@@ -258,7 +258,7 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   tickets, the Implementer role reads ticket comments before starting work.
   After addressing review feedback and PR is merged or closed, the ticket is
   closed. No separate review file pipeline — comments live on the ticket.
-- [ ] 6.3: **Handoff format** — Template for session handoff documents in
+- [x] 6.3: **Handoff format** — Template for session handoff documents in
   `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md`. Includes:
   - What was done (summary, commits, decisions)
   - What's next (unresolved work, blockers)
