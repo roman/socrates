@@ -17,7 +17,7 @@ handoffs + WORKPLAN).
 | 1 | Project scaffold & infrastructure | COMPLETE | Phase 0 |
 | 2 | Shell scripts — ralph loop & formatting | COMPLETE | Phase 1 |
 | 3 | `/init` command | COMPLETE | Phase 1 |
-| 4 | `/spec` command — full Design in Practice journey | NOT STARTED | Phase 1 |
+| 4 | `/spec` command — full Design in Practice journey | IN PROGRESS | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | NOT STARTED | Phase 4 |
 | 6 | RALPH.md protocol & handoff system | NOT STARTED | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
@@ -153,7 +153,7 @@ phase (task decomposition) is the natural final step of the same journey.
 
 ### Phases and techniques
 
-- [ ] 4.1: **Describe phase** — AI interviews the user or reads a source document.
+- [x] 4.1: **Describe phase** — AI interviews the user or reads a source document.
   Captures the situation without interpreting. Uses Reflective Inquiry technique
   ("where are you at? what do you know? what do you need to know?").
   Output: `## Describe [COMPLETE]` section in `docs/specs/<name>/_overview.md`.
