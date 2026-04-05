@@ -161,7 +161,7 @@ phase (task decomposition) is the natural final step of the same journey.
   (form hypotheses, test them). Challenges "we need feature X" assertions —
   "we don't have feature X" is never a valid problem statement.
   Output: `## Diagnose [COMPLETE]` section added to overview.
-- [ ] 4.3: **Delimit phase (strict gate)** — AI helps draft a crisp problem statement.
+- [x] 4.3: **Delimit phase (strict gate)** — AI helps draft a crisp problem statement.
   Uses Precise Language technique. This is the only strict gate — AI will not
   proceed until user explicitly approves the problem statement. Approval is
   persisted as `delimit_approved: true` in overview frontmatter.

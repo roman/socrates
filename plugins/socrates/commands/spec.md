@@ -180,9 +180,60 @@ When root causes are identified:
 
 **Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.
 
-## Step 5 — Delimit Phase (strict gate)
+## Step 5 — Delimit Phase (STRICT GATE)
 
-> **Not yet implemented.**
+**Goal**: Produce a crisp, 1-2 sentence problem statement that the user explicitly
+approves. This is the only hard gate — do NOT proceed without approval.
+
+**Technique**: Precise Language — every word must earn its place. Vague terms
+like "improve", "better", "optimize" must be replaced with observable specifics.
+
+### Drafting the Problem Statement
+
+Using the root causes from Diagnose, draft a problem statement that:
+
+- States the **unmet user objective** (what users can't do or struggle with)
+- States the **cause** (why the objective is unmet)
+- Is **1-2 sentences** — if it takes more, you haven't delimited enough
+- Uses **observable terms** — someone should be able to tell if this is solved
+- Does NOT contain a solution — "we need to build X" is a solution, not a problem
+
+**Bad examples**:
+- "We need a better auth system" (solution disguised as problem)
+- "The codebase is messy" (vague, no user impact stated)
+- "Performance needs to be improved" (no specifics)
+
+**Good examples**:
+- "Users abandon checkout when page load exceeds 3s on mobile because the
+  product image pipeline blocks rendering"
+- "New team members take 2+ weeks to ship their first PR because the test
+  suite requires undocumented local dependencies"
+
+### Approval Gate
+
+1. Present the draft problem statement to the user
+2. Use AskUserQuestion with options:
+   - **"Approved"** — problem statement is crisp and correct
+   - **"Needs refinement"** — close but wording needs adjustment
+   - **"Wrong problem"** — go back to Diagnose
+3. If "Needs refinement": ask what to change, redraft, present again
+4. If "Wrong problem": set Diagnose back to `[DRAFT]`, return to Step 4
+5. If "Approved": write to overview and proceed
+
+### Writing the Delimit Section
+
+On approval:
+
+1. Write the problem statement to the `## Delimit` section
+2. Update marker to `## Delimit [APPROVED]`
+3. Update frontmatter: set `delimit_approved: true`
+4. Confirm and preview Direction phase
+
+**Both the marker AND the frontmatter must be set.** Resume detection checks
+`delimit_approved:` in frontmatter as the authoritative signal.
+
+**Important**: Use Edit tool for targeted updates. The frontmatter change and
+section change are two separate edits.
 
 ## Step 6 — Direction Phase
 
