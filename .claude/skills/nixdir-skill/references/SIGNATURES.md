@@ -1,0 +1,1 @@
+/nix/store/0rm797qawgl8zaf89qyb3nviwxq5wsaq-claude-skills-nixdir-skill-references-SIGNATURES.md

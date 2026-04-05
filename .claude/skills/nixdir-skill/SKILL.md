@@ -1,0 +1,1 @@
+/nix/store/ry76jrv1sqxn8jxvsx3nlvhanjcmp6w0-claude-skills-nixdir-skill-SKILL.md

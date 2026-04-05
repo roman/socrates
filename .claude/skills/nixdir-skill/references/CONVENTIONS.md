@@ -1,0 +1,1 @@
+/nix/store/0ihn5qgq8bqmgn7lpv2p481dykyv48dx-claude-skills-nixdir-skill-references-CONVENTIONS.md

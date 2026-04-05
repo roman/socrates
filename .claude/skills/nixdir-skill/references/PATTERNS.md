@@ -1,0 +1,1 @@
+/nix/store/lybciyl9iixn0d0h9m3svrn8n2psg9kd-claude-skills-nixdir-skill-references-PATTERNS.md

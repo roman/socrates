@@ -1,0 +1,1 @@
+/nix/store/hpdnhw7jsi9fl1k5gdsghijmibz0ivjn-claude-skills-nixdir-skill-references-DEVENV_VS_DEVSHELL.md
