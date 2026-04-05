@@ -14,7 +14,7 @@ handoffs + WORKPLAN).
 | Phase | Description | Status | Blocked By |
 |-------|-------------|--------|------------|
 | 0 | Spikes — validate assumptions & define protocol expectations | COMPLETE | — |
-| 1 | Project scaffold & infrastructure | NOT STARTED | Phase 0 |
+| 1 | Project scaffold & infrastructure | COMPLETE | Phase 0 |
 | 2 | Shell scripts — ralph loop & formatting | NOT STARTED | Phase 1 |
 | 3 | `/init` command | NOT STARTED | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | NOT STARTED | Phase 1 |
@@ -83,9 +83,9 @@ Validate assumptions before building anything. Each spike is throwaway.
 
 Set up the plugin structure mirroring choo-choo-ralph's monorepo layout.
 
-- [ ] 1.1: **Plugin manifest** — `plugins/socrates/.claude-plugin/plugin.json` with
+- [x] 1.1: **Plugin manifest** — `plugins/socrates/.claude-plugin/plugin.json` with
   name, version (0.1.0), description, author, keywords.
-- [ ] 1.2: **Directory structure** — Create the full tree:
+- [x] 1.2: **Directory structure** — Create the full tree:
   ```
   plugins/socrates/
     .claude-plugin/plugin.json
@@ -94,13 +94,13 @@ Set up the plugin structure mirroring choo-choo-ralph's monorepo layout.
     skills/             # AI guidance
   docs/                 # user documentation
   ```
-- [ ] 1.3: **README.md** — Project overview, philosophy (Socratic method + Design in
+- [x] 1.3: **README.md** — Project overview, philosophy (Socratic method + Design in
   Practice + Ralph loop), workflow diagram, quick start.
-- [ ] 1.4: **`_overview.md` template** — Define the schema for the spec overview file.
+- [x] 1.4: **`_overview.md` template** — Define the schema for the spec overview file.
   Exact section headers, expected content format, phase status markers, and
   structured data formats (Decision Matrix, Use Cases). This template is what
   `/spec` fills in progressively. See Appendix A.
-- [ ] 1.5: **Task file template** — Define the schema for individual task files.
+- [x] 1.5: **Task file template** — Define the schema for individual task files.
   Frontmatter fields, body sections, status lifecycle. See Appendix B.
 
 ---
