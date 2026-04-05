@@ -109,7 +109,7 @@ Set up the plugin structure mirroring choo-choo-ralph's monorepo layout.
 
 Adapt ralph loop scripts from choo-choo-ralph. These use `tk` instead of `bd`.
 
-- [ ] 2.1: **ralph.sh** — Main loop. Adapt from choo-choo-ralph's template:
+- [x] 2.1: **ralph.sh** — Main loop. Adapt from choo-choo-ralph's template:
   - Replace `bd ready --assignee=ralph` with `tk ready -a ralph`
   - Replace `bd update <id> --status in_progress` with `tk start <id>`
   - Replace `bd list --status=in_progress` with `tk query` equivalent
