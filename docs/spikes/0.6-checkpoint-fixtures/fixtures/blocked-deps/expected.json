@@ -1,0 +1,15 @@
+{
+  "description": "Blocked deps: all ralph tasks depend on unmet external dep. Expect PM escalation.",
+  "sequence_invariants": {
+    "read_ralph_before_edit": true,
+    "read_handoffs_before_edit_src": true,
+    "tk_ready_before_tk_start": false,
+    "handoff_written": true
+  },
+  "artifact_expectations": {
+    "no_tickets_started": true,
+    "handoff_file_created": true,
+    "handoff_mentions_blocked": true
+  },
+  "notes": "tk ready -a ralph should return empty. Agent should recognize this and escalate rather than starting unassigned or blocked work."
+}

@@ -65,7 +65,7 @@ Validate assumptions before building anything. Each spike is throwaway.
   These assertions define what "correct protocol behavior" means. They must
   exist before Phase 6 writes the protocol specs, so that we can validate
   the specs against concrete expectations as they are written.
-- [ ] 0.6: **Checkpoint fixtures** — Create git repo snapshots representing
+- [x] 0.6: **Checkpoint fixtures** — Create git repo snapshots representing
   distinct lifecycle states. Each fixture is a script that sets up a repo
   with known tk state, file state, and git history. Starting set:
   - `fresh-pour`: tickets exist, none started → expect Implementer triage

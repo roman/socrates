@@ -1,0 +1,14 @@
+{
+  "description": "Fresh pour: tickets exist, none started. Expect Implementer triage.",
+  "sequence_invariants": {
+    "read_ralph_before_edit": true,
+    "read_handoffs_before_edit_src": true,
+    "tk_ready_before_tk_start": true,
+    "handoff_written": true
+  },
+  "artifact_expectations": {
+    "at_least_one_ticket_in_progress": true,
+    "handoff_file_created": true,
+    "no_blocked_tickets_started": true
+  }
+}

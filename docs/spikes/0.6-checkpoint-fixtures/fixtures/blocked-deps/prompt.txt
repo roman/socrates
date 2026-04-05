@@ -1,0 +1,1 @@
+You are starting a new session on this project. Follow the RALPH protocol: read RALPH.md, check for messages, read recent handoffs, then triage. Determine what work is available and proceed accordingly.
