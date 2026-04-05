@@ -15,7 +15,7 @@ handoffs + WORKPLAN).
 |-------|-------------|--------|------------|
 | 0 | Spikes — validate assumptions & define protocol expectations | COMPLETE | — |
 | 1 | Project scaffold & infrastructure | COMPLETE | Phase 0 |
-| 2 | Shell scripts — ralph loop & formatting | NOT STARTED | Phase 1 |
+| 2 | Shell scripts — ralph loop & formatting | COMPLETE | Phase 1 |
 | 3 | `/init` command | NOT STARTED | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | NOT STARTED | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | NOT STARTED | Phase 4 |
@@ -114,8 +114,8 @@ Adapt ralph loop scripts from choo-choo-ralph. These use `tk` instead of `bd`.
   - Replace `bd update <id> --status in_progress` with `tk start <id>`
   - Replace `bd list --status=in_progress` with `tk query` equivalent
   - Keep: MAX_ITERATIONS, conflict avoidance prompt, stream-json output
-- [ ] 2.2: **ralph-once.sh** — Single iteration for testing. Same adaptations.
-- [ ] 2.3: **ralph-format.sh** — Copy from choo-choo-ralph as-is. No beads dependency
+- [x] 2.2: **ralph-once.sh** — Single iteration for testing. Same adaptations.
+- [x] 2.3: **ralph-format.sh** — Copy from choo-choo-ralph as-is. No beads dependency
   in this script — it only parses Claude's stream-json output.
 
 ---
