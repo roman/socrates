@@ -316,7 +316,83 @@ Present use cases to user for confirmation.
 
 ## Step 7 — Design Phase
 
-> **Not yet implemented.**
+**Goal**: Break the chosen approach into concrete, implementable task files.
+Research the codebase to ground tasks in reality.
+
+### Codebase Research (parallel sub-agents)
+
+Before decomposing, gather context. Launch parallel Agent sub-agents to:
+
+1. **Codebase exploration** — Use an Explore agent to find:
+   - Existing patterns relevant to the chosen approach
+   - Integration points the tasks will touch
+   - Conventions to follow (naming, file organization, testing patterns)
+   - Potential conflicts with in-progress work
+
+2. **Technology research** (if needed) — Use a general-purpose agent to:
+   - Look up API docs or library capabilities
+   - Verify assumptions about tools/frameworks
+   - Check for known issues or limitations
+
+Synthesize findings into the `### Context` subsection of the Design section.
+This context informs the task decomposition.
+
+### Task Decomposition
+
+Break the approach into **5-10 implementation tasks** (configurable — the user
+can request more or fewer granularity).
+
+For each task:
+
+1. **Generate an ID**: short hash (first 4 chars of sha256 of title) + human
+   suffix (2-3 word kebab-case). Example: `a1b2-setup-middleware`
+   ```bash
+   echo -n "Setup auth middleware" | sha256sum | cut -c1-4
+   ```
+
+2. **Create the task file** at `docs/specs/<name>/<id>.md` using the task
+   template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`
+
+3. **Fill in**:
+   - `id:` — generated ID
+   - `status: draft`
+   - `priority:` — 0 (highest) to 4, based on dependency order and criticality
+   - `category:` — functional, style, infrastructure, or documentation
+   - `depends_on:` — list of other task IDs from this spec that must complete first
+   - Title — clear, action-oriented (starts with a verb)
+   - `<steps>` — numbered implementation steps, specific enough to act on.
+     Reference actual file paths and function names from the Context research.
+   - `<test_steps>` — how to verify this task is done correctly
+   - `<review>` — leave empty
+
+### Dependency Graph
+
+Tasks should form a reasonable dependency graph:
+- Foundation tasks (setup, infrastructure) come first
+- Feature tasks depend on their prerequisites
+- No circular dependencies
+- Aim for some parallelism — not everything in a single chain
+
+Present the dependency graph to the user as a simple list showing what depends
+on what.
+
+### Writing the Design Section
+
+1. Write `### Context` with codebase research findings
+2. Write `### Tasks` with a summary table:
+   | ID | Title | Priority | Category | Depends On |
+3. Write `### Glossary` with terms used consistently in the tasks
+4. Update marker to `## Design [COMPLETE]`
+
+### Post-Design Summary
+
+After writing all task files:
+1. Show the user a summary: how many tasks, dependency structure, categories
+2. Explain next steps:
+   - Review each task file, add notes to `<review>` if changes needed
+   - Run `/spec <task-file>` to process review feedback
+   - Change `status: draft` to `status: approved` when satisfied
+   - Run `/pour` to create tk tickets from approved tasks
 
 ## Task Review Mode
 

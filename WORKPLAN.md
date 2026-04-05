@@ -170,7 +170,7 @@ phase (task decomposition) is the natural final step of the same journey.
   decision matrix (🟢🟡🔴⬜ format). Uses Contrast Over Linearity principle — seeing
   differences between approaches triggers thinking. User picks approach.
   Output: `## Direction [COMPLETE]` section with approach, rationale, use cases.
-- [ ] 4.5: **Design phase (task decomposition)** — AI breaks the chosen approach into
+- [x] 4.5: **Design phase (task decomposition)** — AI breaks the chosen approach into
   individual task files. Launches parallel sub-agents for codebase exploration +
   technology research. Generates task files in `docs/specs/<name>/` with:
   - YAML frontmatter: id (short-hash + human suffix), status (draft), priority,
