@@ -21,7 +21,7 @@ handoffs + WORKPLAN).
 | 5 | `/pour` command — approved tasks → tk tickets | COMPLETE | Phase 4 |
 | 6 | RALPH.md protocol & handoff system | COMPLETE | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | COMPLETE | Phase 6 |
-| 8 | Documentation | NOT STARTED | Phases 3-7 |
+| 8 | Documentation | COMPLETE | Phases 3-7 |
 | 9 | Skills & AI guidance | NOT STARTED | Phases 4, 6 |
 
 ---
@@ -313,24 +313,25 @@ Extract learnings and gaps from handoffs into durable artifacts.
 
 Mirror choo-choo-ralph's documentation structure, adapted for Socrates.
 
-- [ ] 8.1: **docs/workflow.md** — Complete workflow guide covering all phases:
+- [x] 8.1: **docs/workflow.md** — Complete workflow guide covering all phases:
   Spec (Design in Practice journey) → Pour → Ralph → Harvest.
   Adapted from choo-choo-ralph's workflow.md.
-- [ ] 8.2: **docs/commands.md** — Command reference for all 4 commands:
+- [x] 8.2: **docs/commands.md** — Command reference for all 4 commands:
   /init, /spec, /pour, /harvest. With arguments and examples.
   Adapted from choo-choo-ralph's commands.md.
-- [ ] 8.3: **docs/spec-format.md** — Overview + task file format reference. Covers
+- [x] 8.3: **docs/spec-format.md** — Overview + task file format reference. Covers
   the `_overview.md` structure (Describe, Diagnose, Delimit, Direction, Design
   sections with phase markers) and individual task file format (frontmatter,
   steps, test_steps, review, depends_on, status lifecycle). Includes the
   `_overview.md` and task file templates from Appendix A and B.
-- [ ] 8.4: **docs/protocol.md** — RALPH.md protocol reference. Phase sequence
+- [x] 8.4: **docs/protocol.md** — RALPH.md protocol reference. Phase sequence
   (bearings → implement → verify → commit) with task-type adaptations, role
   triage, handoff format, discipline gates.
   Adapted from choo-choo-ralph's formulas.md.
-- [ ] 8.5: **docs/customization.md** — How to customize shell scripts, protocol,
+- [x] 8.5: **docs/customization.md** — How to customize shell scripts, protocol,
   handoff format, phase sequence. Adapted from choo-choo-ralph's customization.md.
-- [ ] 8.6: **docs/troubleshooting.md** — Error handling, recovery, debugging.
+- [x] 8.6: **docs/troubleshooting.md** — Error handling, recovery, debugging.
+  Placeholder — populated from real usage.
   Adapted from choo-choo-ralph's troubleshooting.md.
 
 ---
