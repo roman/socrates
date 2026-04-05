@@ -166,7 +166,7 @@ phase (task decomposition) is the natural final step of the same journey.
   proceed until user explicitly approves the problem statement. Approval is
   persisted as `delimit_approved: true` in overview frontmatter.
   Output: `## Delimit [APPROVED]` section added to overview.
-- [ ] 4.4: **Direction phase** — AI generates approaches, use cases, and optionally a
+- [x] 4.4: **Direction phase** — AI generates approaches, use cases, and optionally a
   decision matrix (🟢🟡🔴⬜ format). Uses Contrast Over Linearity principle — seeing
   differences between approaches triggers thinking. User picks approach.
   Output: `## Direction [COMPLETE]` section with approach, rationale, use cases.

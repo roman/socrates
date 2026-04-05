@@ -237,7 +237,82 @@ section change are two separate edits.
 
 ## Step 6 — Direction Phase
 
-> **Not yet implemented.**
+**Goal**: Generate multiple approaches to solving the delimited problem, help the
+user compare them, and choose one. Also capture use cases.
+
+**Technique**: Contrast Over Linearity — seeing differences between approaches
+triggers thinking that a single proposal never would.
+
+### Generating Approaches
+
+1. **Always include Status Quo** as approach #1 — what happens if we do nothing?
+   This is the baseline all other approaches are measured against.
+
+2. Generate 2-3 additional approaches that address the problem statement from
+   different angles. Vary them meaningfully:
+   - Different technical strategies (not just variations of the same idea)
+   - Different scope/ambition levels where applicable
+   - Different tradeoff profiles (speed vs correctness, simplicity vs flexibility)
+
+3. For each approach, describe:
+   - What it does (1-2 sentences)
+   - Key tradeoffs (what you gain, what you give up)
+   - Rough scope signal (small/medium/large — not time estimates)
+
+4. Present approaches to the user and ask for initial reactions before building
+   the decision matrix.
+
+### Decision Matrix
+
+If the choice is non-trivial (more than 2 viable approaches), build a decision
+matrix:
+
+- **Header**: The problem statement from Delimit
+- **Columns**: Each approach (including status quo)
+- **Rows**: Evaluation criteria discovered during the conversation. Include both
+  technical and non-technical criteria. Common ones:
+  - Complexity / implementation effort
+  - Addresses root cause vs symptom
+  - Risk / reversibility
+  - Team familiarity
+  - Maintenance burden
+- **Cells**: 🟢 (strong), 🟡 (adequate), 🔴 (weak), ⬜ (not applicable)
+
+**Anti-patterns to avoid**:
+- All-green columns → rationalization, not analysis. Find distinguishing criteria.
+- Criteria that don't differentiate → remove them, they add noise.
+- Solution-biased criteria → criteria should matter regardless of which approach wins.
+
+Present the matrix to the user. Discuss any surprising results.
+
+### Choosing an Approach
+
+Use AskUserQuestion to ask which approach the user wants to pursue.
+Record: which approach and the user's rationale for choosing it.
+
+### Use Cases
+
+After the approach is chosen, draft use cases:
+
+- Focus on **user intentions**, not implementation: "I wish I could..." not
+  "the system will..."
+- Each use case: Actor + Intent + Outcome
+- Leave the "How" column blank — it gets filled during Design phase
+- 3-7 use cases is typical
+
+Present use cases to user for confirmation.
+
+### Writing the Direction Section
+
+1. Write all subsections to `## Direction`:
+   - `### Approaches` — all approaches with descriptions
+   - `### Decision Matrix` — if applicable
+   - `### Chosen Approach` — selection and rationale
+   - `### Use Cases` — confirmed use cases
+2. Update marker to `## Direction [COMPLETE]`
+3. Confirm and preview Design phase
+
+**Important**: Use Edit tool. Replace only the Direction section content.
 
 ## Step 7 — Design Phase
 
