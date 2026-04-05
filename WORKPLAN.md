@@ -185,16 +185,16 @@ phase (task decomposition) is the natural final step of the same journey.
 
 ### Resume, review, and navigation
 
-- [ ] 4.6: **Resume capability** — `/spec` reads existing overview, detects phase
+- [x] 4.6: **Resume capability** — `/spec` reads existing overview, detects phase
   completion via `[COMPLETE]`/`[APPROVED]` markers in section headers and
   `delimit_approved` in frontmatter. Resumes at the first incomplete phase.
   Going back: user can request "revisit Delimit" — AI sets target phase header
   to `[DRAFT]`, all subsequent phases to `[DRAFT]`. Previous content preserved
   under `### Previous (superseded)` sub-heading within the section.
-- [ ] 4.7: **Task review iteration** — When run on a specific task file
+- [x] 4.7: **Task review iteration** — When run on a specific task file
   (`/spec <task-file>`), processes `<review>` feedback and regenerates.
   Same review loop as choo-choo-ralph.
-- [ ] 4.8: **Approval workflow** — User changes `status: draft` to `status: approved`
+- [x] 4.8: **Approval workflow** — User changes `status: draft` to `status: approved`
   on individual task files. `/spec` can show summary of task statuses
   (how many draft/approved/poured).
 - [ ] 4.9: **Source doc mode** — When a source document is provided (PRD, ticket URL,

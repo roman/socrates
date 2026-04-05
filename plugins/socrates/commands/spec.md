@@ -45,7 +45,7 @@ Copy the overview template and fill in frontmatter:
 - Set `delimit_approved: false`
 - Write to `docs/specs/<name>/_overview.md`
 
-## Step 2 — Resume Detection
+## Step 2 — Resume Detection and Navigation
 
 Read the existing `_overview.md` and detect the current phase by scanning section
 headers for phase markers:
@@ -61,6 +61,21 @@ current phase. Skip all `[COMPLETE]`/`[APPROVED]` phases.
 
 Tell the user which phase you're resuming at and give a brief recap of what's
 been completed so far (summarize completed sections in 1-2 sentences each).
+
+### Going Back
+
+The user can request to revisit a completed phase (e.g., "revisit Delimit",
+"go back to Describe"). When this happens:
+
+1. Set the target phase's header marker to `[DRAFT]`
+2. Set ALL subsequent phase markers to `[DRAFT]`
+3. If going back to or before Delimit: set `delimit_approved: false` in frontmatter
+4. Preserve the previous content of each reset phase under a
+   `### Previous (superseded)` sub-heading within that section
+5. Resume the journey from the target phase
+
+This ensures that downstream phases that depended on the now-changed upstream
+content are re-evaluated rather than silently stale.
 
 ## Step 3 — Describe Phase
 
@@ -396,10 +411,46 @@ After writing all task files:
 
 ## Task Review Mode
 
-> **Not yet implemented.** When a task file path is provided as argument,
-> this mode processes `<review>` feedback and regenerates the task.
+When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
 
-## Status Summary Mode
+1. Read the task file
+2. Check the `<review>` section for feedback
+3. If `<review>` is empty: ask the user what changes they want
+4. If `<review>` has content: process the feedback
 
-> **Not yet implemented.** When run with `--status` flag, shows a summary
-> of all specs and their phase/task statuses.
+### Processing Review Feedback
+
+1. Read the review comments in `<review>`
+2. Regenerate the `<steps>` and/or `<test_steps>` sections based on feedback
+3. Clear the `<review>` section (set back to empty)
+4. Present the changes to the user for confirmation
+5. Write the updated task file
+
+The task stays at `status: draft` throughout review iterations. The user
+manually changes status to `approved` when satisfied.
+
+### Batch Review
+
+If invoked with a spec directory (`/spec docs/specs/<name>/`), check all task
+files for non-empty `<review>` sections and process them sequentially.
+
+## Status Summary
+
+When invoked with `--status` or when the user asks for an overview:
+
+1. Scan `docs/specs/` for all spec directories
+2. For each spec, read `_overview.md` and report:
+   - Current phase (first `[DRAFT]` section)
+   - Whether Delimit is approved
+3. For each spec, scan task files and report counts:
+   - `draft` — still iterating
+   - `approved` — ready to pour
+   - `poured` — tk ticket exists
+4. Present as a summary table:
+
+```
+Spec: auth-redesign
+  Phase: Direction [COMPLETE] → Design [DRAFT]
+  Delimit: approved
+  Tasks: 3 draft, 2 approved, 0 poured
+```
