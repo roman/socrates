@@ -19,7 +19,7 @@ handoffs + WORKPLAN).
 | 3 | `/init` command | COMPLETE | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | COMPLETE | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | COMPLETE | Phase 4 |
-| 6 | RALPH.md protocol & handoff system | IN PROGRESS | Phases 0.5, 2 |
+| 6 | RALPH.md protocol & handoff system | COMPLETE | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
 | 8 | Documentation | NOT STARTED | Phases 3-7 |
 | 9 | Skills & AI guidance | NOT STARTED | Phases 4, 6 |
@@ -274,7 +274,7 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   - Infrastructure tasks: bearings (check build/deploy) → implement → verify (build) → commit
   - Bug fixes: diagnose → fix → verify → commit (adapted from choo-choo-ralph's
     bug-fix formula)
-- [ ] 6.5: **CLAUDE.md discipline gates template** — Starter CLAUDE.md additions:
+- [x] 6.5: **CLAUDE.md discipline gates template** — Starter CLAUDE.md additions:
   - Read RALPH.md before starting work
   - Documentation before commit (handoff required)
   - Code review gate (spawn code-critic, max 2 rounds)
