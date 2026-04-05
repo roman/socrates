@@ -22,7 +22,7 @@ handoffs + WORKPLAN).
 | 6 | RALPH.md protocol & handoff system | COMPLETE | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | COMPLETE | Phase 6 |
 | 8 | Documentation | COMPLETE | Phases 3-7 |
-| 9 | Skills & AI guidance | NOT STARTED | Phases 4, 6 |
+| 9 | Skills & AI guidance | COMPLETE | Phases 4, 6 |
 
 ---
 
@@ -340,7 +340,7 @@ Mirror choo-choo-ralph's documentation structure, adapted for Socrates.
 
 Claude Code skills that guide AI behavior during Socrates workflows.
 
-- [ ] 9.1: **spec-journey skill** — Guidance for the `/spec` Design in Practice flow.
+- [x] 9.1: **spec-journey skill** — Guidance for the `/spec` Design in Practice flow.
   Operationalizes each technique into concrete AI behavior:
   - **Reflective Inquiry**: ask "where are you at? where are you going? what do you
     know? what do you need to know?" — surface these questions at phase transitions
@@ -359,7 +359,7 @@ Claude Code skills that guide AI behavior during Socrates workflows.
     flow, resume, phase markers). The global `design-in-practice` skill handles
     general methodology. Within `/spec` context, spec-journey takes precedence on
     format and flow.
-- [ ] 9.2: **ralph-guide skill** — Quick reference for the Ralph workflow. Covers:
+- [x] 9.2: **ralph-guide skill** — Quick reference for the Ralph workflow. Covers:
   phase sequence with task-type adaptations, tk commands, handoff writing,
   role triage, troubleshooting.
   Adapted from choo-choo-ralph's ralph-guide skill.
