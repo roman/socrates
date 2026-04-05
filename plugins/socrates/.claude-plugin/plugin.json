@@ -1,0 +1,15 @@
+{
+  "name": "socrates",
+  "version": "0.1.0",
+  "description": "Structured design and autonomous development using Design in Practice methodology",
+  "author": {
+    "name": "Roman Gonzalez"
+  },
+  "keywords": [
+    "design",
+    "autonomous",
+    "ralph",
+    "workflow",
+    "socratic-method"
+  ]
+}
