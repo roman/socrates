@@ -19,7 +19,7 @@ handoffs + WORKPLAN).
 | 3 | `/init` command | COMPLETE | Phase 1 |
 | 4 | `/spec` command — full Design in Practice journey | COMPLETE | Phase 1 |
 | 5 | `/pour` command — approved tasks → tk tickets | COMPLETE | Phase 4 |
-| 6 | RALPH.md protocol & handoff system | NOT STARTED | Phases 0.5, 2 |
+| 6 | RALPH.md protocol & handoff system | IN PROGRESS | Phases 0.5, 2 |
 | 7 | `/harvest` command — learnings from handoffs | NOT STARTED | Phase 6 |
 | 8 | Documentation | NOT STARTED | Phases 3-7 |
 | 9 | Skills & AI guidance | NOT STARTED | Phases 4, 6 |
@@ -229,7 +229,7 @@ frozen after pour (write-once spec artifacts). All mutable state lives in `.tick
 
 The protocol that drives autonomous sessions. Adapted from project-status-sync.
 
-- [ ] 6.1: **RALPH.md template** — The protocol file. Contains:
+- [x] 6.1: **RALPH.md template** — The protocol file. Contains:
   - Environment description (sandbox expectations)
   - Startup checklist: read RALPH.md, check `.msgs/`, read 3 recent handoffs,
     run triage
@@ -254,7 +254,7 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
        before the handoff. Number sequentially from existing ADRs.
     2. Handoff — write session handoff to `docs/handoffs/`
     3. tk updates — close/update tickets worked on
-- [ ] 6.2: **PR comment integration** — When `/code-review` adds comments to tk
+- [x] 6.2: **PR comment integration** — When `/code-review` adds comments to tk
   tickets, the Implementer role reads ticket comments before starting work.
   After addressing review feedback and PR is merged or closed, the ticket is
   closed. No separate review file pipeline — comments live on the ticket.
@@ -267,7 +267,7 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   - Task references (tk IDs worked on)
   - Scope constraint: all content must be portable — no references to
     machine-local config, personal dotfiles, or single-developer setup
-- [ ] 6.4: **Phase sequence documentation** — Detailed protocol for each phase,
+- [x] 6.4: **Phase sequence documentation** — Detailed protocol for each phase,
   with task-type-specific adaptations:
   - Feature tasks: full bearings → implement → verify → commit
   - Docs tasks: light bearings (check existing docs) → implement → verify (lint) → commit
@@ -281,9 +281,9 @@ The protocol that drives autonomous sessions. Adapted from project-status-sync.
   - End-of-session checklist
   - Documentation scope rule: project artifacts must be portable, never
     reference machine-local configuration
-- [ ] 6.6: **`.msgs/` inbox** — Async human→agent communication. Same mechanism as
+- [x] 6.6: **`.msgs/` inbox** — Async human→agent communication. Same mechanism as
   project-status-sync. Write message to `.msgs/{id}.md`, agent reads and replies.
-- [ ] 6.7: **Stop file (`.ralph-stop`)** — Graceful loop exit mechanism.
+- [x] 6.7: **Stop file (`.ralph-stop`)** — Graceful loop exit mechanism.
 
 ---
 
