@@ -13,7 +13,7 @@ handoffs + WORKPLAN).
 
 | Phase | Description | Status | Blocked By |
 |-------|-------------|--------|------------|
-| 0 | Spikes — validate assumptions & define protocol expectations | NOT STARTED | — |
+| 0 | Spikes — validate assumptions & define protocol expectations | COMPLETE | — |
 | 1 | Project scaffold & infrastructure | NOT STARTED | Phase 0 |
 | 2 | Shell scripts — ralph loop & formatting | NOT STARTED | Phase 1 |
 | 3 | `/init` command | NOT STARTED | Phase 1 |
