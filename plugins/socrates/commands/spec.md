@@ -117,6 +117,27 @@ Instead of interviewing from scratch:
 3. Present the extracted description to the user for confirmation
 4. Ask clarifying questions for any gaps (missing context, unclear stakeholders, etc.)
 
+### Scope Triage (multi-issue sessions)
+
+When the user surfaces multiple distinct issues during the Describe interview,
+investigate whether they share a root cause before writing the section:
+
+1. **Name the candidate issues** — list them explicitly for the user.
+2. **Hypothesize a link** — could one cause or amplify the other? State the
+   hypothesis concretely (e.g., "duplicate events inflate the synthesis input,
+   causing verbose output").
+3. **Test the link** — examine actual data (event logs, output files, code
+   paths). Look for shared code, shared data flow, or causal chains.
+4. **Recommend** — if the issues have independent root causes and independent
+   fixes, recommend separate specs and explain why. If they share a root cause,
+   keep them in one spec. Present your evidence and let the user confirm.
+
+**Do not ask the user whether to split** — investigate first, then recommend
+with evidence. The user validates your conclusion, not does the analysis.
+
+If splitting: create multiple spec directories, write separate Describe sections
+for each, and ask the user which to continue with in this session.
+
 ### Writing the Describe Section
 
 When the interview is complete:
@@ -185,8 +206,12 @@ When root causes are identified:
 
 1. Draft the `## Diagnose` section content — structured as:
    - Hypotheses considered (what was tested)
-   - Evidence for/against each
-   - Root causes identified (the real problems)
+   - Evidence for/against each, with explicit **status** per hypothesis:
+     **Confirmed** (tested with evidence), **Rejected** (disproved),
+     or **Unconfirmed** (plausible but not yet testable). Never present
+     an unconfirmed hypothesis as a root cause — label it clearly and
+     note what evidence would confirm or reject it.
+   - Root causes identified (only confirmed findings)
    - Symptoms vs causes (what looked like the problem vs what actually is)
 2. Present draft to user for review
 3. Write to overview: replace `## Diagnose [DRAFT]` content, update marker to
