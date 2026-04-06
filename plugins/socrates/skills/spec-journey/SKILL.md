@@ -80,9 +80,14 @@ Seeing differences between approaches triggers thinking:
   - **Remove non-differentiating criteria** — if every approach gets the same
     color, the criterion doesn't help decide.
 
-**Behavior**: Present the matrix, then ask "does anything surprise you?" before
-asking for a choice. Surprises indicate either a wrong assessment or a
-criterion the user hadn't considered.
+**Behavior**: Always render the Direction draft (approaches, decision matrix,
+use cases) directly in the chat session BEFORE writing it to the spec file.
+Markdown table notation is illegible in raw form — the user needs to see the
+rendered matrix to evaluate it. Decision matrices commonly surface technical
+discussion, questions, or reassessment of criteria; capturing those before
+the file is written avoids churn. After rendering, ask "does anything surprise
+you?" before asking for a choice. Only persist to the spec file once the user
+has reviewed the rendered draft.
 
 ### Direction — Use Cases
 
@@ -106,6 +111,21 @@ Maintain consistent terminology:
 - When a term's meaning evolves during the journey, update the Glossary and
   fix prior references
 - Prefer concrete terms over abstract ones
+
+### Design — Open Questions
+
+Open questions during Design must be **resolved with the human driver via
+the AskUserQuestion tool**, not silently written into the spec file as an
+"Open questions" section.
+
+- When you notice an unresolved scope/design question while drafting Design,
+  pause and ask the user via AskUserQuestion.
+- After the user answers, fold the resolution into the relevant Design
+  subsection (or into a "Resolved scope decisions" list). Do **not** leave
+  the question itself in the document.
+- Only write an "Open questions" section if the human driver explicitly
+  says they want to defer the question and keep it visible in the spec.
+  Default behavior is: resolve, then delete.
 
 ## File Format Reminders
 

@@ -323,7 +323,13 @@ matrix:
 - Criteria that don't differentiate → remove them, they add noise.
 - Solution-biased criteria → criteria should matter regardless of which approach wins.
 
-Present the matrix to the user. Discuss any surprising results.
+**Render the matrix in the chat session BEFORE writing it to the spec file.**
+Markdown table notation is illegible in raw form — the user needs to see it
+rendered to evaluate it. Decision matrices commonly trigger technical
+discussion, criterion reassessment, or new approach ideas; capturing those
+before persisting avoids file churn. Only write to the overview file once
+the user has reviewed the rendered draft and confirmed direction. Discuss
+any surprising results before asking for a choice.
 
 ### Choosing an Approach
 
@@ -415,6 +421,17 @@ Tasks should form a reasonable dependency graph:
 
 Present the dependency graph to the user as a simple list showing what depends
 on what.
+
+### Open Questions During Design
+
+If unresolved scope or design questions surface while drafting Design,
+**resolve them with the human driver via AskUserQuestion before writing
+to the file**. Do not silently persist an "Open questions" section.
+
+After the user answers, fold the resolution into the relevant Design
+subsection (or into a "Resolved scope decisions" list). Only write an
+"Open questions" section if the user explicitly says they want to defer
+the question and keep it visible in the spec.
 
 ### Writing the Design Section
 
