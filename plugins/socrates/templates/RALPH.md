@@ -85,10 +85,16 @@ Confirm the change works. Scope adapts to task type.
 
 ### 4. Commit
 
+Do **one** commit per task cycle that includes everything from this cycle:
+code, tests, ticket updates, handoff, and any progress log. Complete the
+End-of-Session Gate steps (ADR, handoff, tk updates) *before* running
+`git commit`, then stage and commit them together.
+
 - Conventional commit format: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`
+  — pick the type that reflects the primary change (code wins over docs)
 - Message explains why, not what
 - Include `Refs: <tk-id>` in the commit body
-- Small and focused — one logical change per commit
+- One commit per task cycle — never split impl and its docs/handoff
 
 ## Task-Type Adaptations
 
@@ -128,7 +134,7 @@ Do NOT:
 
 ## End-of-Session Gate
 
-Before ending any session, complete all of these:
+Run these **before** the Commit phase so everything lands in one commit:
 
 ### 1. ADR Check
 

@@ -78,6 +78,10 @@ Refs: <tk-id>
 
 Types: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`
 
+**One commit per task cycle.** Run the End-of-Session Gate (handoff, ADR,
+tk updates) *before* `git commit`, then stage code + docs + handoff
+together. Never split impl from its docs.
+
 ## Handoff Writing
 
 File: `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md`

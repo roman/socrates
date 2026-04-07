@@ -16,7 +16,7 @@
 
 - Code review gate: spawn `code-critic` agent (foreground, opus model), address findings (max 2 rounds)
 - Conventional commit format with `Refs: <tk-id>` in body
-- One logical change per commit
+- One commit per task cycle, including code, docs, handoff, and tk updates together (run "Before Ending Session" steps first, then commit once)
 
 ### Before Ending Session
 
