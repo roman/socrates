@@ -75,6 +75,18 @@ Pick this role when:
 
 Implementer actions: follow the Phase Sequence below for each task.
 
+**Work source rule (strict):** the only valid source of implementation work
+is `tk ready -a ralph`. Spec task files under `docs/specs/<dir>/<id>.md` are
+*blueprints*, not tickets — they describe what `/pour` will create, but they
+are not work items until poured. Do not read a spec task file and implement
+it directly. If a spec is approved but not yet poured, switch to PM and
+escalate to the human via `.msgs/` so they can run `/pour`.
+
+The `Refs:` value in your commit must be a real tk ticket id (the filename
+of a file in `.tickets/`, e.g. `<prefix>-xxxx`), never a spec task id like
+`cc1e-synthesis-prompt-caps`. If the commit-msg hook warns about an unknown
+ref, stop and reconcile rather than ignoring it.
+
 ### Reviewer
 
 Pick this role when:

@@ -102,9 +102,17 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
 5. **Install commit-msg hook** (warning only, does not block):
    Skip if `.git/hooks/commit-msg` is Nix-managed.
    ```bash
-   # Create .git/hooks/commit-msg that warns if Refs: is missing
-   # Does NOT block the commit — just prints a warning
+   cp "${TEMPLATE_DIR}/commit-msg.sh" .git/hooks/commit-msg
+   chmod +x .git/hooks/commit-msg
    ```
+   The hook warns when:
+   - `Refs:` is missing from the commit message
+   - `Refs:` points to an id that does not exist in `.tickets/` (e.g.
+     a spec task id like `cc1e-synthesis-prompt-caps` that was never poured)
+
+   Both warnings are advisory — they print to stderr and let the commit
+   succeed. They exist to catch the bypass pattern where ralph implements
+   un-poured spec tasks directly.
 
 6. **Create .msgs/ inbox**: Already done in step 2.
 
