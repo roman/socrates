@@ -124,9 +124,12 @@ echo -n "Setup auth middleware" | sha256sum | cut -c1-4
 | `draft` | Generated or iterating, not yet reviewed | `/spec` (Design phase) |
 | `approved` | Human has signed off, ready to pour | User (manual edit) |
 | `poured` | tk ticket created, spec file is now frozen | `/pour` (last write) |
+| `cancelled` | Abandoned before pour; will not be done | User (manual edit) |
 
 After pour, the spec file is a write-once artifact. All mutable state lives
-in `.tickets/`.
+in `.tickets/`. `cancelled` is a terminal pre-pour state for tasks that
+will never be poured, allowing an epic to reach a fully-closed state
+without forcing every task through tk.
 
 ### Review Workflow
 

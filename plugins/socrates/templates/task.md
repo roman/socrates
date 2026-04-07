@@ -1,5 +1,6 @@
 ---
 id: <short-hash>-<human-suffix>
+# status: draft | approved | poured | cancelled
 status: draft
 priority: <0-4>
 category: <functional|style|infrastructure|documentation>
