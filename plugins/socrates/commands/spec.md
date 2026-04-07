@@ -11,8 +11,9 @@ gate at Delimit requiring explicit user approval.
 ## Arguments
 
 The user may provide:
-- **A spec name**: `/spec auth-redesign` — creates or resumes `docs/specs/auth-redesign/`
-- **A task file path**: `/spec docs/specs/auth-redesign/a1b2-setup-middleware.md` — enters
+- **A spec name**: `/spec auth-redesign` — creates `docs/specs/YYYY-MM-DD-auth-redesign/`
+  (today's date), or resumes any existing `docs/specs/*-auth-redesign/` directory
+- **A task file path**: `/spec docs/specs/2026-04-06-auth-redesign/a1b2-setup-middleware.md` — enters
   task review mode (see Task Review section)
 - **A source document**: `/spec --source PRD.md` or `/spec --source https://...` — reads
   the document first, pre-fills what it can, then interviews for gaps (see Source Doc Mode)
@@ -28,22 +29,27 @@ The user may provide:
 
 ### If spec name provided
 
-1. Check if `docs/specs/<name>/_overview.md` exists
+1. Check if any `docs/specs/*-<name>/_overview.md` exists (date-prefixed directories)
 2. If yes: resume mode (go to Step 2)
 3. If no: create the spec directory and overview from template
 
 ### Creating a new spec
 
+Spec directories are created with a date prefix for chronological ordering and
+disambiguation. The date is the spec creation date.
+
 ```bash
-mkdir -p "docs/specs/<name>"
+TODAY=$(date +%Y-%m-%d)
+mkdir -p "docs/specs/${TODAY}-<name>"
 ```
 
 Copy the overview template and fill in frontmatter:
 - Read the template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/_overview.md`
 - Set `title:` to the spec name (human-readable, derived from kebab-case)
 - Set `created:` to today's date (YYYY-MM-DD)
+- Leave `epic:` and `archived:` blank (populated later by `/pour` and PM archival)
 - Set `delimit_approved: false`
-- Write to `docs/specs/<name>/_overview.md`
+- Write to `docs/specs/${TODAY}-<name>/_overview.md`
 
 ## Step 2 — Resume Detection and Navigation
 

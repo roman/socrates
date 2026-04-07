@@ -19,6 +19,7 @@ RALPH.md protocol is being followed.
 |--------|------|-------------|
 | `tk ready -a ralph` has tasks | Implementer | Pick highest-priority task |
 | Ticket comments need response | PM | Triage comments, update states |
+| Specs may have completed | PM | Run Spec Lifecycle sweep (see RALPH.md) |
 | Implementation done, no review | Reviewer | Spawn code-critic (foreground, opus) |
 | All tasks blocked | PM | Escalate via `.msgs/` |
 | `.msgs/` has unread messages | Any | Respond before starting work |

@@ -23,9 +23,48 @@ Pick this role when:
 - Pending review comments on tk tickets need triage
 - Task states need reconciliation (stale in_progress, missing deps)
 - New work needs scoping but no spec exists yet
+- Specs may have completed since the last PM cycle (run Spec Lifecycle below)
 
-PM actions: triage comments, update ticket states, suggest `/spec` or `/pour`
-runs to the human via `.msgs/`.
+PM actions: triage comments, update ticket states, run the Spec Lifecycle
+sweep, suggest `/spec` or `/pour` runs to the human via `.msgs/`.
+
+#### Spec Lifecycle Sweep
+
+Every PM cycle, run this sweep to archive completed specs and prune the
+archive. It is cheap and idempotent.
+
+**1. Detect completed specs.** For each `docs/specs/*/` directory (excluding
+`docs/specs/archive/`):
+
+- Read `_overview.md` frontmatter. If `epic:` is empty, skip — this spec
+  was never poured.
+- Run `tk show <epic-id>`. If the epic and *all* its children are closed,
+  the spec is complete.
+
+**2. Archive completed specs.** For each completed spec:
+
+- Close the epic ticket if it is not already closed:
+  ```bash
+  tk close <epic-id>
+  ```
+- Stamp the overview with today's date:
+  ```yaml
+  archived: YYYY-MM-DD
+  ```
+- Move the directory:
+  ```bash
+  git mv docs/specs/<dir> docs/specs/archive/<dir>
+  ```
+
+**3. Prune the archive to 10 most recent.** Sort `docs/specs/archive/*/` by
+the `archived:` field in each `_overview.md` (descending). Anything past the
+10th entry is removed:
+```bash
+git rm -r docs/specs/archive/<old-dir>
+```
+
+The removed specs remain recoverable through git history. Note any
+archival or pruning actions in the session handoff.
 
 ### Implementer
 

@@ -1,6 +1,8 @@
 ---
 title: <spec name>
 created: <date>
+epic:
+archived:
 delimit_approved: false
 ---
 

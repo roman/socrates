@@ -43,16 +43,23 @@ mutable state lives in `.tickets/` — spec files become write-once artifacts.
 
 ## Step 3 — Epic Creation
 
-If **2 or more** approved tasks exist in this spec:
+Every spec gets an epic ticket so the PM role can later detect spec completion
+and archive the spec directory.
 
-1. Create a parent epic ticket:
+1. If `_overview.md` already has a non-empty `epic:` field, reuse that ID
+   (idempotent re-pour). Otherwise:
    ```bash
-   tk create "<spec-title>" -t epic -a ralph --tags "<spec-name>"
+   tk create "<spec-name>" -t epic -a ralph --tags "<spec-name>"
    ```
-2. Capture the epic ticket ID from tk output
-3. The epic groups all tasks from this spec under one parent
-
-If only 1 approved task: skip epic creation, pour it standalone.
+   The title is the spec name verbatim (matches the directory name without the
+   date prefix). Capture the epic ticket ID from tk output.
+2. Write the epic ID back into `_overview.md` frontmatter:
+   ```yaml
+   epic: <epic-id>
+   ```
+   Use the Edit tool for a targeted frontmatter update.
+3. The epic groups all tasks from this spec under one parent. PM archival keys
+   off this field.
 
 ## Step 4 — Ticket Creation
 
@@ -79,11 +86,10 @@ reference already-created ticket IDs.
    <contents of <test_steps> section>
    ```
 
-3. **Create the ticket**:
+3. **Create the ticket** (always parented to the spec epic):
    ```bash
-   tk create "<title>" -t task -p <priority> -a ralph --tags <category>
+   tk create "<title>" -t task -p <priority> -a ralph --tags <category> --parent <epic-id>
    ```
-   If an epic was created, add `--parent <epic-id>`.
 
 4. **Capture the ticket ID** from tk output
 

@@ -82,7 +82,8 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
 
 2. **Create directory structure** (if not already present):
    ```bash
-   mkdir -p docs/specs docs/handoffs .msgs
+   mkdir -p docs/specs docs/specs/archive docs/handoffs .msgs
+   touch docs/specs/archive/.gitkeep
    ```
 
 3. **Copy RALPH.md** (if not Nix-managed): Copy from the template:
