@@ -41,30 +41,14 @@ archive. It is cheap and idempotent.
 - Run `tk show <epic-id>`. If the epic and *all* its children are closed,
   the spec is complete.
 
-**2. Archive completed specs.** For each completed spec:
+**2. Mark completed specs as archived.** For each completed spec:
 
-- Close the epic ticket if it is not already closed:
-  ```bash
-  tk close <epic-id>
-  ```
-- Stamp the overview with today's date:
-  ```yaml
-  archived: YYYY-MM-DD
-  ```
-- Move the directory:
-  ```bash
-  git mv docs/specs/<dir> docs/specs/archive/<dir>
-  ```
+- Close the epic ticket if it is not already closed (`tk close <epic-id>`)
+- Stamp `_overview.md` frontmatter with `archived: YYYY-MM-DD`
 
-**3. Prune the archive to 10 most recent.** Sort `docs/specs/archive/*/` by
-the `archived:` field in each `_overview.md` (descending). Anything past the
-10th entry is removed:
-```bash
-git rm -r docs/specs/archive/<old-dir>
-```
-
-The removed specs remain recoverable through git history. Note any
-archival or pruning actions in the session handoff.
+The spec stays in place. Completed specs are identifiable by the `archived:`
+field; git history preserves everything. Note any archival actions in the
+session handoff.
 
 ### Implementer
 

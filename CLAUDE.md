@@ -5,40 +5,39 @@ building Socrates using Socrates' own principles (dogfooding).
 
 ## Source of Truth
 
-WORKPLAN.md drives all task sequencing. Phases are gated by their `Blocked By`
-column — do not start a phase until its dependencies are complete. Within a
-phase, tasks are numbered and should be done in order unless independent.
+Work is tracked as `tk` tickets under `.tickets/`. Use `tk ready -a ralph` to
+find what to do next. Specs in `docs/specs/` are blueprints; once poured they
+freeze and the ticket is authoritative.
 
-We are in Phase 0 (spikes). Spikes are throwaway — validate assumptions, do not
-build infrastructure. Keep spike artifacts isolated so they can be deleted
-without affecting the project.
+The protocol Socrates installs into target projects is `RALPH.md` (template at
+`plugins/socrates/templates/RALPH.md`). Read that file to understand the loop.
 
 ## Session Discipline
 
 ### Start of session
 
 1. Read this file
-2. Read WORKPLAN.md — know what phase we're in and what's next
-3. Read the 3 most recent handoffs in `docs/handoffs/`
-4. Identify what to work on based on phase status and blocking dependencies
+2. Read the 3 most recent handoffs in `docs/handoffs/` if context is unclear
+3. Run `tk ready -a ralph` to find work
 
 ### Before committing
 
-1. **ADR check** — if architectural decisions were made (tool choices, protocol
-   changes, structural changes, tradeoffs with alternatives), write an ADR to
-   `docs/adrs/NNN-<slug>.md` before the handoff. Number sequentially.
-2. **Handoff** — write a session handoff to
-   `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md` covering: what was done, key
-   decisions, what's next, learnings, gaps.
-
-Handoffs and ADRs are committed together with the work they describe.
+- Spawn `code-critic` (foreground, opus) for non-trivial changes; address
+  findings in at most 2 rounds
+- Write a handoff to `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md` only when the
+  next session can't reconstruct context from the commit message alone
+  (end of work day, blocked, learnings/gaps surfaced, handing off to another
+  agent)
+- Write an ADR to `docs/adrs/NNN-<slug>.md` only when the decision context
+  won't be obvious from the commit body in 6 months. The commit `Refs:` and
+  body are usually enough.
 
 ## Commits
 
 - Small and focused — one logical change per commit
-- Message explains why, not what (the diff shows what)
-- Format: 50 char title, 72 char body wrap
-- Include `Refs: Phase X.Y` until tk ticket IDs exist
+- Conventional commit format (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`)
+- Title explains why; body wraps at 72 chars
+- Include `Refs: <tk-id>` in the body
 - No `Co-Authored-By` or `Generated with` lines
 
 ## Documentation Scope
@@ -56,24 +55,5 @@ to one machine, it does not belong in project history.
 - Convention over automation — add guardrails only where failure is silent
 - File-per-task over monolithic specs
 - Protocol as reference (RALPH.md), not embedded per ticket
-
-## Bootstrap Ratchet
-
-After completing a phase, update this CLAUDE.md:
-- Replace manual workarounds with the real tooling the phase delivered
-- Add conventions the phase enables
-- Remove bootstrap scaffolding that is no longer needed
-
-The goal is that this file always reflects what is actually available, not what
-is aspirational. Each phase landing is a trigger to ratchet forward.
-
-### Phase completion checklist
-
-- [ ] Phase 0: Replace "WORKPLAN.md drives sequencing" with tk commands
-- [ ] Phase 1: Add plugin structure conventions
-- [ ] Phase 2: Add ralph loop usage instructions
-- [ ] Phase 3: Replace manual setup notes with `/init`
-- [ ] Phase 4: Add `/spec` workflow and Design in Practice flow
-- [ ] Phase 5: Add `/pour` workflow
-- [ ] Phase 6: Add RALPH.md protocol reference, role triage, `.msgs/` inbox
-- [ ] Phase 7: Add `/harvest` workflow
+- Don't duplicate content across files. If a doc only restates another doc,
+  delete it and link instead.

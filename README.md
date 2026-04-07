@@ -63,4 +63,5 @@ Then in your project:
 
 ## Status
 
-Early development. See [WORKPLAN.md](WORKPLAN.md) for current progress.
+Initial build complete; the project is now dogfooding itself. Work is tracked
+in `tk` tickets under `.tickets/`.
