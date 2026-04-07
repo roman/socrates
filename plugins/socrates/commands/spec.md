@@ -394,6 +394,11 @@ This context informs the task decomposition.
 Break the approach into **5-10 implementation tasks** (configurable — the user
 can request more or fewer granularity).
 
+**Sizing rule**: one task ≈ one focused commit. If a task's `<steps>` describe
+work that would naturally split into two commits, split the task. If multiple
+tasks have the same implementer reading the same files for the same reason,
+merge them.
+
 For each task:
 
 1. **Generate an ID**: ordinal prefix (1-based execution order) +
