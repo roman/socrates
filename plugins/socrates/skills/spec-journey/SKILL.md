@@ -127,10 +127,84 @@ the AskUserQuestion tool**, not silently written into the spec file as an
   says they want to defer the question and keep it visible in the spec.
   Default behavior is: resolve, then delete.
 
+### Decompose — Task Files
+
+Design ends with a Changes section describing what needs to happen.
+That is not the executable form. After Design is marked `[COMPLETE]`,
+decompose the Changes into one file per discrete task, written into
+the same spec directory alongside `_overview.md`. The spec is not
+ready for `/socrates-pour` until every Design change maps to at
+least one task file.
+
+**Naming**: `<ordinal>-<4-hex>-<2-3-word-kebab-title>.md`. The
+ordinal is a 1-based integer reflecting the task's execution order
+(lowest depends on nothing; highest depends on everything before
+it). The 4-hex segment is the first four characters of `sha256sum`
+of the task title and disambiguates titles that might collide. The
+ordinal prefix exists so humans can refer to tasks by number
+("task 2", "task 3") without having to remember hex, which matters
+a lot during review and implementation.
+
+```bash
+echo -n "Setup auth middleware" | sha256sum | cut -c1-4
+```
+
+**Frontmatter** (required):
+
+```yaml
+---
+id: <ordinal>-<hex>-<kebab-title>
+status: draft
+priority: <0 (highest) to 4>
+category: <functional | style | infrastructure | documentation>
+depends_on: [<other task ids, full form>]
+ticket: null
+---
+```
+
+The `id` in frontmatter must match the filename (minus `.md`) and
+must include the ordinal prefix. `depends_on` entries are full
+task ids, including their ordinal prefixes, so the dependency
+graph stays resolvable when ordinals change.
+
+**Body** (required sections, in order):
+
+1. `# <Title>` — a single imperative sentence describing the task.
+2. `<steps>` — numbered, mechanical instructions an implementer can
+   follow without re-deriving intent. Each step names concrete files,
+   functions, or commands. No ambiguity, no "figure out".
+3. `<test_steps>` — how to verify the change works. Concrete
+   commands, observable outcomes, specific files to inspect.
+4. `<review></review>` — empty on creation; filled during
+   implementation review.
+
+**Sizing**: one task ≈ one focused commit. If a task's `<steps>`
+describe work that would naturally split into two commits, split the
+task. If multiple tasks have the same implementer reading the same
+files for the same reason, merge them.
+
+**Dependency graph**: `depends_on` carries task ids, not free text.
+A task with no dependencies can start immediately; a task with
+dependencies blocks until all named tasks are `done`. The graph
+must be acyclic.
+
+**Behavior**: When Design is marked `[COMPLETE]`, do not stop. Walk
+the Changes section, identify the discrete units of work, and
+create the task files in the same turn (or the next one). Announce
+the decomposition to the user and let them object before treating
+the spec as ready for `/socrates-pour`.
+
 ## File Format Reminders
 
+- Spec directory layout: `_overview.md` holds the journey (Describe
+  through Design); sibling task files hold the executable
+  decomposition. Both are required for a complete spec.
 - Phase markers: `[DRAFT]`, `[COMPLETE]`, `[APPROVED]` in section headers
 - Frontmatter: `delimit_approved: true/false` is the authoritative signal
+- Task file frontmatter keys: `id`, `status`, `priority`, `category`,
+  `depends_on`, `ticket`. `status` lifecycle: `draft` → `approved`
+  → `poured` (once `/socrates-pour` creates the tk ticket) → `done`.
+  `ticket` is `null` until `/socrates-pour` populates it.
 - Going back: reset target + all downstream markers to `[DRAFT]`, preserve
   previous content under `### Previous (superseded)`
 - Edit tool: update only the active section, never rewrite the entire file

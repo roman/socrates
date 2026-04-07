@@ -77,21 +77,49 @@ reference already-created ticket IDs.
 
 1. **Read the task file** — extract title, priority, category, steps, test_steps
 
-2. **Build the description** from task file content:
+2. **Build the description** from task file content. Format:
    ```
+   Spec: docs/specs/<spec-name>/<task-file>.md
+
    ## Steps
-   <contents of <steps> section>
+   <contents of <steps> section, verbatim>
 
    ## Verification
-   <contents of <test_steps> section>
+   <contents of <test_steps> section, verbatim>
    ```
+   The `Spec:` line at the top gives ralph a direct pointer back to
+   the source task file, so any future edits to the spec remain
+   discoverable from the ticket.
 
-3. **Create the ticket** (always parented to the spec epic):
+3. **Create the ticket** (always parented to the spec epic). Pass
+   the description via `-d` using a heredoc so newlines and
+   formatting survive:
    ```bash
-   tk create "<title>" -t task -p <priority> -a ralph --tags <category> --parent <epic-id>
-   ```
+   tk create "<title>" \
+     -t task \
+     -p <priority> \
+     -a ralph \
+     --tags <category> \
+     --parent <epic-id> \
+     -d "$(cat <<'EOF'
+   Spec: docs/specs/<spec-name>/<task-file>.md
 
-4. **Capture the ticket ID** from tk output
+   ## Steps
+   <steps content>
+
+   ## Verification
+   <test_steps content>
+   EOF
+   )"
+   ```
+   Do **not** create the ticket with only a title and then try to
+   add the description after — `tk create` is the only moment the
+   description can be set cleanly. `tk edit` opens `$EDITOR`
+   interactively and does not work from a non-interactive session;
+   `tk add-note` appends to notes, not the description body.
+
+4. **Capture the ticket ID** from tk output (`tk create` prints the
+   new ID to stdout as its only output on success)
 
 5. **Wire dependencies**: For each ID in `depends_on:`, look up the tk ticket ID
    that was created for that spec task (from the mapping built during this run,

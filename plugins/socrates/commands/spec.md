@@ -396,14 +396,21 @@ can request more or fewer granularity).
 
 For each task:
 
-1. **Generate an ID**: short hash (first 4 chars of sha256 of title) + human
-   suffix (2-3 word kebab-case). Example: `a1b2-setup-middleware`
+1. **Generate an ID**: ordinal prefix (1-based execution order) +
+   short hash (first 4 chars of sha256 of title) + human suffix
+   (2-3 word kebab-case). Example: `1-a1b2-setup-middleware`.
+   The ordinal is assigned after the dependency graph is known:
+   tasks with no dependencies get the lowest ordinals, downstream
+   tasks get higher ones. The ordinal exists so humans can refer
+   to tasks by number during review.
    ```bash
    echo -n "Setup auth middleware" | sha256sum | cut -c1-4
    ```
 
 2. **Create the task file** at `docs/specs/<name>/<id>.md` using the task
-   template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`
+   template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`.
+   The filename is the full id including the ordinal prefix, so
+   `ls` on the spec directory shows tasks in execution order.
 
 3. **Fill in**:
    - `id:` — generated ID
