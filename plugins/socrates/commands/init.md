@@ -114,6 +114,12 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
    succeed. They exist to catch the bypass pattern where ralph implements
    un-poured spec tasks directly.
 
+   **Non-devenv users — preventive PreToolUse hook**: copy
+   `${TEMPLATE_DIR}/spec-read-guard.sh` to `.claude/hooks/spec-read-guard.sh`
+   and add a `PreToolUse` entry in `.claude/settings.json` with matcher
+   `Read|Edit|Write` and `command` pointing at it. Devenv users get this
+   automatically via the socrates module.
+
 6. **Create .msgs/ inbox**: Already done in step 2.
 
 ## Verify Installation

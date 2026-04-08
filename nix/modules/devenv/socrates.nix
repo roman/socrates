@@ -12,6 +12,10 @@ let
 
   pluginDir = "${cfg.package}/share/claude/skills/socrates";
 
+  specReadGuardScript = pkgs.writeShellScript "socrates-spec-read-guard" (
+    builtins.readFile "${pluginDir}/templates/spec-read-guard.sh"
+  );
+
   mkCommandFiles =
     pkg:
     let
@@ -82,6 +86,21 @@ in
     files =
       mkCommandFiles cfg.package
       // (lib.optionalAttrs (builtins.pathExists "${pluginDir}/skills") (mkSkillFiles cfg.package))
+      // {
+        ".claude/settings.json".json = {
+          hooks.PreToolUse = [
+            {
+              matcher = "Read|Edit|Write";
+              hooks = [
+                {
+                  type = "command";
+                  command = builtins.toString specReadGuardScript;
+                }
+              ];
+            }
+          ];
+        };
+      }
       // lib.optionalAttrs cfg.templates.install {
         "ralph.sh" = {
           text = builtins.readFile "${pluginDir}/templates/ralph.sh";

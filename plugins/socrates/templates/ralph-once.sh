@@ -4,6 +4,9 @@ set -uo pipefail
 # Socrates Ralph - Single interactive iteration
 # Usage: ./ralph-once.sh
 
+# Signal to spec-read-guard hook that we are inside a ralph cycle.
+export RALPH_SESSION=1
+
 echo "=== Ralph Single Iteration ==="
 
 available=$(tk ready -a ralph 2>/dev/null | wc -l)

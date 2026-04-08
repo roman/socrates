@@ -84,10 +84,16 @@ stayed separate.
 - **Current — prose**: RALPH.md Implementer role "Work source rule (strict)"
 - **Current — mechanical (after the fact)**: `commit-msg.sh` warns on
   unknown `Refs:` ids
-- **Future — mechanical (prevention)**: a `PreToolUse` hook on `Read` that
-  refuses paths matching `docs/specs/*/[0-9]*-*.md` when the active role is
-  Implementer. This would catch the bypass *before* the commit, not after.
-  Tracked as a follow-up; not yet implemented.
+- **Current — mechanical (prevention)**: `spec-read-guard.sh` is a
+  `PreToolUse` hook on Read/Edit/Write that refuses paths matching
+  `docs/specs/<dir>/[0-9]+-*.md` whenever `RALPH_SESSION=1` is set in the
+  env (exported by `ralph.sh` and `ralph-once.sh`). The hook covers
+  Read, Edit, and Write — blocking only Read leaves a hole, since a
+  confused Implementer with the path already in context could Write the
+  implementation without ever Reading the file. The hook does *not*
+  cover Glob/Grep (those surface paths but do not access content) or
+  human-driven sessions outside ralph.sh (where the prose rule remains
+  the only defense). This is defense in depth, not perimeter security.
 
 ## Alternatives Considered
 

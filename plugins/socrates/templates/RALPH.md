@@ -71,6 +71,12 @@ of a file in `.tickets/`, e.g. `<prefix>-xxxx`), never a spec task id like
 `cc1e-synthesis-prompt-caps`. If the commit-msg hook warns about an unknown
 ref, stop and reconcile rather than ignoring it.
 
+A `PreToolUse` hook (`spec-read-guard.sh`) backs this rule mechanically:
+under `RALPH_SESSION=1` (set by `ralph.sh`/`ralph-once.sh`), Read/Edit/Write
+calls against `docs/specs/<dir>/<n>-*.md` are denied. If you see that
+denial, switch to PM and escalate via `.msgs/` — do not try to route around
+it.
+
 ### Reviewer
 
 Pick this role when:
