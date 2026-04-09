@@ -386,6 +386,15 @@ Before decomposing, gather context. Launch parallel Agent sub-agents to:
    - Verify assumptions about tools/frameworks
    - Check for known issues or limitations
 
+3. **Shared surfaces identification** — While exploring, explicitly identify
+   cross-task touchpoints: files, type names, config keys, or sentinel values
+   that more than one task will read or write. Name them by surface only.
+   **Name the surface, do not pin the shape.** Do not record type definitions,
+   literal values, or concrete config keys at the overview level — those are
+   discovered by the implementer of the task that owns the surface. If you
+   catch yourself wanting to write a shape, that content belongs in a task
+   file, not the overview.
+
 Synthesize findings into the `### Context` subsection of the Design section.
 This context informs the task decomposition.
 
@@ -456,8 +465,25 @@ the question and keep it visible in the spec.
 1. Write `### Context` with codebase research findings
 2. Write `### Tasks` with a summary table:
    | ID | Title | Priority | Category | Depends On |
-3. Write `### Glossary` with terms used consistently in the tasks
-4. Update marker to `## Design [COMPLETE]`
+3. Write `### Execution Order` as a topo-sorted bulleted narrative, produced
+   **after** the dependency graph is known. Each line links to the task file
+   (by id) and gives one sentence of purpose. Tasks with no dependencies come
+   first; downstream tasks follow. This is the rendered reading order a human
+   would use to walk the spec.
+4. Write `### Glossary` with terms used consistently in the tasks, and
+   populate a `#### Shared Surfaces` subsection listing the surfaces
+   identified during research. Each entry is a narrative line: the surface
+   name, the linked task ids that touch it, and one sentence explaining why
+   the coupling matters. Example:
+   > **`config.yaml` `retry` block** — touched by [1-a1b2](1-a1b2-setup.md)
+   > and [3-c4d5](3-c4d5-worker.md); the worker reads retry policy the setup
+   > task writes, so both must agree on the key's existence.
+
+   **Shared Surfaces must NOT contain type shapes, literal sentinel values,
+   concrete config keys beyond the surface name, or any detail the implementer
+   would be the first to know.** If you are tempted to write a shape, that is
+   a sign the content belongs in a task file, not the overview.
+5. Update marker to `## Design [COMPLETE]`
 
 ### Post-Design Summary
 
