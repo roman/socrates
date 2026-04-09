@@ -475,9 +475,18 @@ the question and keep it visible in the spec.
    identified during research. Each entry is a narrative line: the surface
    name, the linked task ids that touch it, and one sentence explaining why
    the coupling matters. Example:
-   > **`config.yaml` `retry` block** — touched by [1-a1b2](1-a1b2-setup.md)
-   > and [3-c4d5](3-c4d5-worker.md); the worker reads retry policy the setup
-   > task writes, so both must agree on the key's existence.
+   > **`config.yaml` `retry` block** — touched by
+   > [1-a1b2](1-a1b2-setup.md) (surface owner) and
+   > [3-c4d5](3-c4d5-worker.md); the worker reads retry policy the setup
+   > task writes, so the setup task must land first.
+
+   When a surface has a natural owner — the task that creates or first
+   writes it — annotate that task's link with `(surface owner)`. Other
+   linked tasks are readers and will be ordered after the owner. If the
+   surface is a mutual read with no clear creator, omit the marker on
+   every link; the surface then contributes no ordering edge. The marker
+   sits on the link itself (not on a positional "first task in the list")
+   so it survives later reordering.
 
    **Shared Surfaces must NOT contain type shapes, literal sentinel values,
    concrete config keys beyond the surface name, or any detail the implementer

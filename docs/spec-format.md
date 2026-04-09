@@ -69,9 +69,22 @@ Contains these subsections:
   - **`#### Shared Surfaces`** — Narrative list of cross-task touchpoints
     named by surface only (files, type names, config keys, sentinel values),
     with links to the tasks that touch each surface and a one-sentence note
-    on why the coupling matters. **Rot-avoidance rule:** Shared Surfaces
-    must NOT record type shapes, literal values, or concrete config keys.
-    That detail lives in task files, discovered at implementation time.
+    on why the coupling matters. One linked task per entry may be annotated
+    `(surface owner)` immediately after the link — the task that creates or
+    owns that surface; other linked tasks are readers and are ordered after
+    it. Absence of any marker means the surface is a mutual read and
+    contributes no ordering edges between its tasks. Multiple owners are
+    allowed but rare. The marker must be written explicitly on the link
+    itself (not implied by list position) so it survives link reordering
+    during refinement. Example:
+    > **`config.yaml` `retry` block** — touched by
+    > [1-a1b2](1-a1b2-setup.md) (surface owner) and
+    > [3-c4d5](3-c4d5-worker.md); the worker reads retry policy the setup
+    > task writes.
+
+    **Rot-avoidance rule:** Shared Surfaces must NOT record type shapes,
+    literal values, or concrete config keys. That detail lives in task
+    files, discovered at implementation time.
 
 ### Going Back
 
