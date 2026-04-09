@@ -488,9 +488,36 @@ the question and keep it visible in the spec.
    a sign the content belongs in a task file, not the overview.
 5. Update marker to `## Design [COMPLETE]`
 
+### Design Review
+
+After writing all task files and the Design section, run a review council
+before presenting the spec to the user:
+
+1. Launch two Agent sub-agents **in parallel, both foreground, both opus**:
+   - **code-critic** — review the full spec (overview + all task files) for
+     gaps, missing shared surfaces, incorrect dependency edges, risks the
+     spec doesn't acknowledge, and whether the tasks eat their own dogfood
+     (i.e., are they outcome-shaped if the spec calls for outcome-shaped
+     tasks?).
+   - **grug-architect** — review for unnecessary complexity, over-decomposition,
+     tasks that could be merged, ceremony that doesn't earn its keep, and
+     whether the simplest approach was chosen. Challenge anything that smells
+     like over-engineering.
+
+2. Synthesize findings into:
+   - **Consensus items** — both agents agree
+   - **Concerns by severity** — blocker / major / minor
+   - **Actionable changes** — specific edits to make
+
+3. Apply non-controversial fixes (missing surfaces, stale conventions,
+   clear over-decomposition). For judgment calls, present the findings to
+   the user and ask how to proceed.
+
+4. If changes were made, briefly confirm what changed and why.
+
 ### Post-Design Summary
 
-After writing all task files:
+After the design review is resolved and all task files are finalized:
 1. Show the user a summary: how many tasks, dependency structure, categories
 2. Explain next steps:
    - Review each task file, add notes to `<review>` if changes needed
