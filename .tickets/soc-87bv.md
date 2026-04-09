@@ -1,6 +1,6 @@
 ---
 id: soc-87bv
-status: in_progress
+status: closed
 deps: []
 links: []
 created: 2026-04-09T02:20:05Z

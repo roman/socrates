@@ -1,6 +1,6 @@
 ---
 id: soc-n2cw
-status: open
+status: closed
 deps: [soc-87bv]
 links: []
 created: 2026-04-09T02:20:45Z

@@ -1,6 +1,6 @@
 ---
 id: soc-nrtu
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-04-09T02:19:28Z
