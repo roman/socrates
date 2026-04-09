@@ -9,14 +9,13 @@ ticket: null
 
 # <Task title>
 
-<steps>
-1. ...
-2. ...
-</steps>
+<outcome>
+...
+</outcome>
 
-<test_steps>
+<verification>
 - ...
 - ...
-</test_steps>
+</verification>
 
 <review></review>

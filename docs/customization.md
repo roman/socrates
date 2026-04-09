@@ -77,7 +77,7 @@ each phase.
 
 Edit `templates/task.md` to add fields or sections. The frontmatter fields
 (`id`, `status`, `priority`, `category`, `ticket`) are used by
-`/pour` — keep those. Body sections (`steps`, `test_steps`, `review`) are
+`/pour` — keep those. Body sections (`outcome`, `verification`, `review`) are
 also expected by the tooling.
 
 You can add additional frontmatter fields (e.g., `estimated_effort`, `area`)

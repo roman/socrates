@@ -96,11 +96,11 @@ For each task in order:
      -d "$(cat <<'EOF'
    Spec: docs/specs/<spec-dir>/<task-file>.md
 
-   ## Steps
-   <steps content>
+   ## Outcome
+   <outcome content>
 
    ## Verification
-   <test_steps content>
+   <verification content>
    EOF
    )"
    ```

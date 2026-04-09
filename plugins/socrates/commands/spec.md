@@ -403,10 +403,11 @@ This context informs the task decomposition.
 Break the approach into **5-10 implementation tasks** (configurable — the user
 can request more or fewer granularity).
 
-**Sizing rule**: one task ≈ one focused commit. If a task's `<steps>` describe
-work that would naturally split into two commits, split the task. If multiple
-tasks have the same implementer reading the same files for the same reason,
-merge them.
+**Sizing rule**: one task ≈ one outcome slice — a discrete, verifiable change
+in system behaviour or project state. Size by what the implementer must
+*achieve*, not by how many files or commits the work touches. If a task
+describes two independently verifiable outcomes, split it. If several tasks
+target the same outcome and cannot be verified separately, merge them.
 
 For each task:
 
@@ -434,9 +435,11 @@ For each task:
    - `priority:` — 0 (highest) to 4, based on surface-derived order and criticality
    - `category:` — functional, style, infrastructure, or documentation
    - Title — clear, action-oriented (starts with a verb)
-   - `<steps>` — numbered implementation steps, specific enough to act on.
-     Reference actual file paths and function names from the Context research.
-   - `<test_steps>` — how to verify this task is done correctly
+   - `<outcome>` — what the implementer must achieve and what changes for
+     the system or project when done. State the target, not the procedure.
+     Concrete file-path grounding belongs in the overview's Context section,
+     not here — the implementer discovers the how.
+   - `<verification>` — observable criteria for confirming the outcome is met
    - `<review>` — leave empty
 
 Coupling between tasks is expressed entirely through the `#### Shared Surfaces`
@@ -537,7 +540,7 @@ When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
 ### Processing Review Feedback
 
 1. Read the review comments in `<review>`
-2. Regenerate the `<steps>` and/or `<test_steps>` sections based on feedback
+2. Regenerate the `<outcome>` and/or `<verification>` sections based on feedback
 3. Clear the `<review>` section (set back to empty)
 4. Present the changes to the user for confirmation
 5. Write the updated task file
