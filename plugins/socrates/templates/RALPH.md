@@ -102,33 +102,45 @@ type — see Task-Type Adaptations below.
 Health check and orientation before touching code.
 
 - Read the task's tk ticket (description, comments, dependencies)
+- Understand the ticket's **Outcome** as the target state to reach and its
+  **Verification** as the contract to satisfy — tickets describe *what* to
+  achieve, not *how* to achieve it
 - Read relevant source files and tests
 - Check for in-progress work that might conflict
 - Verify the build is healthy
+- Plan your approach: the implementer owns decomposition. If the outcome
+  needs multiple commits, each commit is a separate pass through the full
+  phase sequence (Bearings → Implement → Verify → Commit)
 
-**Exit criteria**: You understand what to do, where to do it, and nothing is
-broken before you start.
+**Exit criteria**: You understand the target outcome, you know your first
+step, and nothing is broken before you start.
 
 ### 2. Implement
 
 Focused changes, minimal scope.
 
+- Work toward the ticket's Outcome — use the Verification section to confirm
+  you are on track
 - Follow existing patterns and conventions
 - One logical change at a time
 - Do not refactor surrounding code unless the task requires it
 - Reference actual file paths and function names from Bearings
 
-**Exit criteria**: The change is complete and ready to verify.
+**Exit criteria**: The change satisfies the ticket's Outcome and is ready to
+verify.
 
 ### 3. Verify
 
-Confirm the change works. Scope adapts to task type.
+Confirm the change satisfies the ticket's Verification contract. Scope adapts
+to task type.
 
-- Run relevant checks (see Task-Type Adaptations)
+- Walk through each Verification bullet and confirm it holds
+- Run relevant automated checks (see Task-Type Adaptations)
 - If a check fails: fix and re-verify (max 3 retries)
 - After 3 failures: stop, write what you know to the handoff, escalate
 
-**Exit criteria**: All relevant checks pass.
+**Exit criteria**: Every Verification bullet is satisfied and automated checks
+pass.
 
 ### 4. Commit
 
