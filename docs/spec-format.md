@@ -57,12 +57,21 @@ Contains four subsections:
 
 #### `## Design [DRAFT]`
 
-Contains three subsections:
+Contains these subsections:
 
 - **`### Context`** — Codebase patterns, integration points, conventions
   discovered during research
 - **`### Tasks`** — Summary table of generated task files
+- **`### Execution Order`** — Topo-sorted narrative of task files with links
+  and a one-sentence purpose for each, so a reader can follow the intended
+  build sequence without opening every task
 - **`### Glossary`** — Terms used consistently throughout the spec
+  - **`#### Shared Surfaces`** — Narrative list of cross-task touchpoints
+    named by surface only (files, type names, config keys, sentinel values),
+    with links to the tasks that touch each surface and a one-sentence note
+    on why the coupling matters. **Rot-avoidance rule:** Shared Surfaces
+    must NOT record type shapes, literal values, or concrete config keys.
+    That detail lives in task files, discovered at implementation time.
 
 ### Going Back
 
