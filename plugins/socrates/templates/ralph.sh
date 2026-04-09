@@ -36,31 +36,21 @@ while [ $iteration -lt $MAX_ITERATIONS ]; do
   echo "=== Iteration $((iteration + 1)) ==="
   echo "---"
 
-  available=$(tk ready -a ralph 2>/dev/null | wc -l)
-
-  if [ "$available" -eq 0 ]; then
-    echo "No ready work available. Done."
-    exit 0
-  fi
-
-  echo "$available ready task(s) available"
-  echo ""
-
   claude --dangerously-skip-permissions --output-format stream-json --verbose -p "
-Run \`tk ready -a ralph\` to see available tasks.
+Read RALPH.md and follow it. Run the Startup Checklist, then triage and
+pick the appropriate role (PM, Engineer, etc.) based on current state.
 
-Also run \`tk query '.' | jq -s '[.[] | select(.status == \"in_progress\" and .assignee == \"ralph\")]'\` to see what tasks other Ralph agents are currently working on.
+If you pick Engineer, also check for conflicts with other in-progress
+Ralph agents before claiming a task:
+  tk query '.' | jq -s '[.[] | select(.status == \"in_progress\" and .assignee == \"ralph\")]'
+Avoid tasks that share dependencies with anything already in_progress.
 
-Decide which task to work on next. Selection criteria:
-1. Priority - lower number = higher priority
-2. Avoid conflicts - if other Ralph agents have tasks in_progress, pick a different area of work. Do NOT work on any task that shares dependencies with an in-progress task.
-3. If all high-priority areas are being worked on, pick a lower-priority unrelated task
+One iteration = complete the chosen work fully (or escalate if blocked).
 
-Pick ONE task, claim it with \`tk start <id>\`, then execute it according to its description.
-
-One iteration = complete the task fully.
-
-IMPORTANT: After the task is done (or if blocked), EXIT immediately. Do NOT pick up another task. The outer loop handles the next iteration.
+IMPORTANT: After the work is done, EXIT immediately. Do NOT pick up
+another task. The outer loop handles the next iteration. If triage
+concludes there is genuinely nothing to do, create \`.ralph-stop\` before
+exiting so the loop terminates.
 " 2>&1 | "$(dirname "$0")/ralph-format.sh" $VERBOSE_FLAG || true
 
   ((iteration++)) || true

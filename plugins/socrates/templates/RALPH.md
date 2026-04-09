@@ -24,6 +24,10 @@ Pick this role when:
 - Task states need reconciliation (stale in_progress, missing deps)
 - New work needs scoping but no spec exists yet
 - Specs may have completed since the last PM cycle (run Spec Lifecycle below)
+- **`tk ready -a ralph` is empty** — default to PM and verify everything
+  is consistent (inbox, ticket states, spec lifecycle) before concluding
+  there is no work. Only after the PM sweep finds nothing actionable
+  should the iteration create `.ralph-stop` and exit.
 
 PM actions: triage comments, update ticket states, run the Spec Lifecycle
 sweep, suggest `/spec` or `/pour` runs to the human via `.msgs/`.
@@ -41,14 +45,16 @@ archive. It is cheap and idempotent.
 - Run `tk show <epic-id>`. If the epic and *all* its children are closed,
   the spec is complete.
 
-**2. Mark completed specs as archived.** For each completed spec:
+**2. Archive completed specs.** For each completed spec:
 
 - Close the epic ticket if it is not already closed (`tk close <epic-id>`)
 - Stamp `_overview.md` frontmatter with `archived: YYYY-MM-DD`
+- Move the spec directory into `docs/specs/archive/` (create the archive
+  directory if it does not exist): `git mv docs/specs/<dir> docs/specs/archive/<dir>`
 
-The spec stays in place. Completed specs are identifiable by the `archived:`
-field; git history preserves everything. Note any archival actions in the
-session handoff.
+Completed specs live under `docs/specs/archive/` and carry an `archived:`
+frontmatter field; git history preserves everything. Note any archival
+actions in the session handoff.
 
 ### Implementer
 
