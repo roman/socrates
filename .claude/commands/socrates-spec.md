@@ -1,0 +1,1 @@
+/nix/store/vliggzf2zl4mzhcyz1zfdza7cm40v516-claude-commands-socrates-spec.md

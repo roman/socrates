@@ -53,7 +53,24 @@ during research. Added by parallel sub-agents.>
 
 <Summary of generated task files and their relationships.>
 
+### Execution Order
+
+<Topo-sorted bulleted narrative of task files. Each bullet is a
+clickable link to the task file plus one sentence explaining why
+this task comes next — its purpose in the sequence, not a restatement
+of its title.>
+
 ### Glossary
 
 <Terms used consistently throughout this spec. Definitions that
 matter for implementation.>
+
+#### Shared Surfaces
+
+<Narrative bulleted list naming cross-task touchpoints by surface
+only — a file, a type name, a config key, a sentinel. Each bullet
+names the surface, links to the tasks that touch it, and says in
+one sentence why the coupling matters.
+
+Shapes, literal values, type definitions, and concrete config keys
+do NOT belong here — only the surface name.>
