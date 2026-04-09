@@ -106,7 +106,6 @@ id: a1b2-setup-middleware       # short hash + human suffix
 status: draft                   # draft → approved → poured
 priority: 2                     # 0 (highest) to 4
 category: functional            # functional | style | infrastructure | documentation
-depends_on: []                  # list of task IDs from this spec
 ticket: null                    # set to tk ID after pour (last write)
 ---
 ```

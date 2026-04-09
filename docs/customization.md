@@ -76,7 +76,7 @@ each phase.
 ### Task Template
 
 Edit `templates/task.md` to add fields or sections. The frontmatter fields
-(`id`, `status`, `priority`, `category`, `depends_on`, `ticket`) are used by
+(`id`, `status`, `priority`, `category`, `ticket`) are used by
 `/pour` — keep those. Body sections (`steps`, `test_steps`, `review`) are
 also expected by the tooling.
 

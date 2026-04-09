@@ -413,10 +413,12 @@ For each task:
 1. **Generate an ID**: ordinal prefix (1-based execution order) +
    short hash (first 4 chars of sha256 of title) + human suffix
    (2-3 word kebab-case). Example: `1-a1b2-setup-middleware`.
-   The ordinal is assigned after the dependency graph is known:
-   tasks with no dependencies get the lowest ordinals, downstream
-   tasks get higher ones. The ordinal exists so humans can refer
-   to tasks by number during review.
+   The ordinal is assigned from the surface-derived topo order:
+   parse the `#### Shared Surfaces` section, derive edges from
+   `(surface owner)` markers (consumers depend on owners), and
+   topo-sort. Tasks with no incoming edges get the lowest ordinals.
+   The ordinal is a readability hint only — `/pour` re-derives the
+   same order independently from Shared Surfaces at pour time.
    ```bash
    echo -n "Setup auth middleware" | sha256sum | cut -c1-4
    ```
@@ -429,25 +431,17 @@ For each task:
 3. **Fill in**:
    - `id:` — generated ID
    - `status: draft`
-   - `priority:` — 0 (highest) to 4, based on dependency order and criticality
+   - `priority:` — 0 (highest) to 4, based on surface-derived order and criticality
    - `category:` — functional, style, infrastructure, or documentation
-   - `depends_on:` — list of other task IDs from this spec that must complete first
    - Title — clear, action-oriented (starts with a verb)
    - `<steps>` — numbered implementation steps, specific enough to act on.
      Reference actual file paths and function names from the Context research.
    - `<test_steps>` — how to verify this task is done correctly
    - `<review>` — leave empty
 
-### Dependency Graph
-
-Tasks should form a reasonable dependency graph:
-- Foundation tasks (setup, infrastructure) come first
-- Feature tasks depend on their prerequisites
-- No circular dependencies
-- Aim for some parallelism — not everything in a single chain
-
-Present the dependency graph to the user as a simple list showing what depends
-on what.
+Coupling between tasks is expressed entirely through the `#### Shared Surfaces`
+section of the overview, not through per-task frontmatter. `/pour` derives the
+ordering edges from there at pour time.
 
 ### Open Questions During Design
 
@@ -464,7 +458,7 @@ the question and keep it visible in the spec.
 
 1. Write `### Context` with codebase research findings
 2. Write `### Tasks` with a summary table:
-   | ID | Title | Priority | Category | Depends On |
+   | ID | Title | Priority | Category |
 3. Write `### Execution Order` as a topo-sorted bulleted narrative, produced
    **after** the dependency graph is known. Each line links to the task file
    (by id) and gives one sentence of purpose. Tasks with no dependencies come
