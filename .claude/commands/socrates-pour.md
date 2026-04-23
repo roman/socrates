@@ -1,1 +1,0 @@
-/nix/store/ihmgp07kmw47s4nxk29dph7hhhkqcjib-claude-commands-socrates-pour.md

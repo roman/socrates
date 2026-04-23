@@ -1,1 +1,0 @@
-/nix/store/mjqg6dn96gr8cb83kdr6p2290g2bn049-claude-commands-socrates-init.md

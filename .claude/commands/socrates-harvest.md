@@ -1,1 +1,0 @@
-/nix/store/c8wpkm6wv0xpr52xv2h07cg1qs0z3iib-claude-commands-socrates-harvest.md
