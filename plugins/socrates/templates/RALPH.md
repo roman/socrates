@@ -102,6 +102,16 @@ type — see Task-Type Adaptations below.
 Health check and orientation before touching code.
 
 - Read the task's tk ticket (description, comments, dependencies)
+- **If the ticket body contains a `Spec overview:` line, read that
+  `_overview.md` before writing any code.** The ticket body carries the
+  outcome and verification, but the overview carries the *why* — the
+  Diagnose root cause, the Delimit problem statement, and the Direction
+  approach the spec chose. When you hit a moment requiring deviation from
+  the task description (a constraint not anticipated, a cleaner approach
+  surfacing mid-work), the overview is what tells you whether your
+  deviation serves the original problem or undermines it. The
+  spec task files (`<n>-*.md`) remain blocked by `spec-read-guard.sh`,
+  but `_overview.md` is unblocked and is the right entry point.
 - Understand the ticket's **Outcome** as the target state to reach and its
   **Verification** as the contract to satisfy — tickets describe *what* to
   achieve, not *how* to achieve it

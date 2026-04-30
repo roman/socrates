@@ -88,13 +88,18 @@ For each task in order:
 
 1. Create the ticket. The description must be passed via `-d` heredoc on
    `tk create` — `tk edit` is interactive and `tk add-note` appends to
-   notes, not the body. The `Spec:` line gives ralph a pointer back.
+   notes, not the body. The `Spec overview:` line gives the implementer
+   the readable entry point to the *why* behind the ticket; the
+   `Spec task:` line preserves blueprint traceability (the file itself
+   is read-blocked under `RALPH_SESSION=1`, but the path stays for
+   audit).
 
    ```bash
    tk create "<title>" -t task -p <priority> -a ralph \
      --tags <category> --parent <epic-id> \
      -d "$(cat <<'EOF'
-   Spec: docs/specs/<spec-dir>/<task-file>.md
+   Spec overview: docs/specs/<spec-dir>/_overview.md
+   Spec task:     docs/specs/<spec-dir>/<task-file>.md
 
    ## Outcome
    <outcome content>
