@@ -8,6 +8,32 @@ Walk the user through a structured design process that produces a spec overview
 and individual task files. Each phase builds on the previous one, with a strict
 gate at Delimit requiring explicit user approval.
 
+## Pacing principle: do not rush acceptance
+
+This command exists to slow thinking down before doing. The user
+will sit with drafts, re-read them in their own editor, change
+their mind, and approve work on their own clock — sometimes hours
+or days after it was written. Your job is to present state and
+options neutrally; never push toward approval.
+
+Concretely:
+
+- Do **not** add "Approved" or "Ready" framing to options
+  presented at phase boundaries (the Delimit gate is the only
+  place explicit approval is solicited, and even there the
+  options are neutral: Approved / Needs refinement / Wrong
+  problem).
+- Do **not** mark "approve and pour" choices as **(Recommended)**
+  in `AskUserQuestion`. Acceptance is the user's call.
+- Do **not** write closing summaries that imply urgency
+  ("ready for /pour", "spec is approved-shape", etc.). Confirm
+  what was written, list options the user has, and stop.
+- After Design completes and task files exist, the user may
+  review on their own time before flipping `status: draft` →
+  `status: approved`. Do not nudge that flip.
+
+When in doubt, present and stop.
+
 ## Arguments
 
 The user may provide:
@@ -582,11 +608,16 @@ before presenting the spec to the user:
 
 After the design review is resolved and all task files are finalized:
 1. Show the user a summary: how many tasks, dependency structure, categories
-2. Explain next steps:
-   - Review each task file, add notes to `<review>` if changes needed
-   - Run `/spec <task-file>` to process review feedback
-   - Change `status: draft` to `status: approved` when satisfied
+2. List the options the user has, neutrally:
+   - Review each task file at their own pace, adding notes to
+     `<review>` if changes are needed
+   - Run `/spec <task-file>` to process any review feedback
+   - Flip `status: draft` → `status: approved` when satisfied
    - Run `/pour` to create tk tickets from approved tasks
+3. Stop. Do not ask whether the user is ready to approve, do
+   not mark any of the above options as recommended, and do not
+   imply readiness for the next step. The user moves on their
+   own clock; your role here is done.
 
 ## Task Review Mode
 
