@@ -598,11 +598,31 @@ before presenting the spec to the user:
    - **Concerns by severity** — blocker / major / minor
    - **Actionable changes** — specific edits to make
 
-3. Apply non-controversial fixes (missing surfaces, stale conventions,
-   clear over-decomposition). For judgment calls, present the findings to
-   the user and ask how to proceed.
+3. Before asking the user any judgment-call question, render a
+   **per-task TL;DR with council feedback attached**, so the user
+   can absorb what each task is and what each reviewer flagged
+   *about that task* without having to re-link findings to tasks
+   themselves. Format roughly:
 
-4. If changes were made, briefly confirm what changed and why.
+   ```
+   ## <task id> — <one-line task purpose>
+
+   - code-critic: <crisp bullet of what they flagged on this task>
+   - grug-architect: <crisp bullet of what they flagged on this task>
+   ```
+
+   Plus a separate short section for spec-wide concerns (those
+   that don't attach to a single task — e.g., scope shape, missing
+   surfaces, deferred work). Keep each bullet to one sentence;
+   omit the reviewer entirely if they had nothing to say about
+   that task. The goal is that the user can decide on scope or
+   contract changes after reading this synthesis alone.
+
+4. Apply non-controversial fixes (missing surfaces, stale
+   conventions, clear over-decomposition). For judgment calls,
+   present the findings to the user and ask how to proceed.
+
+5. If changes were made, briefly confirm what changed and why.
 
 ### Post-Design Summary
 
