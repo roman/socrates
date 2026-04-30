@@ -25,7 +25,8 @@ The user may provide:
 
 1. Check `docs/specs/` for existing spec directories
 2. If specs exist, use AskUserQuestion to ask: resume an existing spec, or create new?
-3. If creating new, use AskUserQuestion to either:
+3. If creating new: run the "Check open gaps" subsection below, then
+   use AskUserQuestion to either:
    - Collect a short kebab-case name now, **OR**
    - Defer naming until after the Describe phase (see "Deferred naming" below).
    Naming a problem before articulating it is hard; defer is the right
@@ -35,7 +36,8 @@ The user may provide:
 
 1. Check if any `docs/specs/*-<name>/_overview.md` exists (date-prefixed directories)
 2. If yes: resume mode (go to Step 2)
-3. If no: create the spec directory and overview from template
+3. If no: run the "Check open gaps" subsection below, then create the
+   spec directory and overview from template
 
 ### Creating a new spec
 
@@ -54,6 +56,35 @@ Copy the overview template and fill in frontmatter:
 - Leave `epic:` and `archived:` blank (populated later by `/pour` and PM archival)
 - Set `delimit_approved: false`
 - Write to `docs/specs/${TODAY}-<name>/_overview.md`
+
+### Check open gaps (new spec only)
+
+Before any new spec is created (named or deferred path), scan
+`docs/gaps/` for `*.md` files. Skip this subsection silently when
+the directory is empty or absent.
+
+When gaps are present:
+
+1. Present each gap to the user as a one-line summary (title +
+   first sentence of the body).
+2. Use AskUserQuestion to ask whether the new spec is addressing
+   one of these gaps, or is independent work. Offer the gap titles
+   as options plus an "independent work" option.
+3. **If a gap is being addressed**:
+   - Fold the gap's body — situation, why-it-matters, suggested
+     resolution — into the Describe phase as pre-existing context.
+     The user can confirm or expand on it during the interview;
+     this avoids re-discovering ground the gap already covered.
+   - Once the spec directory exists (immediately in the named path,
+     after Describe in the deferred path), delete the gap file with
+     `git rm docs/gaps/<filename>.md`. Git history preserves the
+     gap as the audit trail; the spec is now its forward-looking
+     home.
+4. **If independent work**: continue with the normal Step 1 flow.
+
+A gap file's existence is its lifecycle: present means open, absent
+means addressed. No status field, no archive directory, no
+close-side sweep responsibility.
 
 ### Deferred naming
 

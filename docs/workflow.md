@@ -116,3 +116,7 @@ Spec → Pour → Ralph → Harvest
 
 Learnings improve the AI's skills and project conventions. Gaps become new
 tickets or spec inputs. Each cycle makes the next one better.
+
+Concerns surfaced during spec design that warrant their own future spec live
+under `docs/gaps/` — one file per deferred concern, refer-back-able when
+prioritising the next design round.
