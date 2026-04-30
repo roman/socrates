@@ -434,6 +434,8 @@ For each task:
    - `status: draft`
    - `priority:` — 0 (highest) to 4, based on surface-derived order and criticality
    - `category:` — functional, style, infrastructure, or documentation
+   - `revisions: 0` — review iterations start at zero; Task Review Mode
+     bumps this each time it processes `<review>` feedback
    - Title — clear, action-oriented (starts with a verb)
    - `<outcome>` — what the implementer must achieve and what changes for
      the system or project when done. State the target, not the procedure.
@@ -542,11 +544,16 @@ When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
 1. Read the review comments in `<review>`
 2. Regenerate the `<outcome>` and/or `<verification>` sections based on feedback
 3. Clear the `<review>` section (set back to empty)
-4. Present the changes to the user for confirmation
-5. Write the updated task file
+4. Increment `revisions` in frontmatter (e.g., 0 → 1, 1 → 2). If the
+   field is missing on a pre-existing task file, add it with the
+   incremented value (treat absence as 0).
+5. Present the changes to the user for confirmation
+6. Write the updated task file
 
 The task stays at `status: draft` throughout review iterations. The user
-manually changes status to `approved` when satisfied.
+manually changes status to `approved` when satisfied. The `revisions`
+counter is informational — it shows how much a task has been iterated
+on without losing that signal when `<review>` is cleared.
 
 ### Batch Review
 
