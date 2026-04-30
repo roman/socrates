@@ -25,7 +25,11 @@ The user may provide:
 
 1. Check `docs/specs/` for existing spec directories
 2. If specs exist, use AskUserQuestion to ask: resume an existing spec, or create new?
-3. If creating new, ask for a short kebab-case name
+3. If creating new, use AskUserQuestion to either:
+   - Collect a short kebab-case name now, **OR**
+   - Defer naming until after the Describe phase (see "Deferred naming" below).
+   Naming a problem before articulating it is hard; defer is the right
+   choice when the user cannot yet phrase the concern crisply.
 
 ### If spec name provided
 
@@ -50,6 +54,29 @@ Copy the overview template and fill in frontmatter:
 - Leave `epic:` and `archived:` blank (populated later by `/pour` and PM archival)
 - Set `delimit_approved: false`
 - Write to `docs/specs/${TODAY}-<name>/_overview.md`
+
+### Deferred naming
+
+When the user opts to defer naming until after Describe, do **not** create
+the spec directory or overview file yet. Instead:
+
+1. Hold the spec state in conversation memory only. Run Step 3 (Describe
+   phase) interview-driven — drafts, edits, and approvals happen in the
+   chat without persisting to disk.
+2. Once Describe is complete (user-approved), prompt the user for a short
+   kebab-case name informed by what was discussed. Suggesting 2–4
+   candidate names derived from the situation is helpful; offer them via
+   AskUserQuestion alongside an "I'll type my own" option.
+3. With the name set, follow the "Creating a new spec" steps above:
+   create the directory, copy the template, fill the frontmatter, and
+   write the overview file. The Describe section lands with the
+   user-approved content already in place and its marker set to
+   `[COMPLETE]`; all other sections remain `[DRAFT]` per the template.
+4. Continue with Step 4 (Diagnose) as usual.
+
+This avoids forcing the user to name a problem they have not yet
+articulated, while still producing a normal spec directory once the
+shape of the work is clear.
 
 ## Step 2 — Resume Detection and Navigation
 
