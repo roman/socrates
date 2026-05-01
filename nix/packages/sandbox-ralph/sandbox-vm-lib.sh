@@ -10,6 +10,10 @@
 #
 # Expected env (set by the user):
 #   CLAUDE_CODE_OAUTH_TOKEN      from `claude setup-token` on the host
+#
+# Optional env (override host git config for commits made inside the VM):
+#   GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL
+#   GIT_COMMITTER_NAME / GIT_COMMITTER_EMAIL  (default to author values)
 set -euo pipefail
 
 INSTANCE="${SANDBOX_INSTANCE:-sandbox-vm}"
@@ -22,6 +26,11 @@ sandbox_main() {
   PROJECT_ROOT="$(git rev-parse --show-toplevel)"
   PROJECT_NAME="$(basename "$PROJECT_ROOT")"
   HOST_BRANCH="$(git -C "$PROJECT_ROOT" branch --show-current)"
+
+  GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME:-$(git -C "$PROJECT_ROOT" config user.name || true)}"
+  GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-$(git -C "$PROJECT_ROOT" config user.email || true)}"
+  GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-$GIT_AUTHOR_NAME}"
+  GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-$GIT_AUTHOR_EMAIL}"
 
   sandbox_preflight_host
   sandbox_build_image
@@ -55,6 +64,12 @@ sandbox_preflight_host() {
     echo "error: host worktree has uncommitted changes" >&2
     echo "       commit or stash before running — fast-forward from the VM requires a clean tree" >&2
     git -C "$PROJECT_ROOT" status --short --untracked-files=no >&2
+    exit 1
+  fi
+  if [ -z "$GIT_AUTHOR_NAME" ] || [ -z "$GIT_AUTHOR_EMAIL" ]; then
+    echo "error: missing git author identity for VM commits" >&2
+    echo "       set 'git config user.name' and 'git config user.email' on the host," >&2
+    echo "       or export GIT_AUTHOR_NAME and GIT_AUTHOR_EMAIL before running" >&2
     exit 1
   fi
 }
@@ -157,8 +172,12 @@ sandbox_pull_results() {
 }
 
 sandbox_run_ralph() {
-  echo ">>> Running $SANDBOX_RALPH_INNER_SCRIPT inside VM"
+  echo ">>> Running $SANDBOX_RALPH_INNER_SCRIPT inside VM (author: $GIT_AUTHOR_NAME <$GIT_AUTHOR_EMAIL>)"
   limactl shell "$INSTANCE" -- \
     env "CLAUDE_CODE_OAUTH_TOKEN=$CLAUDE_CODE_OAUTH_TOKEN" \
+        "GIT_AUTHOR_NAME=$GIT_AUTHOR_NAME" \
+        "GIT_AUTHOR_EMAIL=$GIT_AUTHOR_EMAIL" \
+        "GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME" \
+        "GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL" \
     bash -lc "cd '$GUEST_PROJECT_DIR' && bash 'plugins/socrates/templates/$SANDBOX_RALPH_INNER_SCRIPT' $*"
 }

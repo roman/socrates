@@ -36,6 +36,17 @@ of that and go straight to running Ralph.
 
 `CLAUDE_CODE_OAUTH_TOKEN` must be exported before running.
 
+### Commit author identity
+
+Ralph's commits inside the VM are attributed using (in order):
+
+1. `GIT_AUTHOR_NAME` / `GIT_AUTHOR_EMAIL` if exported on the host
+2. Otherwise the host's `git config user.name` / `user.email`
+
+Committer defaults to author. Override with `GIT_COMMITTER_NAME` /
+`GIT_COMMITTER_EMAIL` if you want them to differ. The script refuses to
+start if no author identity can be resolved.
+
 ## Reviewing Ralph's commits
 
 The wrapper script ends each run by fetching `sandbox-vm/<branch>` and
