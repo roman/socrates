@@ -1,0 +1,39 @@
+# Lima instance config for the Socrates sandbox VM.
+#
+# Consumed by limactl on the host. The qcow2 location is supplied at runtime
+# via the SANDBOX_VM_IMAGE env var, set by the wrapper script after
+# `nix build .#sandbox-vm-image`.
+#
+# Critical: mounts is explicitly empty. The Lima default is to mount the
+# host's home directory read-only into the guest, which exposes ~/.ssh,
+# ~/.claude/.credentials.json, and the rest of $HOME to the agent — the
+# opposite of what we want. The project is seeded into the VM via git
+# over Lima's SSH forward (see sandbox-vm-lib.sh).
+#
+# TODO: arch is hardcoded x86_64. Generalize when porting to macOS — Lima's
+# arch naming differs from `uname -m` on Darwin (arm64 vs aarch64).
+images:
+  - location: "__SANDBOX_VM_IMAGE__"
+    arch: "x86_64"
+
+vmType: "qemu"
+
+memory: "4GiB"
+cpus: 2
+
+mounts: []
+
+# Note: CLAUDE_CODE_OAUTH_TOKEN is NOT set here. Lima does not expand
+# {{.Env.X}} in the env: block — it stores the literal template string,
+# which ends up as garbage in /etc/environment. The token is injected at
+# runtime via `limactl shell -- env "CLAUDE_CODE_OAUTH_TOKEN=..." bash -lc`.
+
+ssh:
+  loadDotSSHPubKeys: false
+
+# We don't use containers inside the sandbox VM — disable containerd so Lima
+# doesn't wait for it during startup (it's an "optional" requirement that
+# would otherwise cause a 10-minute timeout on first boot).
+containerd:
+  system: false
+  user: false
