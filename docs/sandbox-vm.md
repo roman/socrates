@@ -32,10 +32,10 @@ GIT_SSH_COMMAND="ssh -F ~/.lima/sandbox-vm/ssh.config" \
 ## Running the sandbox
 
 ```bash
-# Autonomous loop (uses --dangerously-skip-permissions; commits without prompts)
+# Autonomous loop — runs until no work remains or max iterations reached
 nix run .#sandbox-ralph
 
-# Single iteration (interactive; prompts for each file write — good for testing)
+# Autonomous single iteration — same as the loop but exits after one cycle
 nix run .#sandbox-ralph-once
 ```
 
