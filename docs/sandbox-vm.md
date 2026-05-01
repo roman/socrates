@@ -20,15 +20,6 @@ export CLAUDE_CODE_OAUTH_TOKEN=<value>   # add to ~/.bashrc / ~/.zshrc
 
 The token is valid for one year. If revoked: `claude logout && claude setup-token`.
 
-**2. Add a git remote for reviewing Ralph's work (one-time per host):**
-
-```bash
-# Lima must be in PATH (nix develop github:nixos-lima/nixos-lima) or installed
-GUEST_HOME=$(limactl shell sandbox-vm -- bash -lc 'echo $HOME')
-GIT_SSH_COMMAND="ssh -F ~/.lima/sandbox-vm/ssh.config" \
-  git remote add sandbox-vm "lima-sandbox-vm:$GUEST_HOME/socrates"
-```
-
 ## Running the sandbox
 
 ```bash
@@ -47,13 +38,27 @@ of that and go straight to running Ralph.
 
 ## Reviewing Ralph's commits
 
-Ralph commits inside the VM. To pull them back to the host:
+The wrapper script ends each run by fetching `sandbox-vm/<branch>` and
+fast-forwarding the host branch. The `sandbox-vm` git remote is auto-added
+the first time it runs. Preconditions enforced before the VM boots:
+
+- Host must be on a branch (not detached HEAD)
+- Host worktree must have no uncommitted tracked changes
+
+If the host branch has diverged from the VM (e.g. you committed locally
+during the run), fast-forward fails and the script prints:
+
+```
+error: fast-forward failed — host has diverged from VM
+       inspect: git log HEAD...sandbox-vm/<branch>
+```
+
+Recover by merging or cherry-picking manually. To inspect manually at any
+time:
 
 ```bash
 GIT_SSH_COMMAND="ssh -F ~/.lima/sandbox-vm/ssh.config" git fetch sandbox-vm
-git log sandbox-vm/main          # see what Ralph did
-git diff main sandbox-vm/main    # diff against host main
-git merge sandbox-vm/main        # or cherry-pick individual commits
+git log HEAD..sandbox-vm/<branch>
 ```
 
 ## VM lifecycle
@@ -108,5 +113,5 @@ limactl delete sandbox-vm && nix run .#sandbox-ralph-once
 home is not mounted. The guest project lives at `/home/<user>.linux/socrates`.
 
 **Git push fails on first seed** — Lima's SSH host alias is `lima-sandbox-vm`
-(not `sandbox-vm`). The sandbox-vm-lib.sh script handles this; the manual
-git remote add above uses the correct alias.
+(not `sandbox-vm`). The sandbox-vm-lib.sh script handles this internally;
+ad-hoc git commands against the VM need the same alias.

@@ -21,7 +21,9 @@ sandbox_main() {
 
   PROJECT_ROOT="$(git rev-parse --show-toplevel)"
   PROJECT_NAME="$(basename "$PROJECT_ROOT")"
+  HOST_BRANCH="$(git -C "$PROJECT_ROOT" branch --show-current)"
 
+  sandbox_preflight_host
   sandbox_build_image
   sandbox_start_vm
 
@@ -32,7 +34,29 @@ sandbox_main() {
   GUEST_PROJECT_DIR="$GUEST_HOME/$PROJECT_NAME"
 
   sandbox_seed_project
-  sandbox_run_ralph "$@"
+  sandbox_ensure_remote
+
+  local ralph_rc=0
+  sandbox_run_ralph "$@" || ralph_rc=$?
+
+  if ! sandbox_pull_results; then
+    echo "warning: pull from sandbox failed — fetch manually with: git fetch sandbox-vm" >&2
+  fi
+
+  exit "$ralph_rc"
+}
+
+sandbox_preflight_host() {
+  if [ -z "$HOST_BRANCH" ]; then
+    echo "error: host is in detached-HEAD state; check out a branch before sandboxing" >&2
+    exit 1
+  fi
+  if [ -n "$(git -C "$PROJECT_ROOT" status --porcelain --untracked-files=no)" ]; then
+    echo "error: host worktree has uncommitted changes" >&2
+    echo "       commit or stash before running — fast-forward from the VM requires a clean tree" >&2
+    git -C "$PROJECT_ROOT" status --short --untracked-files=no >&2
+    exit 1
+  fi
 }
 
 sandbox_build_image() {
@@ -85,21 +109,51 @@ sandbox_seed_project() {
     return
   fi
 
-  local current_branch
-  current_branch="$(git -C "$PROJECT_ROOT" branch --show-current)"
-
   echo ">>> Initializing bare repo in VM"
   limactl shell "$INSTANCE" -- git init --bare "$GUEST_PROJECT_DIR.git"
 
-  echo ">>> Pushing project history into VM (branch: $current_branch)"
+  echo ">>> Pushing project history into VM (branch: $HOST_BRANCH)"
   GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
     git -C "$PROJECT_ROOT" push \
       "lima-$INSTANCE:$GUEST_PROJECT_DIR.git" \
-      "HEAD:refs/heads/$current_branch"
+      "HEAD:refs/heads/$HOST_BRANCH"
 
   echo ">>> Cloning working tree in VM"
   limactl shell "$INSTANCE" -- git clone "$GUEST_PROJECT_DIR.git" "$GUEST_PROJECT_DIR"
-  limactl shell "$INSTANCE" -- bash -c "cd $GUEST_PROJECT_DIR && git checkout $current_branch"
+  limactl shell "$INSTANCE" -- bash -c "cd $GUEST_PROJECT_DIR && git checkout $HOST_BRANCH"
+}
+
+sandbox_ensure_remote() {
+  local desired_url="lima-$INSTANCE:$GUEST_PROJECT_DIR"
+  local current_url
+  current_url="$(git -C "$PROJECT_ROOT" remote get-url sandbox-vm 2>/dev/null || true)"
+  if [ -z "$current_url" ]; then
+    echo ">>> Adding git remote 'sandbox-vm' -> $desired_url"
+    git -C "$PROJECT_ROOT" remote add sandbox-vm "$desired_url"
+  elif [ "$current_url" != "$desired_url" ]; then
+    echo ">>> Updating git remote 'sandbox-vm' -> $desired_url"
+    git -C "$PROJECT_ROOT" remote set-url sandbox-vm "$desired_url"
+  fi
+}
+
+sandbox_pull_results() {
+  echo ">>> Fetching commits from sandbox VM"
+  GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
+    git -C "$PROJECT_ROOT" fetch sandbox-vm "$HOST_BRANCH"
+
+  local ahead
+  ahead="$(git -C "$PROJECT_ROOT" rev-list --count "HEAD..sandbox-vm/$HOST_BRANCH")"
+  if [ "$ahead" = "0" ]; then
+    echo ">>> No new commits from VM"
+    return
+  fi
+
+  echo ">>> Fast-forwarding '$HOST_BRANCH' by $ahead commit(s)"
+  if ! git -C "$PROJECT_ROOT" merge --ff-only "sandbox-vm/$HOST_BRANCH"; then
+    echo "error: fast-forward failed — host has diverged from VM" >&2
+    echo "       inspect: git log HEAD...sandbox-vm/$HOST_BRANCH" >&2
+    return 1
+  fi
 }
 
 sandbox_run_ralph() {
