@@ -2,7 +2,7 @@
 title: Spec Status View
 created: 2026-04-29
 epic: soc-qzop
-archived:
+archived: 2026-05-01
 delimit_approved: true
 ---
 

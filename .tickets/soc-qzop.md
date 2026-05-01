@@ -1,6 +1,6 @@
 ---
 id: soc-qzop
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-05-01T06:36:31Z
