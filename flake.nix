@@ -13,6 +13,12 @@
     devenv.url = "github:cachix/devenv/v2.0.6";
 
     systems.url = "github:nix-systems/default";
+
+    nixos-lima.url = "github:nixos-lima/nixos-lima/v0.0.5";
+    nixos-lima.inputs.nixpkgs.follows = "nixpkgs";
+
+    nixos-generators.url = "github:nix-community/nixos-generators";
+    nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
