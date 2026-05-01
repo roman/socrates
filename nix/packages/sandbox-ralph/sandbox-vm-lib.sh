@@ -118,24 +118,40 @@ sandbox_start_vm() {
   fi
 }
 
+sandbox_push_branch() {
+  echo ">>> Pushing branch '$HOST_BRANCH' into VM"
+  GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
+    git -C "$PROJECT_ROOT" push \
+      "lima-$INSTANCE:$GUEST_PROJECT_DIR.git" \
+      "HEAD:refs/heads/$HOST_BRANCH"
+}
+
 sandbox_seed_project() {
   if limactl shell "$INSTANCE" -- test -d "$GUEST_PROJECT_DIR/.git"; then
-    echo ">>> Project already seeded in VM (run 'limactl factory-reset $INSTANCE' to refresh)"
+    echo ">>> Syncing branch '$HOST_BRANCH' into VM"
+    sandbox_push_branch
+    limactl shell "$INSTANCE" -- bash -c "
+      set -euo pipefail
+      cd '$GUEST_PROJECT_DIR'
+      git fetch origin
+      if git show-ref --verify --quiet 'refs/heads/$HOST_BRANCH'; then
+        git checkout '$HOST_BRANCH'
+        git merge --ff-only 'origin/$HOST_BRANCH'
+      else
+        git checkout -b '$HOST_BRANCH' 'origin/$HOST_BRANCH'
+      fi
+    "
     return
   fi
 
   echo ">>> Initializing bare repo in VM"
   limactl shell "$INSTANCE" -- git init --bare "$GUEST_PROJECT_DIR.git"
 
-  echo ">>> Pushing project history into VM (branch: $HOST_BRANCH)"
-  GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
-    git -C "$PROJECT_ROOT" push \
-      "lima-$INSTANCE:$GUEST_PROJECT_DIR.git" \
-      "HEAD:refs/heads/$HOST_BRANCH"
+  sandbox_push_branch
 
   echo ">>> Cloning working tree in VM"
   limactl shell "$INSTANCE" -- git clone "$GUEST_PROJECT_DIR.git" "$GUEST_PROJECT_DIR"
-  limactl shell "$INSTANCE" -- bash -c "cd $GUEST_PROJECT_DIR && git checkout $HOST_BRANCH"
+  limactl shell "$INSTANCE" -- bash -c "cd '$GUEST_PROJECT_DIR' && git checkout '$HOST_BRANCH'"
 }
 
 sandbox_ensure_remote() {
@@ -153,11 +169,14 @@ sandbox_ensure_remote() {
 
 sandbox_pull_results() {
   echo ">>> Fetching commits from sandbox VM"
-  GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
-    git -C "$PROJECT_ROOT" fetch sandbox-vm "$HOST_BRANCH"
+  if ! GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
+    git -C "$PROJECT_ROOT" fetch sandbox-vm "$HOST_BRANCH"; then
+    echo ">>> No new commits from VM (branch unchanged)" >&2
+    return 0
+  fi
 
   local ahead
-  ahead="$(git -C "$PROJECT_ROOT" rev-list --count "HEAD..sandbox-vm/$HOST_BRANCH")"
+  ahead="$(git -C "$PROJECT_ROOT" rev-list --count "HEAD..sandbox-vm/$HOST_BRANCH" 2>/dev/null || echo "0")"
   if [ "$ahead" = "0" ]; then
     echo ">>> No new commits from VM"
     return
