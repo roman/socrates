@@ -1,15 +1,21 @@
 ---
-id: 1-ac32-build-cli
-status: poured
+id: soc-dw00
+status: open
+deps: []
+links: []
+created: 2026-05-01T06:37:50Z
+type: task
 priority: 0
-category: functional
-ticket: soc-dw00
-revisions: 4
+assignee: ralph
+parent: soc-qzop
+tags: [functional]
 ---
-
 # Build the spec-status CLI
 
-<outcome>
+Spec overview: docs/specs/2026-04-29-spec-status-view/_overview.md
+Spec task:     docs/specs/2026-04-29-spec-status-view/1-ac32-build-cli.md
+
+## Outcome
 A new read-only CLI named `spec` ships with the Socrates plugin
 as a Nix-built binary. After dev-shell reload, the command
 resolves on `PATH` for the human author and for any bash
@@ -138,9 +144,8 @@ mid-phase (`[APPROVED]` Delimit, `[DRAFT]` Direction); a
 poured spec with `epic:` set and a task with a populated
 `ticket:` field; a task with a non-whitespace `<review>`
 block; a task with an empty `<review></review>`.
-</outcome>
 
-<verification>
+## Verification
 - `nix build` of the new package succeeds; the resulting store
   path contains a `spec` binary under `bin/`.
 - After dev-shell reload, `which spec` resolves and `spec`
@@ -175,6 +180,4 @@ block; a task with an empty `<review></review>`.
   script for `>` (output redirection to file paths under
   `docs/`), `sed -i`, `>>`, or any `tk` mutation subcommand
   returns nothing.
-</verification>
 
-<review></review>
