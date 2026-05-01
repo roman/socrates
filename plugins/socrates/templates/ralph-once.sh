@@ -5,6 +5,7 @@ set -uo pipefail
 # Usage: ./ralph-once.sh [--verbose|-v]
 
 VERBOSE_FLAG=""
+RALPH_MODEL="${RALPH_MODEL:-opus}"
 
 for arg in "$@"; do
   case "$arg" in
@@ -19,7 +20,7 @@ export RALPH_SESSION=1
 
 echo "=== Ralph Single Iteration ==="
 
-claude --dangerously-skip-permissions --output-format stream-json --verbose -p "
+claude --model "$RALPH_MODEL" --dangerously-skip-permissions --output-format stream-json --verbose -p "
 Read RALPH.md and follow it. Run the Startup Checklist, then triage and
 pick the appropriate role (PM, Engineer, etc.) based on current state.
 

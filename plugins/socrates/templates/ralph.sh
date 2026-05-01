@@ -6,6 +6,7 @@ set -uo pipefail
 
 MAX_ITERATIONS=100
 VERBOSE_FLAG=""
+RALPH_MODEL="${RALPH_MODEL:-opus}"
 
 # Signal to spec-read-guard hook that we are inside a ralph cycle.
 export RALPH_SESSION=1
@@ -24,7 +25,7 @@ iteration=0
 
 echo "Starting Ralph loop (max $MAX_ITERATIONS iterations)"
 
-while [ $iteration -lt $MAX_ITERATIONS ]; do
+while [ "$iteration" -lt "$MAX_ITERATIONS" ]; do
   # Graceful exit
   if [ -f ".ralph-stop" ]; then
     echo "Stop file detected. Exiting gracefully."
@@ -36,7 +37,7 @@ while [ $iteration -lt $MAX_ITERATIONS ]; do
   echo "=== Iteration $((iteration + 1)) ==="
   echo "---"
 
-  claude --dangerously-skip-permissions --output-format stream-json --verbose -p "
+  claude --model "$RALPH_MODEL" --dangerously-skip-permissions --output-format stream-json --verbose -p "
 Read RALPH.md and follow it. Run the Startup Checklist, then triage and
 pick the appropriate role (PM, Engineer, etc.) based on current state.
 

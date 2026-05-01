@@ -191,9 +191,11 @@ sandbox_pull_results() {
 }
 
 sandbox_run_ralph() {
-  echo ">>> Running $SANDBOX_RALPH_INNER_SCRIPT inside VM (author: $GIT_AUTHOR_NAME <$GIT_AUTHOR_EMAIL>)"
+  local ralph_model="${RALPH_MODEL:-opus}"
+  echo ">>> Running $SANDBOX_RALPH_INNER_SCRIPT inside VM (model: $ralph_model, author: $GIT_AUTHOR_NAME <$GIT_AUTHOR_EMAIL>)"
   limactl shell "$INSTANCE" -- \
     env "CLAUDE_CODE_OAUTH_TOKEN=$CLAUDE_CODE_OAUTH_TOKEN" \
+        "RALPH_MODEL=$ralph_model" \
         "GIT_AUTHOR_NAME=$GIT_AUTHOR_NAME" \
         "GIT_AUTHOR_EMAIL=$GIT_AUTHOR_EMAIL" \
         "GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME" \
