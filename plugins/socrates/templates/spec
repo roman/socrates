@@ -1,0 +1,230 @@
+#!/usr/bin/env bash
+# spec — read-only CLI for Socrates spec/task status.
+# Re-derives state from filesystem on every invocation. Never mutates files.
+set -euo pipefail
+
+SPECS_DIR="${SPECS_DIR:-docs/specs}"
+
+usage() {
+  cat <<'EOF'
+Usage: spec <command> [options]
+
+Commands:
+  status              List non-archived specs with phase and task counts
+  tasks               List tasks across non-archived specs
+  tasks --status S    Filter tasks by status (draft|approved|poured|cancelled)
+  tasks --review      Show only tasks with non-empty <review> blocks
+EOF
+}
+
+# Extract a YAML frontmatter value by key from a file.
+# Prints the trimmed value, or empty string if not found.
+fm_value() {
+  local file="$1" key="$2"
+  local fence=0
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^---[[:space:]]*$ ]]; then
+      fence=$((fence + 1))
+      if [[ "$fence" -ge 2 ]]; then return; fi
+      continue
+    fi
+    if [[ "$fence" -eq 1 ]]; then
+      case "$line" in
+        "${key}:"*)
+          local val="${line#"${key}:"}"
+          val="${val#"${val%%[![:space:]]*}"}"
+          echo "$val"
+          return
+          ;;
+      esac
+    fi
+  done < "$file"
+}
+
+# Detect the current phase from an _overview.md file.
+# Prints "PhaseName [MARKER]".
+# Logic: the first phase still at [DRAFT] is where work is happening.
+# If no phase is DRAFT, the last phase marker is shown (all complete).
+detect_phase() {
+  local overview="$1"
+  local first_draft="" last_phase="Describe [DRAFT]"
+  local phase_regex='^## (Describe|Diagnose|Delimit|Direction|Design) \[([A-Z]+)\]'
+
+  while IFS= read -r line; do
+    if [[ "$line" =~ $phase_regex ]]; then
+      local name="${BASH_REMATCH[1]}"
+      local marker="${BASH_REMATCH[2]}"
+      last_phase="${name} [${marker}]"
+      if [[ "$marker" == "DRAFT" && -z "$first_draft" ]]; then
+        first_draft="${name} [DRAFT]"
+      fi
+    fi
+  done < "$overview"
+
+  if [[ -n "$first_draft" ]]; then
+    echo "$first_draft"
+  else
+    echo "$last_phase"
+  fi
+}
+
+# Check whether a task file's <review> block has non-whitespace content.
+# Returns 0 (true) if content exists, 1 (false) otherwise.
+has_review_content() {
+  local file="$1"
+  local inside=0
+  while IFS= read -r line; do
+    if [[ "$inside" -eq 1 ]]; then
+      if [[ "$line" == *"</review>"* ]]; then
+        local before="${line%%</review>*}"
+        if [[ "$before" =~ [^[:space:]] ]]; then
+          return 0
+        fi
+        return 1
+      fi
+      if [[ "$line" =~ [^[:space:]] ]]; then
+        return 0
+      fi
+    fi
+    if [[ "$line" == *"<review>"* ]]; then
+      local after="${line#*<review>}"
+      if [[ "$after" == *"</review>"* ]]; then
+        after="${after%%</review>*}"
+        if [[ "$after" =~ [^[:space:]] ]]; then
+          return 0
+        fi
+        return 1
+      fi
+      inside=1
+      if [[ "$after" =~ [^[:space:]] ]]; then
+        return 0
+      fi
+    fi
+  done < "$file"
+  return 1
+}
+
+cmd_status() {
+  local found=0
+  for spec_dir in "$SPECS_DIR"/*/; do
+    [[ -d "$spec_dir" ]] || continue
+    local dirname="${spec_dir%/}"
+    dirname="${dirname##*/}"
+    [[ "$dirname" == "archive" ]] && continue
+
+    local overview="${spec_dir}_overview.md"
+    [[ -f "$overview" ]] || continue
+
+    found=1
+    local phase delimit_approved
+    phase=$(detect_phase "$overview")
+    delimit_approved=$(fm_value "$overview" "delimit_approved")
+    if [[ "$delimit_approved" == "true" ]]; then
+      delimit_approved="approved"
+    else
+      delimit_approved="-"
+    fi
+
+    local draft=0 approved=0 poured=0
+    for task_file in "$spec_dir"/[0-9]*-*.md; do
+      [[ -f "$task_file" ]] || continue
+      local status
+      status=$(fm_value "$task_file" "status")
+      case "$status" in
+        draft)    draft=$((draft + 1)) ;;
+        approved) approved=$((approved + 1)) ;;
+        poured)   poured=$((poured + 1)) ;;
+      esac
+    done
+
+    echo "$dirname"
+    echo "  Phase:    $phase"
+    echo "  Delimit:  $delimit_approved"
+    echo "  Tasks:    ${draft} draft, ${approved} approved, ${poured} poured"
+    echo
+  done
+
+  if [[ "$found" -eq 0 ]]; then
+    echo "No non-archived specs found."
+  fi
+}
+
+cmd_tasks() {
+  local filter_status="" filter_review=0
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --status)
+        if [[ $# -lt 2 ]]; then
+          echo "Error: --status requires a value" >&2
+          exit 1
+        fi
+        filter_status="$2"
+        shift 2
+        ;;
+      --review)
+        filter_review=1
+        shift
+        ;;
+      *)
+        echo "Error: unknown option: $1" >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  printf "%-30s %-35s %-10s %-4s %-12s %-10s %s\n" \
+    "SPEC" "TASK" "STATUS" "PRI" "CATEGORY" "TICKET" "REVIEW"
+
+  for spec_dir in "$SPECS_DIR"/*/; do
+    [[ -d "$spec_dir" ]] || continue
+    local dirname="${spec_dir%/}"
+    dirname="${dirname##*/}"
+    [[ "$dirname" == "archive" ]] && continue
+
+    for task_file in "$spec_dir"/[0-9]*-*.md; do
+      [[ -f "$task_file" ]] || continue
+
+      local task_name="${task_file##*/}"
+      task_name="${task_name%.md}"
+      local status priority category ticket review_status
+      status=$(fm_value "$task_file" "status")
+      priority=$(fm_value "$task_file" "priority")
+      category=$(fm_value "$task_file" "category")
+      ticket=$(fm_value "$task_file" "ticket")
+
+      if [[ -z "$ticket" || "$ticket" == "null" ]]; then
+        ticket="-"
+      fi
+
+      if has_review_content "$task_file"; then
+        review_status="pending"
+      else
+        review_status="-"
+      fi
+
+      if [[ -n "$filter_status" && "$status" != "$filter_status" ]]; then
+        continue
+      fi
+      if [[ "$filter_review" -eq 1 && "$review_status" != "pending" ]]; then
+        continue
+      fi
+
+      printf "%-30s %-35s %-10s %-4s %-12s %-10s %s\n" \
+        "$dirname" "$task_name" "$status" "$priority" "$category" "$ticket" "$review_status"
+    done
+  done
+}
+
+case "${1:-}" in
+  status)
+    cmd_status
+    ;;
+  tasks)
+    shift
+    cmd_tasks "$@"
+    ;;
+  *)
+    usage
+    ;;
+esac

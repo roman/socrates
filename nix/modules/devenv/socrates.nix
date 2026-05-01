@@ -80,6 +80,7 @@ in
   config = lib.mkIf cfg.enable {
     packages = [
       inputs.self.packages.${pkgs.system}.ticket
+      inputs.self.packages.${pkgs.system}.spec-cli
       pkgs.jq
     ];
 

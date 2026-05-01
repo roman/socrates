@@ -1,6 +1,6 @@
 ---
 id: soc-dw00
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-05-01T06:37:50Z
