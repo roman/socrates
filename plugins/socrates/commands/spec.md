@@ -8,6 +8,17 @@ Walk the user through a structured design process that produces a spec overview
 and individual task files. Each phase builds on the previous one, with a strict
 gate at Delimit requiring explicit user approval.
 
+## Voice and structure
+
+All prose this command generates (descriptions, hypotheses, approach
+write-ups, task outcomes, etc.) follows the voice and structure
+conventions in `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/..}/voice.md`.
+Read that file once at the start of any spec session and apply its
+guidance throughout. The conventions cover prose-first structure,
+the Technical Addendum pattern, the RC/NC/AC ID convention,
+confidence labels, AI-ism reduction, and how to mark deliverables
+and chosen approaches.
+
 ## Pacing principle: do not rush acceptance
 
 This command exists to slow thinking down before doing. The user
