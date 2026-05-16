@@ -346,7 +346,9 @@ When root causes are identified:
      or **Unconfirmed** (plausible but not yet testable). Never present
      an unconfirmed hypothesis as a root cause — label it clearly and
      note what evidence would confirm or reject it.
-   - Root causes identified (only confirmed findings)
+   - A `### Diagnosed items` subsection containing the typed-prefix
+     items the rest of the spec will reference. See "Diagnosed items
+     structure" below.
    - Symptoms vs causes (what looked like the problem vs what actually is)
 2. Present draft to user for review
 3. Write to overview: replace `## Diagnose [DRAFT]` content, update marker to
@@ -354,6 +356,39 @@ When root causes are identified:
 4. Confirm completion and preview Delimit phase
 
 **Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.
+
+### Diagnosed items structure
+
+Each item in the `### Diagnosed items` subsection carries a typed
+prefixed identifier so the decision matrix and downstream phases
+can reference it precisely:
+
+- **RC** — Root Cause. A real reason the problem exists.
+- **NC** — Non-Cause. Looked like a cause; turned out not to be.
+  Always include an "Implication for Direction" line (e.g.,
+  "approaches should not be scored favorably for solving this").
+- **AC** — Adjacent Constraint. A rule from outside this spec
+  that any approach must respect.
+
+Number each prefix sequentially (RC1, RC2, NC1, AC1, ...). Each
+item gets a stable HTML anchor immediately above its heading so
+the matrix's links don't break when headings are reworded:
+
+```markdown
+<a id="rc1"></a>
+#### RC1 — Mesh safety enforced at the wrong altitude
+
+<Explanation paragraph.>
+```
+
+The `### Diagnosed items` subsection starts with the legend table
+from `_overview.md` (the four prefixes: RC, NC, AC, ID). Keep it
+as a table; it's where readers learn what the prefixes mean before
+they hit the matrix in Direction.
+
+**Do not** present unconfirmed hypotheses as RCs. An unconfirmed
+hypothesis stays in the Hypotheses subsection above with its
+status; promote to RC only after evidence confirms it.
 
 ## Step 5 — Delimit Phase (STRICT GATE)
 
