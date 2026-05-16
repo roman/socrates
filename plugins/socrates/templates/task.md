@@ -12,13 +12,17 @@ revisions: 0
 
 # <Task title>
 
-<outcome>
-...
-</outcome>
+## Outcome
 
-<verification>
+<What the implementer must achieve and what changes for the system or
+project when done. State the target, not the procedure.>
+
+## Verification
+
+<Observable criteria for confirming the outcome is met. Each bullet
+describes a fact someone could check, not a procedure to run.>
+
 - ...
 - ...
-</verification>
 
 <review></review>
