@@ -584,6 +584,21 @@ Before decomposing, gather context. Launch parallel Agent sub-agents to:
 Synthesize findings into the `### Context` subsection of the Design section.
 This context informs the task decomposition.
 
+When any Adjacent Constraint (AC) from Diagnose dictates a specific
+encoding (where the constraint must live in the design — a chart
+conditional, a config-file structure, an interface boundary), call
+that out explicitly in the Context. The Direction phase committed
+to *honoring* the constraint; the Context translates that into
+*where it lands*.
+
+If the codebase research surfaced concrete file paths, line
+numbers, or quantitative findings (e.g., "this file is ~400 lines,
+60% of which is incidental drift"), put the prose claim in Context
+and the supporting detail in the `## Technical Addendum` section
+at the end of `_overview.md`. Reference the Addendum from the
+Context with an anchored link: `(See [Addendum A.3](#a3) for the
+catalog.)`
+
 ### Task Decomposition
 
 Break the approach into **5-10 implementation tasks** (configurable — the user
