@@ -735,11 +735,31 @@ before presenting the spec to the user:
    that task. The goal is that the user can decide on scope or
    contract changes after reading this synthesis alone.
 
-4. Apply non-controversial fixes (missing surfaces, stale
-   conventions, clear over-decomposition). For judgment calls,
-   present the findings to the user and ask how to proceed.
+4. Sort findings into two groups before applying anything:
 
-5. If changes were made, briefly confirm what changed and why.
+   **Non-controversial fixes** — concrete, mechanical, no design
+   tradeoff. Apply these directly:
+   - missing shared surface entries
+   - stale references after a renumber
+   - verification bullets that are procedure-shaped instead of
+     observable
+   - tasks that are byte-identical in shape to a sibling and
+     should clearly be merged
+
+   **Judgment calls** — anything that involves a tradeoff the
+   user should weigh. Surface these to the user as a single
+   AskUserQuestion (or a short numbered list if there are several),
+   each with the reviewer's argument and the alternative. Do not
+   apply these without explicit user input. Examples:
+   - over-decomposition that *might* be intentional
+   - phase ordering that has a legitimate alternative
+   - a task that one reviewer wants merged and another wants
+     split
+   - missing scope (something the council thinks should be in
+     the spec but isn't)
+
+5. After applying any non-controversial fixes and resolving
+   judgment calls, briefly confirm what changed and why.
 
 ### Post-Design Summary
 
