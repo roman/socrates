@@ -178,6 +178,40 @@ The user can request to revisit a completed phase (e.g., "revisit Delimit",
 This ensures that downstream phases that depended on the now-changed upstream
 content are re-evaluated rather than silently stale.
 
+### Automatic walk-back on detected conflict
+
+The user can also reach a point where their input contradicts a
+decision recorded in an earlier `[COMPLETE]` phase, without
+explicitly asking to revisit it. Examples:
+
+- The user reframes the problem during Direction, contradicting
+  the Delimit problem statement.
+- The user introduces a new constraint during Design that would
+  change the Direction comparison.
+- The user discovers a verified fact during Design that
+  contradicts a Diagnose hypothesis.
+
+When this happens, **do not silently roll forward**. Stop, name
+the conflict, and ask the user before unwinding any markers:
+
+1. Identify which `[COMPLETE]` (or `[APPROVED]`) section the new
+   input contradicts.
+2. Use AskUserQuestion to surface the conflict explicitly:
+   "This contradicts the Delimit problem statement. Should I
+   walk Direction back to `[DRAFT]` and revisit Delimit, or are
+   you adjusting the problem statement deliberately?"
+3. If the user confirms a walk-back, follow the "Going Back"
+   procedure above for the target phase.
+4. If the user says the conflict is intentional and shouldn't
+   reopen earlier phases, log a brief note in the section being
+   currently worked on (e.g., as an "Open assumption" line) so
+   the conflict is visible to readers, and continue.
+
+The point is to never let a `[COMPLETE]` marker become a lie. If
+the spec contradicts itself, the contradiction is acknowledged in
+writing — either by walking back the marker, or by recording the
+deliberate divergence.
+
 ## Step 3 — Describe Phase
 
 **Goal**: Capture the situation as-is, without interpretation or proposed solutions.
