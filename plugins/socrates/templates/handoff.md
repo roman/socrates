@@ -1,7 +1,11 @@
-# Handoff: <topic>
+---
+date: <YYYY-MM-DD HH:MM>
+tasks: [<tk IDs comma-separated, optional>]
+spec: <spec path, optional>
+session_log: <absolute path to ~/.claude/projects/.../<session-id>.jsonl>
+---
 
-**Date**: <YYYY-MM-DD HH:MM>
-**Tasks**: <tk IDs worked on, comma-separated>
+# Handoff: <topic>
 
 ## What Was Done
 
