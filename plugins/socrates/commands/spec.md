@@ -273,6 +273,40 @@ with evidence. The user validates your conclusion, not does the analysis.
 If splitting: create multiple spec directories, write separate Describe sections
 for each, and ask the user which to continue with in this session.
 
+### Ackoff Gate: Is This the Real Problem?
+
+Before writing the Describe section, actively test whether the described
+situation is the real problem or a symptom. Apply these checks:
+
+**1. The Recurrence Test**
+Search the codebase and docs for prior instances of this problem or similar
+issues. Use Grep to find related tickets, TODOs, or past fixes. If this
+problem keeps appearing in different forms, there's likely a deeper cause.
+
+**2. The Upstream Test**
+Trace backward: what causes this situation to occur? If the cause is
+addressable, solving the cause may dissolve the problem entirely. Ask
+the user: "What triggers this situation? Could we prevent it upstream?"
+
+**3. The Residue Test**
+Project forward: if we solved this problem perfectly, what would still be
+broken? If the answer is "nothing related," this is the real problem. If
+the answer is "well, X would still cause Y," then X deserves investigation.
+
+**Applying the gate:**
+
+1. Run the three tests above (search codebase for recurrence, identify
+   upstream causes, project residue).
+2. If all tests pass (no recurrence pattern, no addressable upstream,
+   no residue), proceed to write Describe.
+3. If any test raises a flag, present findings to the user:
+   - What the test found (with evidence)
+   - Whether this changes the problem framing
+   - Options: expand scope to address deeper issue, note it as adjacent
+     context, or proceed with current framing and accept the limitation.
+
+This gate recurs before Direction (see Step 6) as a checkpoint.
+
 ### Writing the Describe Section
 
 When the interview is complete:
@@ -319,9 +353,19 @@ testing. Use AskUserQuestion to probe:
 2. **Form hypotheses** — Based on the situation, propose 2-3 possible root causes.
    Present them to the user and ask which resonates, or if there's another angle.
 
-3. **Test with evidence** — For each hypothesis, ask: "What evidence supports this?
-   What would disprove it?" If the user can't distinguish between hypotheses,
-   explore the codebase or docs to find evidence (use Grep/Read tools).
+3. **Test with evidence (Platt's Strong Inference)** — For each hypothesis,
+   design the question that would *exclude* it, not confirm it. Ask: "What
+   evidence would *disprove* this hypothesis?" Then actively search for that
+   evidence in the codebase.
+
+   The goal is elimination, not confirmation. A hypothesis survives by failing
+   to be disproven, not by accumulating supporting evidence. If you cannot
+   conceive of evidence that would disprove a hypothesis, it's not testable —
+   flag it as an assumption, not a root cause.
+
+   When multiple hypotheses remain after testing, design a distinguishing
+   question: "What observable difference would we expect if hypothesis A is
+   true vs hypothesis B?" Search for that difference.
 
 4. **Identify root causes** — Converge on the actual problems. There may be more
    than one. Distinguish between root causes and symptoms.
@@ -356,6 +400,42 @@ When root causes are identified:
 4. Confirm completion and preview Delimit phase
 
 **Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.
+
+### K-T Completeness Audit
+
+Before proceeding to Delimit, run a Kepner-Tregoe IS/IS-NOT audit on the
+diagnosed problem. This technique bounds the problem by what it IS *and*
+deliberately by what it could be but ISN'T — surfacing distinguishing
+features that confirm root cause identification.
+
+Launch a general-purpose agent (foreground, opus) with this prompt:
+
+> Review the Diagnose section and build an IS/IS-NOT specification for
+> the identified root causes. For each dimension below, state what the
+> problem IS and what it IS-NOT (but plausibly could be):
+>
+> | Dimension | IS | IS-NOT |
+> |-----------|-----|--------|
+> | **What** | What objects/systems are affected? | What similar objects/systems are NOT affected? |
+> | **Where** | Where does the problem occur? | Where does it NOT occur (but could)? |
+> | **When** | When does it happen? | When does it NOT happen (but could)? |
+> | **Extent** | How much/many are affected? | How much/many are NOT affected? |
+>
+> For each IS-NOT cell, explain why that distinction matters — what does
+> it tell us about the root cause? Flag any row where you cannot identify
+> a meaningful IS-NOT; that's a gap in problem characterization.
+>
+> Return: the completed table, any gaps found, and whether the diagnosed
+> root causes are consistent with the IS/IS-NOT boundaries.
+
+If the audit reveals gaps or inconsistencies:
+- Present findings to the user
+- Either return to Diagnose interview to fill gaps, or
+- Note the gaps explicitly in the Diagnose section before proceeding
+
+The K-T audit is optional for simple, well-bounded problems. Use judgment:
+if the problem is already crisp and the root cause obvious, skip to Delimit.
+If there's any ambiguity about scope or boundaries, run the audit.
 
 ### Diagnosed items structure
 
@@ -408,6 +488,28 @@ Using the root causes from Diagnose, draft a problem statement that:
 - Uses **observable terms** — someone should be able to tell if this is solved
 - Does NOT contain a solution — "we need to build X" is a solution, not a problem
 
+### Inversion Test: What Would Make This the Wrong Scope?
+
+Before presenting the problem statement for approval, apply Munger's inversion:
+**"What would guarantee this problem statement is scoped incorrectly?"**
+
+Actively search for:
+
+1. **Too narrow** — Does the statement exclude a root cause that will resurface?
+   Check: would solving this statement leave a diagnosed RC unaddressed?
+
+2. **Too broad** — Does the statement include problems we didn't diagnose?
+   Check: does every word trace back to evidence in Diagnose?
+
+3. **Wrong boundary** — Does the statement cut across a natural seam?
+   Check: would solving this require solving an adjacent problem first?
+
+4. **Solution leak** — Does the statement smuggle in an assumption about *how*
+   to solve it? Check: could this be solved multiple different ways?
+
+If any inversion test fails, revise the statement before presenting it.
+Document what the inversion caught (briefly) so the user sees the refinement.
+
 **Bad examples**:
 - "We need a better auth system" (solution disguised as problem)
 - "The codebase is messy" (vague, no user impact stated)
@@ -453,6 +555,24 @@ user compare them, and choose one. Also capture use cases.
 **Technique**: Contrast Over Linearity — seeing differences between approaches
 triggers thinking that a single proposal never would.
 
+### Ackoff Checkpoint (Recurring)
+
+Before generating approaches, revisit the Ackoff question from Describe:
+**"Are we still solving the right problem?"**
+
+The journey from Describe through Diagnose and Delimit may have surfaced
+information that reframes the original situation. Quick check:
+
+1. Re-read the approved Delimit statement
+2. Compare it to what you now know from the K-T audit and diagnosis
+3. If the problem statement still feels like the real problem, proceed
+4. If it now feels like a symptom or wrong framing, surface this to the user
+   before generating approaches — it's cheaper to revisit Delimit now than
+   to design solutions to the wrong problem
+
+This is a lightweight checkpoint, not a full gate. If nothing feels off,
+proceed without asking the user.
+
 ### Generating Approaches
 
 1. **Always include Status Quo as A1** — what happens if we do nothing?
@@ -475,7 +595,17 @@ triggers thinking that a single proposal never would.
    - Key tradeoffs (what you gain, what you give up)
    - Rough scope signal (small/medium/large — not time estimates)
 
-5. Present approaches to the user and ask for initial reactions before building
+5. **Inversion test per approach** — Before presenting, ask of each approach:
+   "What would guarantee this approach fails?" Identify:
+   - **Assumptions that must hold** — what does this approach take for granted?
+   - **Failure modes** — how could this go wrong even if executed well?
+   - **Dependencies** — what external factors could break this?
+
+   If the inversion reveals a fatal flaw (an assumption that's unlikely to hold,
+   a failure mode with no mitigation), either revise the approach to address it
+   or note it prominently in the tradeoffs. Don't hide failure modes in optimism.
+
+6. Present approaches to the user and ask for initial reactions before building
    the decision matrix.
 
 ### Decision Matrix
