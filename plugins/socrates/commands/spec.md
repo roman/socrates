@@ -1,5 +1,8 @@
 ---
 description: Design a feature through the Design in Practice journey (Describe → Diagnose → Delimit → Direction → Design)
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebFetch, AskUserQuestion, Task
+model: opus
+effort: high
 ---
 
 # /spec — Design in Practice Journey
@@ -8,1027 +11,190 @@ Walk the user through a structured design process that produces a spec overview
 and individual task files. Each phase builds on the previous one, with a strict
 gate at Delimit requiring explicit user approval.
 
+## Quick Reference
+
+**Phases**: Describe → Diagnose → Delimit (gate) → Direction → Design
+
+**Markers**: `[DRAFT]` (incomplete), `[COMPLETE]` (done), `[APPROVED]` (Delimit only)
+
+**Templates**:
+- Overview: `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/_overview.md`
+- Task: `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`
+
+**Phase details**: See `spec-support/phases/*.md`
+**Patterns**: See `spec-support/patterns/*.md`
+
 ## Voice and structure
 
-All prose this command generates (descriptions, hypotheses, approach
-write-ups, task outcomes, etc.) follows the voice and structure
-conventions in `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/..}/voice.md`.
-Read that file once at the start of any spec session and apply its
-guidance throughout. The conventions cover prose-first structure,
-the Technical Addendum pattern, the RC/NC/AC ID convention,
-confidence labels, AI-ism reduction, and how to mark deliverables
-and chosen approaches.
+All prose this command generates follows the conventions in
+`${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/..}/voice.md`. Read that file once
+at the start of any spec session. Key rules: prose-first structure, Technical
+Addendum for file paths/hashes, RC/NC/AC typed IDs, confidence labels on claims.
 
-## Pacing principle: do not rush acceptance
+## Pacing principle
 
-This command exists to slow thinking down before doing. The user
-will sit with drafts, re-read them in their own editor, change
-their mind, and approve work on their own clock — sometimes hours
-or days after it was written. Your job is to present state and
-options neutrally; never push toward approval.
+This command exists to slow thinking down before doing. The user will sit with
+drafts, re-read them, change their mind, and approve on their own clock.
 
-Concretely:
-
-- Do **not** add "Approved" or "Ready" framing to options
-  presented at phase boundaries (the Delimit gate is the only
-  place explicit approval is solicited, and even there the
-  options are neutral: Approved / Needs refinement / Wrong
-  problem).
-- Do **not** mark "approve and pour" choices as **(Recommended)**
-  in `AskUserQuestion`. Acceptance is the user's call.
-- Do **not** write closing summaries that imply urgency
-  ("ready for /pour", "spec is approved-shape", etc.). Confirm
-  what was written, list options the user has, and stop.
-- After Design completes and task files exist, the user may
-  review on their own time before flipping `status: draft` →
-  `status: approved`. Do not nudge that flip.
+- Do NOT add "Approved" or "Ready" framing to phase boundary options
+- Do NOT mark approval options as "(Recommended)"
+- Do NOT write closing summaries implying urgency
+- After Design completes, the user reviews at their own pace
 
 When in doubt, present and stop.
 
-## Arguments
+## Entry Points
 
-The user may provide:
-- **A spec name**: `/spec auth-redesign` — creates `docs/specs/YYYY-MM-DD-auth-redesign/`
-  (today's date), or resumes any existing `docs/specs/*-auth-redesign/` directory
-- **A task file path**: `/spec docs/specs/2026-04-06-auth-redesign/a1b2-setup-middleware.md` — enters
-  task review mode (see Task Review section)
-- **A source document**: `/spec --source PRD.md` or `/spec --source https://...` — reads
-  the document first, pre-fills what it can, then interviews for gaps (see Source Doc Mode)
-- **No arguments**: lists existing specs and asks which to resume, or prompts for a new name
+When invoked, determine the mode from arguments:
 
-## Step 1 — Spec Discovery and Setup
+| Argument | Mode | Action |
+|----------|------|--------|
+| None | Discovery | List existing specs, ask resume or create new |
+| `<spec-name>` | Resume/Create | Resume existing or create new spec |
+| `<task-file-path>` | Task Review | Process review feedback on task file |
+| `--source <path-or-url>` | Source Doc | Pre-fill from external document |
+| `--status` | Status | Show overview of all specs |
 
-### If no arguments provided
+### Discovery Mode (no arguments)
 
 1. Check `docs/specs/` for existing spec directories
-2. If specs exist, use AskUserQuestion to ask: resume an existing spec, or create new?
-3. If creating new: run the "Check open gaps" subsection below, then
-   use AskUserQuestion to either:
-   - Collect a short kebab-case name now, **OR**
-   - Defer naming until after the Describe phase (see "Deferred naming" below).
-   Naming a problem before articulating it is hard; defer is the right
-   choice when the user cannot yet phrase the concern crisply.
+2. If specs exist, use AskUserQuestion: resume existing or create new?
+3. If creating new: run "Check open gaps", then ask for name or defer naming
 
-### If spec name provided
+### Resume/Create Mode (spec name provided)
 
-1. Check if any `docs/specs/*-<name>/_overview.md` exists (date-prefixed directories)
-2. If yes: resume mode (go to Step 2)
-3. If no: run the "Check open gaps" subsection below, then create the
-   spec directory and overview from template
+1. Check if `docs/specs/*-<name>/_overview.md` exists
+2. If yes: enter Resume flow (see `spec-support/patterns/resume-detection.md`)
+3. If no: run "Check open gaps", create spec directory from template
 
-### Creating a new spec
+### Task Review Mode (task file path)
 
-Spec directories are created with a date prefix for chronological ordering and
-disambiguation. The date is the spec creation date.
+See `spec-support/patterns/task-review-mode.md`
+
+### Source Doc Mode (--source flag)
+
+See `spec-support/patterns/source-doc-mode.md`
+
+## Creating a New Spec
+
+Spec directories use date prefix for ordering: `docs/specs/YYYY-MM-DD-<name>/`
 
 ```bash
 TODAY=$(date +%Y-%m-%d)
 mkdir -p "docs/specs/${TODAY}-<name>"
 ```
 
-Copy the overview template and fill in frontmatter:
-- Read the template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/_overview.md`
-- Set `title:` to the spec name (human-readable, derived from kebab-case)
-- Set `created:` to today's date (YYYY-MM-DD)
-- Leave `epic:` and `archived:` blank (populated later by `/pour` and PM archival)
-- Set `delimit_approved: false`
-- Write to `docs/specs/${TODAY}-<name>/_overview.md`
+Copy overview template and fill frontmatter:
+- `title:` — human-readable name
+- `created:` — today's date (YYYY-MM-DD)
+- `epic:` — leave blank (populated by `/pour`)
+- `archived:` — leave blank
+- `delimit_approved: false`
 
 ### Check open gaps (new spec only)
 
-Before any new spec is created (named or deferred path), scan
-`docs/gaps/` for `*.md` files. Skip this subsection silently when
-the directory is empty or absent.
+Before creating any new spec, scan `docs/gaps/` for `*.md` files. Skip silently
+if empty or absent.
 
-When gaps are present:
-
-1. Present each gap to the user as a one-line summary (title +
-   first sentence of the body).
-2. Use AskUserQuestion to ask whether the new spec is addressing
-   one of these gaps, or is independent work. Offer the gap titles
-   as options plus an "independent work" option.
-3. **If a gap is being addressed**:
-   - Fold the gap's body — situation, why-it-matters, suggested
-     resolution — into the Describe phase as pre-existing context.
-     The user can confirm or expand on it during the interview;
-     this avoids re-discovering ground the gap already covered.
-   - Once the spec directory exists (immediately in the named path,
-     after Describe in the deferred path), delete the gap file with
-     `git rm docs/gaps/<filename>.md`. Git history preserves the
-     gap as the audit trail; the spec is now its forward-looking
-     home.
-4. **If independent work**: continue with the normal Step 1 flow.
-
-A gap file's existence is its lifecycle: present means open, absent
-means addressed. No status field, no archive directory, no
-close-side sweep responsibility.
+When gaps present:
+1. Present each gap as one-line summary (title + first sentence)
+2. Ask if new spec addresses a gap or is independent work
+3. If addressing gap: fold body into Describe as context, then `git rm` the gap file
+4. If independent: continue normal flow
 
 ### Deferred naming
 
-When the user opts to defer naming until after Describe, do **not** create
-the spec directory or overview file yet. Instead:
-
-1. Hold the spec state in conversation memory only. Run Step 3 (Describe
-   phase) interview-driven — drafts, edits, and approvals happen in the
-   chat without persisting to disk.
-2. Once Describe is complete (user-approved), prompt the user for a short
-   kebab-case name informed by what was discussed. Suggesting 2–4
-   candidate names derived from the situation is helpful; offer them via
-   AskUserQuestion alongside an "I'll type my own" option.
-3. With the name set, follow the "Creating a new spec" steps above:
-   create the directory, copy the template, fill the frontmatter, and
-   write the overview file. The Describe section lands with the
-   user-approved content already in place and its marker set to
-   `[COMPLETE]`; all other sections remain `[DRAFT]` per the template.
-4. Continue with Step 4 (Diagnose) as usual.
-
-This avoids forcing the user to name a problem they have not yet
-articulated, while still producing a normal spec directory once the
-shape of the work is clear.
-
-## Step 2 — Resume Detection and Navigation
-
-Read the existing `_overview.md` and detect the current phase by scanning section
-headers for phase markers:
-
-- `[DRAFT]` — phase not yet completed
-- `[COMPLETE]` — phase done
-- `[APPROVED]` — Delimit phase approved by user
-
-Also check frontmatter `delimit_approved:` field.
-
-**Resume logic**: Find the first section with `[DRAFT]` marker. That is the
-current phase. Skip all `[COMPLETE]`/`[APPROVED]` phases.
-
-Tell the user which phase you're resuming at and give a brief recap of what's
-been completed so far (summarize completed sections in 1-2 sentences each).
-
-### Going Back
-
-The user can request to revisit a completed phase (e.g., "revisit Delimit",
-"go back to Describe"). When this happens:
-
-1. Set the target phase's header marker to `[DRAFT]`
-2. Set ALL subsequent phase markers to `[DRAFT]`
-3. If going back to or before Delimit: set `delimit_approved: false` in frontmatter
-4. Preserve the previous content of each reset phase under a
-   `### Previous (superseded)` sub-heading within that section
-5. Resume the journey from the target phase
-
-This ensures that downstream phases that depended on the now-changed upstream
-content are re-evaluated rather than silently stale.
-
-### Automatic walk-back on detected conflict
-
-The user can also reach a point where their input contradicts a
-decision recorded in an earlier `[COMPLETE]` phase, without
-explicitly asking to revisit it. Examples:
-
-- The user reframes the problem during Direction, contradicting
-  the Delimit problem statement.
-- The user introduces a new constraint during Design that would
-  change the Direction comparison.
-- The user discovers a verified fact during Design that
-  contradicts a Diagnose hypothesis.
-
-When this happens, **do not silently roll forward**. Stop, name
-the conflict, and ask the user before unwinding any markers:
-
-1. Identify which `[COMPLETE]` (or `[APPROVED]`) section the new
-   input contradicts.
-2. Use AskUserQuestion to surface the conflict explicitly:
-   "This contradicts the Delimit problem statement. Should I
-   walk Direction back to `[DRAFT]` and revisit Delimit, or are
-   you adjusting the problem statement deliberately?"
-3. If the user confirms a walk-back, follow the "Going Back"
-   procedure above for the target phase.
-4. If the user says the conflict is intentional and shouldn't
-   reopen earlier phases, log a brief note in the section being
-   currently worked on (e.g., as an "Open assumption" line) so
-   the conflict is visible to readers, and continue.
-
-The point is to never let a `[COMPLETE]` marker become a lie. If
-the spec contradicts itself, the contradiction is acknowledged in
-writing — either by walking back the marker, or by recording the
-deliberate divergence.
-
-## Step 3 — Describe Phase
-
-**Goal**: Capture the situation as-is, without interpretation or proposed solutions.
-
-**Technique**: Reflective Inquiry — surface what the user knows, what they don't
-know, and what context matters.
-
-### Interview Process
-
-Use AskUserQuestion iteratively to understand the situation. Start with these
-orienting questions (adapt based on answers, don't ask robotically):
-
-1. **"What's the situation?"** — What is happening right now? What triggered this
-   work? Get the context and circumstances.
-
-2. **"What do you know?"** — What facts, constraints, or prior decisions are
-   established? What has been tried before?
-
-3. **"What don't you know?"** — What are the open questions? What would you need
-   to find out? Where is the uncertainty?
-
-4. **"Who is affected?"** — Who are the users/stakeholders? How does the current
-   situation impact them?
-
-**Guidelines**:
-- Ask ONE question at a time via AskUserQuestion
-- Listen for implicit assumptions — note them but don't challenge yet (that's Diagnose)
-- If the user provides a wall of text, reflect back a structured summary and ask
-  if it captures things correctly
-- Do NOT propose solutions or interpret problems — just capture the landscape
-- 3-6 questions is typical; stop when you have a clear picture of the situation
-
-### If source document provided
-
-Instead of interviewing from scratch:
-1. Read the source document (use Read tool for files, WebFetch for URLs)
-2. Extract and structure the situation description from the document
-3. Present the extracted description to the user for confirmation
-4. Ask clarifying questions for any gaps (missing context, unclear stakeholders, etc.)
-
-### Scope Triage (multi-issue sessions)
-
-When the user surfaces multiple distinct issues during the Describe interview,
-investigate whether they share a root cause before writing the section:
-
-1. **Name the candidate issues** — list them explicitly for the user.
-2. **Hypothesize a link** — could one cause or amplify the other? State the
-   hypothesis concretely (e.g., "duplicate events inflate the synthesis input,
-   causing verbose output").
-3. **Test the link** — examine actual data (event logs, output files, code
-   paths). Look for shared code, shared data flow, or causal chains.
-4. **Recommend** — if the issues have independent root causes and independent
-   fixes, recommend separate specs and explain why. If they share a root cause,
-   keep them in one spec. Present your evidence and let the user confirm.
-
-**Do not ask the user whether to split** — investigate first, then recommend
-with evidence. The user validates your conclusion, not does the analysis.
-
-If splitting: create multiple spec directories, write separate Describe sections
-for each, and ask the user which to continue with in this session.
-
-### Ackoff Gate: Is This the Real Problem?
-
-Before writing the Describe section, actively test whether the described
-situation is the real problem or a symptom. Apply these checks:
-
-**1. The Recurrence Test**
-Search the codebase and docs for prior instances of this problem or similar
-issues. Use Grep to find related tickets, TODOs, or past fixes. If this
-problem keeps appearing in different forms, there's likely a deeper cause.
-
-**2. The Upstream Test**
-Trace backward: what causes this situation to occur? If the cause is
-addressable, solving the cause may dissolve the problem entirely. Ask
-the user: "What triggers this situation? Could we prevent it upstream?"
-
-**3. The Residue Test**
-Project forward: if we solved this problem perfectly, what would still be
-broken? If the answer is "nothing related," this is the real problem. If
-the answer is "well, X would still cause Y," then X deserves investigation.
-
-**Applying the gate:**
-
-1. Run the three tests above (search codebase for recurrence, identify
-   upstream causes, project residue).
-2. If all tests pass (no recurrence pattern, no addressable upstream,
-   no residue), proceed to write Describe.
-3. If any test raises a flag, present findings to the user:
-   - What the test found (with evidence)
-   - Whether this changes the problem framing
-   - Options: expand scope to address deeper issue, note it as adjacent
-     context, or proceed with current framing and accept the limitation.
-
-This gate recurs before Direction (see Step 6) as a checkpoint.
-
-### Writing the Describe Section
-
-When the interview is complete:
-
-1. Draft the `## Describe` section content — a structured narrative covering:
-   - The current situation and context
-   - Known facts and constraints
-   - Open questions and uncertainties
-   - Stakeholders and impact
-2. Present the draft to the user via a text response (not AskUserQuestion)
-3. Ask if they want to adjust anything
-4. Write the final version to the overview file:
-   - Replace the `## Describe [DRAFT]` section content with the narrative
-   - Update the marker to `## Describe [COMPLETE]`
-5. Confirm completion and preview what comes next (Diagnose phase)
-
-**Important**: Use the Edit tool to update only the Describe section. Do NOT
-rewrite the entire file — other sections must remain as-is with their `[DRAFT]`
-markers.
-
-## Step 4 — Diagnose Phase
-
-**Goal**: Identify the real problem beneath the situation. Challenge surface-level
-assertions and test hypotheses.
-
-**Technique**: Scientific Method — form hypotheses about what's wrong, test them
-against evidence, reject the ones that don't hold up.
-
-### Core Principle
-
-"We don't have feature X" is NEVER a valid problem statement. Always dig deeper:
-- Why is feature X needed? What user objective is unmet?
-- What is the actual impact of the current situation?
-- Is the assumed cause actually the cause?
-
-### Interview Process
-
-Start from the Describe section. Identify assertions and assumptions that need
-testing. Use AskUserQuestion to probe:
-
-1. **Challenge surface assertions** — For each "we need X" statement, ask: "What
-   happens to users because X doesn't exist? What are they trying to accomplish?"
-
-2. **Form hypotheses** — Based on the situation, propose 2-3 possible root causes.
-   Present them to the user and ask which resonates, or if there's another angle.
-
-3. **Test with evidence (Platt's Strong Inference)** — For each hypothesis,
-   design the question that would *exclude* it, not confirm it. Ask: "What
-   evidence would *disprove* this hypothesis?" Then actively search for that
-   evidence in the codebase.
-
-   The goal is elimination, not confirmation. A hypothesis survives by failing
-   to be disproven, not by accumulating supporting evidence. If you cannot
-   conceive of evidence that would disprove a hypothesis, it's not testable —
-   flag it as an assumption, not a root cause.
-
-   When multiple hypotheses remain after testing, design a distinguishing
-   question: "What observable difference would we expect if hypothesis A is
-   true vs hypothesis B?" Search for that difference.
-
-4. **Identify root causes** — Converge on the actual problems. There may be more
-   than one. Distinguish between root causes and symptoms.
-
-**Guidelines**:
-- Be respectfully skeptical — the first explanation is rarely the deepest one
-- If the user says "we just need to build X", redirect: "Let's make sure X
-  solves the right problem before we design it"
-- Look for problems behind problems — technical debt, missing abstractions,
-  process gaps, unclear ownership
-- Note any constraints discovered (timeline, compatibility, team capacity)
-- 3-5 questions is typical for this phase
-
-### Writing the Diagnose Section
-
-When root causes are identified:
-
-1. Draft the `## Diagnose` section content — structured as:
-   - Hypotheses considered (what was tested)
-   - Evidence for/against each, with explicit **status** per hypothesis:
-     **Confirmed** (tested with evidence), **Rejected** (disproved),
-     or **Unconfirmed** (plausible but not yet testable). Never present
-     an unconfirmed hypothesis as a root cause — label it clearly and
-     note what evidence would confirm or reject it.
-   - A `### Diagnosed items` subsection containing the typed-prefix
-     items the rest of the spec will reference. See "Diagnosed items
-     structure" below.
-   - Symptoms vs causes (what looked like the problem vs what actually is)
-2. Present draft to user for review
-3. Write to overview: replace `## Diagnose [DRAFT]` content, update marker to
-   `## Diagnose [COMPLETE]`
-4. Confirm completion and preview Delimit phase
-
-**Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.
-
-### K-T Completeness Audit
-
-Before proceeding to Delimit, run a Kepner-Tregoe IS/IS-NOT audit on the
-diagnosed problem. This technique bounds the problem by what it IS *and*
-deliberately by what it could be but ISN'T — surfacing distinguishing
-features that confirm root cause identification.
-
-Launch a general-purpose agent (foreground, opus) with this prompt:
-
-> Review the Diagnose section and build an IS/IS-NOT specification for
-> the identified root causes. For each dimension below, state what the
-> problem IS and what it IS-NOT (but plausibly could be):
->
-> | Dimension | IS | IS-NOT |
-> |-----------|-----|--------|
-> | **What** | What objects/systems are affected? | What similar objects/systems are NOT affected? |
-> | **Where** | Where does the problem occur? | Where does it NOT occur (but could)? |
-> | **When** | When does it happen? | When does it NOT happen (but could)? |
-> | **Extent** | How much/many are affected? | How much/many are NOT affected? |
->
-> For each IS-NOT cell, explain why that distinction matters — what does
-> it tell us about the root cause? Flag any row where you cannot identify
-> a meaningful IS-NOT; that's a gap in problem characterization.
->
-> Return: the completed table, any gaps found, and whether the diagnosed
-> root causes are consistent with the IS/IS-NOT boundaries.
-
-If the audit reveals gaps or inconsistencies:
-- Present findings to the user
-- Either return to Diagnose interview to fill gaps, or
-- Note the gaps explicitly in the Diagnose section before proceeding
-
-The K-T audit is optional for simple, well-bounded problems. Use judgment:
-if the problem is already crisp and the root cause obvious, skip to Delimit.
-If there's any ambiguity about scope or boundaries, run the audit.
-
-### Diagnosed items structure
-
-Each item in the `### Diagnosed items` subsection carries a typed
-prefixed identifier so the decision matrix and downstream phases
-can reference it precisely:
-
-- **RC** — Root Cause. A real reason the problem exists.
-- **NC** — Non-Cause. Looked like a cause; turned out not to be.
-  Always include an "Implication for Direction" line (e.g.,
-  "approaches should not be scored favorably for solving this").
-- **AC** — Adjacent Constraint. A rule from outside this spec
-  that any approach must respect.
-
-Number each prefix sequentially (RC1, RC2, NC1, AC1, ...). Each
-item gets a stable HTML anchor immediately above its heading so
-the matrix's links don't break when headings are reworded:
-
-```markdown
-<a id="rc1"></a>
-#### RC1 — Mesh safety enforced at the wrong altitude
-
-<Explanation paragraph.>
-```
-
-The `### Diagnosed items` subsection starts with the legend table
-from `_overview.md` (the four prefixes: RC, NC, AC, ID). Keep it
-as a table; it's where readers learn what the prefixes mean before
-they hit the matrix in Direction.
-
-**Do not** present unconfirmed hypotheses as RCs. An unconfirmed
-hypothesis stays in the Hypotheses subsection above with its
-status; promote to RC only after evidence confirms it.
-
-## Step 5 — Delimit Phase (STRICT GATE)
-
-**Goal**: Produce a crisp, 1-2 sentence problem statement that the user explicitly
-approves. This is the only hard gate — do NOT proceed without approval.
-
-**Technique**: Precise Language — every word must earn its place. Vague terms
-like "improve", "better", "optimize" must be replaced with observable specifics.
-
-### Drafting the Problem Statement
-
-Using the root causes from Diagnose, draft a problem statement that:
-
-- States the **unmet user objective** (what users can't do or struggle with)
-- States the **cause** (why the objective is unmet)
-- Is **1-2 sentences** — if it takes more, you haven't delimited enough
-- Uses **observable terms** — someone should be able to tell if this is solved
-- Does NOT contain a solution — "we need to build X" is a solution, not a problem
-
-### Inversion Test: What Would Make This the Wrong Scope?
-
-Before presenting the problem statement for approval, apply Munger's inversion:
-**"What would guarantee this problem statement is scoped incorrectly?"**
-
-Actively search for:
-
-1. **Too narrow** — Does the statement exclude a root cause that will resurface?
-   Check: would solving this statement leave a diagnosed RC unaddressed?
-
-2. **Too broad** — Does the statement include problems we didn't diagnose?
-   Check: does every word trace back to evidence in Diagnose?
-
-3. **Wrong boundary** — Does the statement cut across a natural seam?
-   Check: would solving this require solving an adjacent problem first?
-
-4. **Solution leak** — Does the statement smuggle in an assumption about *how*
-   to solve it? Check: could this be solved multiple different ways?
-
-If any inversion test fails, revise the statement before presenting it.
-Document what the inversion caught (briefly) so the user sees the refinement.
-
-**Bad examples**:
-- "We need a better auth system" (solution disguised as problem)
-- "The codebase is messy" (vague, no user impact stated)
-- "Performance needs to be improved" (no specifics)
-
-**Good examples**:
-- "Users abandon checkout when page load exceeds 3s on mobile because the
-  product image pipeline blocks rendering"
-- "New team members take 2+ weeks to ship their first PR because the test
-  suite requires undocumented local dependencies"
-
-### Approval Gate
-
-1. Present the draft problem statement to the user
-2. Use AskUserQuestion with options:
-   - **"Approved"** — problem statement is crisp and correct
-   - **"Needs refinement"** — close but wording needs adjustment
-   - **"Wrong problem"** — go back to Diagnose
-3. If "Needs refinement": ask what to change, redraft, present again
-4. If "Wrong problem": set Diagnose back to `[DRAFT]`, return to Step 4
-5. If "Approved": write to overview and proceed
-
-### Writing the Delimit Section
-
-On approval:
-
-1. Write the problem statement to the `## Delimit` section
-2. Update marker to `## Delimit [APPROVED]`
-3. Update frontmatter: set `delimit_approved: true`
-4. Confirm and preview Direction phase
-
-**Both the marker AND the frontmatter must be set.** Resume detection checks
-`delimit_approved:` in frontmatter as the authoritative signal.
-
-**Important**: Use Edit tool for targeted updates. The frontmatter change and
-section change are two separate edits.
-
-## Step 6 — Direction Phase
-
-**Goal**: Generate multiple approaches to solving the delimited problem, help the
-user compare them, and choose one. Also capture use cases.
-
-**Technique**: Contrast Over Linearity — seeing differences between approaches
-triggers thinking that a single proposal never would.
-
-### Ackoff Checkpoint (Recurring)
-
-Before generating approaches, revisit the Ackoff question from Describe:
-**"Are we still solving the right problem?"**
-
-The journey from Describe through Diagnose and Delimit may have surfaced
-information that reframes the original situation. Quick check:
-
-1. Re-read the approved Delimit statement
-2. Compare it to what you now know from the K-T audit and diagnosis
-3. If the problem statement still feels like the real problem, proceed
-4. If it now feels like a symptom or wrong framing, surface this to the user
-   before generating approaches — it's cheaper to revisit Delimit now than
-   to design solutions to the wrong problem
-
-This is a lightweight checkpoint, not a full gate. If nothing feels off,
-proceed without asking the user.
-
-### Generating Approaches
-
-1. **Always include Status Quo as A1** — what happens if we do nothing?
-   This is the baseline all other approaches are measured against.
-
-2. Generate 2-3 additional approaches that address the problem statement from
-   different angles. Number them sequentially: A2, A3, A4. Don't number
-   by phase, status, or scope; don't leave gaps. If an approach is
-   later dropped, renumber. Each approach gets a short tag describing
-   its center of gravity (e.g., "A2 — VAP as safety surface", not
-   "A2 — Add a VAP").
-
-3. Vary approaches meaningfully:
-   - Different technical strategies (not just variations of the same idea)
-   - Different scope/ambition levels where applicable
-   - Different tradeoff profiles (speed vs correctness, simplicity vs flexibility)
-
-4. For each approach, describe:
-   - What it does (1-2 sentences)
-   - Key tradeoffs (what you gain, what you give up)
-   - Rough scope signal (small/medium/large — not time estimates)
-
-5. **Inversion test per approach** — Before presenting, ask of each approach:
-   "What would guarantee this approach fails?" Identify:
-   - **Assumptions that must hold** — what does this approach take for granted?
-   - **Failure modes** — how could this go wrong even if executed well?
-   - **Dependencies** — what external factors could break this?
-
-   If the inversion reveals a fatal flaw (an assumption that's unlikely to hold,
-   a failure mode with no mitigation), either revise the approach to address it
-   or note it prominently in the tradeoffs. Don't hide failure modes in optimism.
-
-6. Present approaches to the user and ask for initial reactions before building
-   the decision matrix.
-
-### Decision Matrix
-
-If the choice is non-trivial (more than 2 viable approaches), build a decision
-matrix:
-
-- **Header**: The problem statement from Delimit
-- **Columns**: Each approach (including status quo as A1)
-- **Rows**: Evaluation criteria. Each row's "Criterion" cell is
-  prefixed with a typed link back to the Diagnose section, e.g.
-  `[[RC1](#rc1)] Reduces opaque sync failures` for criteria that
-  trace to a diagnosed item. Implementation concerns (effort,
-  risk, reversibility, time-to-value) use `[ID]` as the prefix
-  instead of an item ID. The legend that defines the prefixes
-  lives in Diagnose's `### Diagnosed items` subsection.
-- **Cells**: 🟢 (strong), 🟡 (adequate), 🔴 (weak), ⚪ (not applicable),
-  with a brief explanation alongside the indicator.
-
-**Anti-patterns to avoid**:
-- All-green columns → rationalization, not analysis. Find distinguishing criteria.
-- Criteria that don't differentiate → remove them, they add noise.
-- Solution-biased criteria → criteria should matter regardless of which approach wins.
-- Criteria with no `[XX]` prefix → either it traces to a Diagnose
-  item (give it the right RC/NC/AC tag) or it's an implementation
-  concern (`[ID]`). Untagged criteria signal the matrix is
-  drifting away from the diagnosis.
-
-**Render the matrix in the chat session BEFORE writing it to the spec file.**
-Markdown table notation is illegible in raw form — the user needs to see it
-rendered to evaluate it. Decision matrices commonly trigger technical
-discussion, criterion reassessment, or new approach ideas; capturing those
-before persisting avoids file churn. Only write to the overview file once
-the user has reviewed the rendered draft and confirmed direction. Discuss
-any surprising results before asking for a choice.
-
-### Choosing an Approach
-
-Use AskUserQuestion to ask which approach the user wants to pursue.
-Record: which approach and the user's rationale for choosing it.
-
-The chosen approach gets a blockquote in the `### Chosen Approach`
-subsection so it stands out visually:
-
-```markdown
-> **Chosen: A2 — <approach name>.** <Short rationale that ties the
-> choice back to the diagnosed items it solves and the ones it
-> deliberately leaves out.>
-```
-
-The blockquote may extend across multiple lines if the rationale
-needs more than one sentence.
-
-### Use Cases
-
-After the approach is chosen, draft use cases as a three-column table:
-Actor / Intent / Outcome.
-
-- Focus on **user intentions**, not implementation: "I wish I could..." not
-  "the system will..."
-- 3-7 use cases is typical
-
-Present use cases to user for confirmation.
-
-### Writing the Direction Section
-
-1. Write all subsections to `## Direction`:
-   - `### Approaches` — all approaches with descriptions
-   - `### Decision Matrix` — if applicable
-   - `### Chosen Approach` — selection and rationale
-   - `### Use Cases` — confirmed use cases
-2. Update marker to `## Direction [COMPLETE]`
-3. Confirm and preview Design phase
-
-**Important**: Use Edit tool. Replace only the Direction section content.
-
-## Step 7 — Design Phase
-
-**Goal**: Break the chosen approach into concrete, implementable task files.
-Research the codebase to ground tasks in reality.
-
-### Codebase Research (parallel sub-agents)
-
-Before decomposing, gather context. Launch parallel Agent sub-agents to:
-
-1. **Codebase exploration** — Use an Explore agent to find:
-   - Existing patterns relevant to the chosen approach
-   - Integration points the tasks will touch
-   - Conventions to follow (naming, file organization, testing patterns)
-   - Potential conflicts with in-progress work
-
-2. **Technology research** (if needed) — Use a general-purpose agent to:
-   - Look up API docs or library capabilities
-   - Verify assumptions about tools/frameworks
-   - Check for known issues or limitations
-
-3. **Shared surfaces identification** — While exploring, explicitly identify
-   cross-task touchpoints: files, type names, config keys, or sentinel values
-   that more than one task will read or write. Name them by surface only.
-   **Name the surface, do not pin the shape.** Do not record type definitions,
-   literal values, or concrete config keys at the overview level — those are
-   discovered by the implementer of the task that owns the surface. If you
-   catch yourself wanting to write a shape, that content belongs in a task
-   file, not the overview.
-
-Synthesize findings into the `### Context` subsection of the Design section.
-This context informs the task decomposition.
-
-When any Adjacent Constraint (AC) from Diagnose dictates a specific
-encoding (where the constraint must live in the design — a chart
-conditional, a config-file structure, an interface boundary), call
-that out explicitly in the Context. The Direction phase committed
-to *honoring* the constraint; the Context translates that into
-*where it lands*.
-
-If the codebase research surfaced concrete file paths, line
-numbers, or quantitative findings (e.g., "this file is ~400 lines,
-60% of which is incidental drift"), put the prose claim in Context
-and the supporting detail in the `## Technical Addendum` section
-at the end of `_overview.md`. Reference the Addendum from the
-Context with an anchored link: `(See [Addendum A.3](#a3) for the
-catalog.)`
-
-### Task Decomposition
-
-Break the approach into **5-10 implementation tasks** (configurable — the user
-can request more or fewer granularity).
-
-**Sizing rule**: one task ≈ one outcome slice — a discrete, verifiable change
-in system behaviour or project state. Size by what the implementer must
-*achieve*, not by how many files or commits the work touches. If a task
-describes two independently verifiable outcomes, split it. If several tasks
-target the same outcome and cannot be verified separately, merge them.
-
-For each task:
-
-1. **Generate an ID**: ordinal prefix (1-based execution order) +
-   short hash (first 4 chars of sha256 of title) + human suffix
-   (2-3 word kebab-case). Example: `1-a1b2-setup-middleware`.
-   The ordinal is assigned from the surface-derived topo order:
-   parse the `#### Shared Surfaces` section, derive edges from
-   `(surface owner)` markers (consumers depend on owners), and
-   topo-sort. Tasks with no incoming edges get the lowest ordinals.
-   The ordinal is a readability hint only — `/pour` re-derives the
-   same order independently from Shared Surfaces at pour time.
-   ```bash
-   echo -n "Setup auth middleware" | sha256sum | cut -c1-4
-   ```
-
-2. **Create the task file** at `docs/specs/<name>/<id>.md` using the task
-   template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`.
-   The filename is the full id including the ordinal prefix, so
-   `ls` on the spec directory shows tasks in execution order.
-
-3. **Fill in**:
-   - `id:` — generated ID
-   - `status: draft`
-   - `priority:` — 0 (highest) to 4, based on surface-derived order and criticality
-   - `category:` — functional, style, infrastructure, or documentation
-   - `revisions: 0` — review iterations start at zero; Task Review Mode
-     bumps this each time it processes `<review>` feedback
-   - Title — clear, action-oriented (starts with a verb)
-   - `<outcome>` — what the implementer must achieve and what changes for
-     the system or project when done. State the target, not the procedure.
-     Concrete file-path grounding belongs in the overview's Context section,
-     not here — the implementer discovers the how.
-   - `<verification>` — observable criteria for confirming the outcome is met
-   - `<review>` — leave empty
-
-Coupling between tasks is expressed entirely through the `#### Shared Surfaces`
-section of the overview, not through per-task frontmatter. `/pour` derives the
-ordering edges from there at pour time.
-
-### Open Questions During Design
-
-If unresolved scope or design questions surface while drafting Design,
-**resolve them with the human driver via AskUserQuestion before writing
-to the file**. Do not silently persist an "Open questions" section.
-
-After the user answers, fold the resolution into the relevant Design
-subsection (or into a "Resolved scope decisions" list). Only write an
-"Open questions" section if the user explicitly says they want to defer
-the question and keep it visible in the spec.
-
-### Writing the Design Section
-
-1. Write `### Context` with codebase research findings
-2. Write `### Tasks` with a summary table:
-   | ID | Title | Priority | Category |
-3. Write `### Execution Order` as a topo-sorted bulleted narrative, produced
-   **after** the dependency graph is known. Each line links to the task file
-   (by id) and gives one sentence of purpose. Tasks with no dependencies come
-   first; downstream tasks follow. This is the rendered reading order a human
-   would use to walk the spec.
-4. Write `### Glossary` with terms used consistently in the tasks, and
-   populate a `#### Shared Surfaces` subsection listing the surfaces
-   identified during research. Each entry is a narrative line: the surface
-   name, the linked task ids that touch it, and one sentence explaining why
-   the coupling matters. Example:
-   > **`config.yaml` `retry` block** — touched by
-   > [1-a1b2](1-a1b2-setup.md) (surface owner) and
-   > [3-c4d5](3-c4d5-worker.md); the worker reads retry policy the setup
-   > task writes, so the setup task must land first.
-
-   When a surface has a natural owner — the task that creates or first
-   writes it — annotate that task's link with `(surface owner)`. Other
-   linked tasks are readers and will be ordered after the owner. If the
-   surface is a mutual read with no clear creator, omit the marker on
-   every link; the surface then contributes no ordering edge. The marker
-   sits on the link itself (not on a positional "first task in the list")
-   so it survives later reordering.
-
-   **Shared Surfaces must NOT contain type shapes, literal sentinel values,
-   concrete config keys beyond the surface name, or any detail the implementer
-   would be the first to know.** If you are tempted to write a shape, that is
-   a sign the content belongs in a task file, not the overview.
-5. Update marker to `## Design [COMPLETE]`
-
-### Design Review
-
-After writing all task files and the Design section, run a review council
-before presenting the spec to the user:
-
-1. Launch two Agent sub-agents **in parallel, both foreground, both opus**:
-   - **code-critic** — review the full spec (overview + all task files) for
-     gaps, missing shared surfaces, incorrect dependency edges, risks the
-     spec doesn't acknowledge, and whether the tasks eat their own dogfood
-     (i.e., are they outcome-shaped if the spec calls for outcome-shaped
-     tasks?).
-   - **grug-architect** — review for unnecessary complexity, over-decomposition,
-     tasks that could be merged, ceremony that doesn't earn its keep, and
-     whether the simplest approach was chosen. Challenge anything that smells
-     like over-engineering.
-
-2. Synthesize findings into:
-   - **Consensus items** — both agents agree
-   - **Concerns by severity** — blocker / major / minor
-   - **Actionable changes** — specific edits to make
-
-3. Before asking the user any judgment-call question, render a
-   **per-task TL;DR with council feedback attached**, so the user
-   can absorb what each task is and what each reviewer flagged
-   *about that task* without having to re-link findings to tasks
-   themselves. Format roughly:
-
-   ```
-   ## <task id> — <one-line task purpose>
-
-   - code-critic: <crisp bullet of what they flagged on this task>
-   - grug-architect: <crisp bullet of what they flagged on this task>
-   ```
-
-   Plus a separate short section for spec-wide concerns (those
-   that don't attach to a single task — e.g., scope shape, missing
-   surfaces, deferred work). Keep each bullet to one sentence;
-   omit the reviewer entirely if they had nothing to say about
-   that task. The goal is that the user can decide on scope or
-   contract changes after reading this synthesis alone.
-
-4. Sort findings into two groups before applying anything:
-
-   **Non-controversial fixes** — concrete, mechanical, no design
-   tradeoff. Apply these directly:
-   - missing shared surface entries
-   - stale references after a renumber
-   - verification bullets that are procedure-shaped instead of
-     observable
-   - tasks that are byte-identical in shape to a sibling and
-     should clearly be merged
-
-   **Judgment calls** — anything that involves a tradeoff the
-   user should weigh. Surface these to the user as a single
-   AskUserQuestion (or a short numbered list if there are several),
-   each with the reviewer's argument and the alternative. Do not
-   apply these without explicit user input. Examples:
-   - over-decomposition that *might* be intentional
-   - phase ordering that has a legitimate alternative
-   - a task that one reviewer wants merged and another wants
-     split
-   - missing scope (something the council thinks should be in
-     the spec but isn't)
-
-5. After applying any non-controversial fixes and resolving
-   judgment calls, briefly confirm what changed and why.
-
-### Post-Design Summary
-
-After the design review is resolved and all task files are finalized:
-1. Show the user a summary: how many tasks, dependency structure, categories
-2. List the options the user has, neutrally:
-   - Review each task file at their own pace, adding notes to
-     `<review>` if changes are needed
-   - Run `/spec <task-file>` to process any review feedback
-   - Flip `status: draft` → `status: approved` when satisfied
-   - Run `/pour` to create tk tickets from approved tasks
-3. Stop. Do not ask whether the user is ready to approve, do
-   not mark any of the above options as recommended, and do not
-   imply readiness for the next step. The user moves on their
-   own clock; your role here is done.
-
-## Task Review Mode
-
-When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
-
-1. Read the task file
-2. Check the `<review>` section for feedback
-3. If `<review>` is empty: ask the user what changes they want
-4. If `<review>` has content: process the feedback
-
-### Processing Review Feedback
-
-1. Read the review comments in `<review>`
-2. Regenerate the `<outcome>` and/or `<verification>` sections based on feedback
-3. Clear the `<review>` section (set back to empty)
-4. Increment `revisions` in frontmatter (e.g., 0 → 1, 1 → 2). If the
-   field is missing on a pre-existing task file, add it with the
-   incremented value (treat absence as 0).
-5. Present the changes to the user for confirmation
-6. Write the updated task file
-
-The task stays at `status: draft` throughout review iterations. The user
-manually changes status to `approved` when satisfied. The `revisions`
-counter is informational — it shows how much a task has been iterated
-on without losing that signal when `<review>` is cleared.
-
-### Batch Review
-
-If invoked with a spec directory (`/spec docs/specs/<name>/`), check all task
-files for non-empty `<review>` sections and process them sequentially.
-
-## Status Summary
-
-When invoked with `--status` or when the user asks for an overview:
-
-1. Scan `docs/specs/` for all spec directories
-2. For each spec, read `_overview.md` and report:
-   - Current phase (first `[DRAFT]` section)
-   - Whether Delimit is approved
-3. For each spec, scan task files and report counts:
-   - `draft` — still iterating
-   - `approved` — ready to pour
-   - `poured` — tk ticket exists
-4. Present as a summary table:
-
-```
-Spec: auth-redesign
-  Phase: Direction [COMPLETE] → Design [DRAFT]
-  Delimit: approved
-  Tasks: 3 draft, 2 approved, 0 poured
-```
-
-## Source Doc Mode
-
-When invoked with `--source <path-or-url>`:
-
-### Reading the Source
-
-1. If the source is a file path: use Read tool
-2. If the source is a URL: use WebFetch tool
-3. If the source is a ticket URL (Asana, Linear, GitHub issue): use appropriate
-   tool (gh for GitHub issues, WebFetch for others)
-
-### Pre-filling Phases
-
-Analyze the document and extract what maps to each Design in Practice phase:
-
-- **Describe**: Context, background, current situation → pre-fill Describe section
-- **Diagnose**: Problem analysis, root causes if stated → pre-fill Diagnose section
-- **Delimit**: Problem statement if crisp enough → propose for Delimit (still
-  requires explicit approval)
-- **Direction**: Proposed solutions, alternatives considered → pre-fill Approaches
-
-For each phase that can be pre-filled:
-1. Present the extracted content to the user
-2. Ask if it's accurate or needs adjustment
-3. If accurate: write to overview with `[COMPLETE]` marker (except Delimit which
-   needs explicit approval)
-4. If needs adjustment: enter that phase's interview flow with the extracted
-   content as a starting point
-
-### Verifying source-doc claims
-
-Source documents make factual claims about how systems work today
-(file paths, behaviors, configurations, counts). Those claims may
-be stale, wrong, or aspirational. Pre-filling phases without
-checking them inherits the source's errors into the spec.
-
-Before pre-filling Describe and Diagnose, prompt the user:
-
-> "I extracted N factual claims from the source doc. Want me to
-> verify them against the codebase before pre-filling, or accept
-> them as-is and flag uncertainty later?"
-
-If the user says verify:
-
-1. List the verifiable claims as a numbered list (e.g., "the chart
-   ships with `crds.keep: false`", "the pipeline emits a
-   `MeshAirProjectExtension` per project").
-2. Spawn a foreground sub-agent (Explore or general-purpose) with
-   the explicit task of confirming each claim against the
-   codebase.
-3. Report findings back inline using the confidence labels from
-   `voice.md`: ✅ Verified, 🟨 High confidence, 🟧 Medium confidence,
-   🟥 Low confidence. Refuted claims get 🟥 with the contradicting
-   evidence.
-4. Pre-fill Describe / Diagnose using only ✅ and 🟨 claims as
-   asserted facts. Anything 🟧 medium / 🟥 low becomes a noted
-   uncertainty in the relevant phase, not a fact.
-
-If the user says accept:
-
-- Pre-fill phases as-is, but each non-trivial factual claim
-  inherited from the source carries a 🟨 label by default
-  (high-confidence-but-not-this-session-verified). Surfacing the
-  label in the spec is honest about the inheritance and creates
-  a hook to verify later.
-
-### Gap Detection
-
-After pre-filling, identify what the source document does NOT cover:
-- Missing stakeholder context → ask in Describe
-- No root cause analysis → full Diagnose interview needed
-- Vague problem statement → full Delimit process needed
-- Single solution proposed without alternatives → full Direction needed
-
-Resume the journey at the first phase with gaps.
+When user defers naming until after Describe:
+1. Hold spec state in conversation only (no files yet)
+2. Run Describe interview in chat
+3. After Describe complete, suggest 2-4 kebab-case names from discussion
+4. Create spec directory with chosen name, Describe already `[COMPLETE]`
+5. Continue with Diagnose
+
+## Phase Journey
+
+Each phase has detailed instructions in `spec-support/phases/<phase>.md`.
+
+### Describe
+
+**Goal**: Capture situation as-is without interpretation or solutions.
+**Technique**: Reflective Inquiry — surface what user knows, doesn't know, context.
+**Details**: See `spec-support/phases/describe.md`
+
+Key elements:
+- Interview with 3-6 questions (one at a time via AskUserQuestion)
+- Scope triage if multiple issues surface
+- Ackoff Gate: test if this is real problem or symptom (recurrence, upstream, residue tests)
+- Write structured narrative covering situation, known facts, uncertainties, stakeholders
+
+### Diagnose
+
+**Goal**: Identify real problem beneath situation. Challenge assertions, test hypotheses.
+**Technique**: Scientific Method with Platt's Strong Inference (eliminative testing).
+**Details**: See `spec-support/phases/diagnose.md`
+
+Key elements:
+- Challenge surface assertions ("we need X" → why?)
+- Form 2-3 hypotheses, test by trying to disprove them
+- Typed diagnosed items: RC (root cause), NC (non-cause), AC (adjacent constraint)
+- K-T Completeness Audit: IS/IS-NOT table for problem boundaries
+- Write hypotheses, evidence, diagnosed items with HTML anchors
+
+### Delimit (STRICT GATE)
+
+**Goal**: Crisp 1-2 sentence problem statement, explicitly approved.
+**Technique**: Precise Language — every word earns its place.
+**Details**: See `spec-support/phases/delimit.md`
+
+Key elements:
+- State unmet user objective + cause
+- Observable terms (not vague "improve", "better")
+- Inversion test: too narrow? too broad? wrong boundary? solution leak?
+- Explicit approval gate with AskUserQuestion (Approved / Needs refinement / Wrong problem)
+- Both marker `[APPROVED]` AND frontmatter `delimit_approved: true` required
+
+### Direction
+
+**Goal**: Generate approaches, compare via matrix, choose one.
+**Technique**: Contrast Over Linearity — differences trigger thinking.
+**Details**: See `spec-support/phases/direction.md`
+
+Key elements:
+- Ackoff checkpoint: still solving right problem?
+- Always include Status Quo as A1
+- 2-3 additional approaches with varied strategies/tradeoffs
+- Inversion test per approach: what guarantees failure?
+- Decision matrix with typed criteria ([RC1], [AC2], [ID])
+- Chosen approach in blockquote with rationale
+- Use cases table: Actor / Intent / Outcome
+
+### Design
+
+**Goal**: Break chosen approach into 5-10 implementable tasks.
+**Technique**: Codebase research grounding + outcome-based decomposition.
+**Details**: See `spec-support/phases/design.md`
+
+Key elements:
+- Parallel sub-agents for codebase exploration and tech research
+- Shared surfaces identification (name surfaces, don't pin shapes)
+- Task IDs: ordinal + hash + suffix (e.g., `1-a1b2-setup-middleware`)
+- Task files with `## Outcomes`, `## Verification`, `<review>` sections
+- Design Review council: code-critic + grug-architect (both opus)
+- Separate mechanical fixes from judgment calls
+- Post-design summary: neutral options, no urgency
+
+## Resume Detection
+
+See `spec-support/patterns/resume-detection.md` for:
+- Phase marker scanning
+- Going Back procedure
+- Automatic walk-back on detected conflict
+
+## Tools Reference
+
+**File operations**: Read, Edit, Write (targeted section updates)
+**Search**: Grep, Glob for codebase exploration
+**Sub-agents**: Task tool with Explore, general-purpose, code-critic, grug-architect
+**User interaction**: AskUserQuestion (one question at a time)
+
+**Critical**: Use Edit for section updates, never rewrite entire overview file.
