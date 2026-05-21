@@ -59,39 +59,19 @@ with evidence. The user validates your conclusion, not does the analysis.
 If splitting: create multiple spec directories, write separate Describe sections
 for each, and ask the user which to continue with in this session.
 
-## Ackoff Gate: Is This the Real Problem?
+## Upstream Check
 
-Before writing the Describe section, actively test whether the described
-situation is the real problem or a symptom. Apply these checks:
+Before writing the Describe section, ask one question:
 
-**1. The Recurrence Test**
-Search the codebase and docs for prior instances of this problem or similar
-issues. Use Grep to find related tickets, TODOs, or past fixes. If this
-problem keeps appearing in different forms, there's likely a deeper cause.
+> "Could this situation be caused by something upstream we should address
+> instead?"
 
-**2. The Upstream Test**
-Trace backward: what causes this situation to occur? If the cause is
-addressable, solving the cause may dissolve the problem entirely. Ask
-the user: "What triggers this situation? Could we prevent it upstream?"
+If yes, surface it to the user before proceeding. Solving the cause may
+dissolve the problem entirely.
 
-**3. The Residue Test**
-Project forward: if we solved this problem perfectly, what would still be
-broken? If the answer is "nothing related," this is the real problem. If
-the answer is "well, X would still cause Y," then X deserves investigation.
-
-**Applying the gate:**
-
-1. Run the three tests above (search codebase for recurrence, identify
-   upstream causes, project residue).
-2. If all tests pass (no recurrence pattern, no addressable upstream,
-   no residue), proceed to write Describe.
-3. If any test raises a flag, present findings to the user:
-   - What the test found (with evidence)
-   - Whether this changes the problem framing
-   - Options: expand scope to address deeper issue, note it as adjacent
-     context, or proceed with current framing and accept the limitation.
-
-This gate recurs before Direction (see Direction phase) as a checkpoint.
+If the problem seems familiar, check the overview frontmatter `tags:` of
+existing specs to see if this is a recurring pattern. Recurring problems
+in the same category may indicate deeper architectural debt.
 
 ## Writing the Describe Section
 

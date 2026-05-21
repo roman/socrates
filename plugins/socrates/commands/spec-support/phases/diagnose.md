@@ -72,71 +72,37 @@ When root causes are identified:
 
 **Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.
 
-## K-T Completeness Audit
+## Boundary Checkpoint
 
-Before proceeding to Delimit, run a Kepner-Tregoe IS/IS-NOT audit on the
-diagnosed problem. This technique bounds the problem by what it IS *and*
-deliberately by what it could be but ISN'T — surfacing distinguishing
-features that confirm root cause identification.
+Before proceeding to Delimit, verify the diagnosis is complete:
 
-Launch a general-purpose agent (foreground, opus) with this prompt:
+> "Does the diagnosed root cause explain why the problem occurs *here* and
+> *now* but not in similar situations? If not, the boundary isn't crisp yet."
 
-> Review the Diagnose section and build an IS/IS-NOT specification for
-> the identified root causes. For each dimension below, state what the
-> problem IS and what it IS-NOT (but plausibly could be):
->
-> | Dimension | IS | IS-NOT |
-> |-----------|-----|--------|
-> | **What** | What objects/systems are affected? | What similar objects/systems are NOT affected? |
-> | **Where** | Where does the problem occur? | Where does it NOT occur (but could)? |
-> | **When** | When does it happen? | When does it NOT happen (but could)? |
-> | **Extent** | How much/many are affected? | How much/many are NOT affected? |
->
-> For each IS-NOT cell, explain why that distinction matters — what does
-> it tell us about the root cause? Flag any row where you cannot identify
-> a meaningful IS-NOT; that's a gap in problem characterization.
->
-> Return: the completed table, any gaps found, and whether the diagnosed
-> root causes are consistent with the IS/IS-NOT boundaries.
-
-If the audit reveals gaps or inconsistencies:
-- Present findings to the user
-- Either return to Diagnose interview to fill gaps, or
-- Note the gaps explicitly in the Diagnose section before proceeding
-
-The K-T audit is optional for simple, well-bounded problems. Use judgment:
-if the problem is already crisp and the root cause obvious, skip to Delimit.
-If there's any ambiguity about scope or boundaries, run the audit.
+If the answer is unclear, ask one follow-up question to sharpen the boundary.
 
 ## Diagnosed items structure
 
-Each item in the `### Diagnosed items` subsection carries a typed
-prefixed identifier so the decision matrix and downstream phases
-can reference it precisely:
+Each item in the `### Diagnosed items` subsection carries a typed prefix
+so it can be referenced as vocabulary in discussion and the decision matrix:
 
 - **RC** — Root Cause. A real reason the problem exists.
-- **NC** — Non-Cause. Looked like a cause; turned out not to be.
-  Always include an "Implication for Direction" line (e.g.,
-  "approaches should not be scored favorably for solving this").
-- **AC** — Adjacent Constraint. A rule from outside this spec
-  that any approach must respect.
+- **NC** — Non-Cause. Looked like a cause; turned out not to be. Limit to
+  2-3 items worth documenting. Include an "Implication for Direction" line.
+- **AC** — Adjacent Constraint. A rule from outside this spec that any
+  approach must respect.
 
-Number each prefix sequentially (RC1, RC2, NC1, AC1, ...). Each
-item gets a stable HTML anchor immediately above its heading so
-the matrix's links don't break when headings are reworded:
+Number each prefix sequentially (RC1, RC2, NC1, AC1, ...):
 
 ```markdown
-<a id="rc1"></a>
 #### RC1 — Mesh safety enforced at the wrong altitude
 
 <Explanation paragraph.>
 ```
 
-The `### Diagnosed items` subsection starts with the legend table
-from `_overview.md` (the four prefixes: RC, NC, AC, ID). Keep it
-as a table; it's where readers learn what the prefixes mean before
-they hit the matrix in Direction.
+If an item is deleted, note "RC2 removed" rather than renumbering — this
+preserves references in discussion history.
 
-**Do not** present unconfirmed hypotheses as RCs. An unconfirmed
-hypothesis stays in the Hypotheses subsection above with its
-status; promote to RC only after evidence confirms it.
+**Do not** present unconfirmed hypotheses as RCs. An unconfirmed hypothesis
+stays in the Hypotheses subsection with its status; promote to RC only
+after evidence confirms it.

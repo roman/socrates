@@ -15,7 +15,7 @@ The journey from Describe through Diagnose and Delimit may have surfaced
 information that reframes the original situation. Quick check:
 
 1. Re-read the approved Delimit statement
-2. Compare it to what you now know from the K-T audit and diagnosis
+2. Compare it to what you now know from the diagnosis
 3. If the problem statement still feels like the real problem, proceed
 4. If it now feels like a symptom or wrong framing, surface this to the user
    before generating approaches — it's cheaper to revisit Delimit now than
@@ -46,17 +46,7 @@ proceed without asking the user.
    - Key tradeoffs (what you gain, what you give up)
    - Rough scope signal (small/medium/large — not time estimates)
 
-5. **Inversion test per approach** — Before presenting, ask of each approach:
-   "What would guarantee this approach fails?" Identify:
-   - **Assumptions that must hold** — what does this approach take for granted?
-   - **Failure modes** — how could this go wrong even if executed well?
-   - **Dependencies** — what external factors could break this?
-
-   If the inversion reveals a fatal flaw (an assumption that's unlikely to hold,
-   a failure mode with no mitigation), either revise the approach to address it
-   or note it prominently in the tradeoffs. Don't hide failure modes in optimism.
-
-6. Present approaches to the user and ask for initial reactions before building
+5. Present approaches to the user and ask for initial reactions before building
    the decision matrix.
 
 ## Decision Matrix
@@ -66,13 +56,10 @@ matrix:
 
 - **Header**: The problem statement from Delimit
 - **Columns**: Each approach (including status quo as A1)
-- **Rows**: Evaluation criteria. Each row's "Criterion" cell is
-  prefixed with a typed link back to the Diagnose section, e.g.
-  `[[RC1](#rc1)] Reduces opaque sync failures` for criteria that
-  trace to a diagnosed item. Implementation concerns (effort,
-  risk, reversibility, time-to-value) use `[ID]` as the prefix
-  instead of an item ID. The legend that defines the prefixes
-  lives in Diagnose's `### Diagnosed items` subsection.
+- **Rows**: Evaluation criteria. Each criterion should trace to a diagnosed
+  item using the prefix as vocabulary, e.g. "Addresses RC1" or "Solves RC1
+  and RC2". Implementation concerns (effort, risk, reversibility) use `[ID]`
+  as the prefix.
 - **Cells**: 🟢 (strong), 🟡 (adequate), 🔴 (weak), ⚪ (not applicable),
   with a brief explanation alongside the indicator.
 
@@ -80,10 +67,8 @@ matrix:
 - All-green columns → rationalization, not analysis. Find distinguishing criteria.
 - Criteria that don't differentiate → remove them, they add noise.
 - Solution-biased criteria → criteria should matter regardless of which approach wins.
-- Criteria with no `[XX]` prefix → either it traces to a Diagnose
-  item (give it the right RC/NC/AC tag) or it's an implementation
-  concern (`[ID]`). Untagged criteria signal the matrix is
-  drifting away from the diagnosis.
+- Criteria that don't trace to diagnosed items → signals the matrix is drifting
+  from the diagnosis. Every criterion should address an RC, AC, or be an ID.
 
 **Render the matrix in the chat session BEFORE writing it to the spec file.**
 Markdown table notation is illegible in raw form — the user needs to see it
@@ -97,6 +82,23 @@ any surprising results before asking for a choice.
 
 Use AskUserQuestion to ask which approach the user wants to pursue.
 Record: which approach and the user's rationale for choosing it.
+
+### Inversion test (post-selection)
+
+After the approach is chosen, run one inversion test: "What would guarantee
+this approach fails?" Document the top 2-3 failure modes:
+
+- **Assumptions that must hold** — what does this approach take for granted?
+- **Failure modes** — how could this go wrong even if executed well?
+
+If the inversion reveals a fatal flaw, surface it to the user before
+proceeding. They may want to revisit the choice.
+
+### Residue check
+
+Ask: "If we execute this approach perfectly, what would still be broken?"
+If the answer is "nothing related," proceed. If something remains, note it
+as out-of-scope or consider whether the approach needs adjustment.
 
 The chosen approach gets a blockquote in the `### Chosen Approach`
 subsection so it stands out visually:

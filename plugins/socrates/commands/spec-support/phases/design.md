@@ -18,14 +18,10 @@ Before decomposing, gather context. Launch parallel Agent sub-agents to:
    - Verify assumptions about tools/frameworks
    - Check for known issues or limitations
 
-3. **Shared surfaces identification** — While exploring, explicitly identify
-   cross-task touchpoints: files, type names, config keys, or sentinel values
-   that more than one task will read or write. Name them by surface only.
-   **Name the surface, do not pin the shape.** Do not record type definitions,
-   literal values, or concrete config keys at the overview level — those are
-   discovered by the implementer of the task that owns the surface. If you
-   catch yourself wanting to write a shape, that content belongs in a task
-   file, not the overview.
+3. **Files touched by multiple tasks** — While exploring, identify files that
+   more than one task will read or write. Name the file path only — do not
+   record type definitions, literal values, or concrete config keys at the
+   overview level. Those are discovered by the implementer.
 
 Synthesize findings into the `### Context` subsection of the Design section.
 This context informs the task decomposition.
@@ -61,12 +57,8 @@ For each task:
 1. **Generate an ID**: ordinal prefix (1-based execution order) +
    short hash (first 4 chars of sha256 of title) + human suffix
    (2-3 word kebab-case). Example: `1-a1b2-setup-middleware`.
-   The ordinal is assigned from the surface-derived topo order:
-   parse the `#### Shared Surfaces` section, derive edges from
-   `(surface owner)` markers (consumers depend on owners), and
-   topo-sort. Tasks with no incoming edges get the lowest ordinals.
-   The ordinal is a readability hint only — `/pour` re-derives the
-   same order independently from Shared Surfaces at pour time.
+   Assign ordinals based on logical execution order. Tasks with no
+   dependencies get the lowest ordinals.
    ```bash
    echo -n "Setup auth middleware" | sha256sum | cut -c1-4
    ```
@@ -81,8 +73,6 @@ For each task:
    - `status: draft`
    - `priority:` — 0 (highest) to 4, based on surface-derived order and criticality
    - `category:` — functional, style, infrastructure, or documentation
-   - `revisions: 0` — review iterations start at zero; Task Review Mode
-     bumps this each time it processes `<review>` feedback
    - Title — clear, action-oriented (starts with a verb)
    - `## Outcomes` — a bulleted list of what the implementer must achieve and
      what changes for the system or project when done. State the target, not
@@ -92,9 +82,8 @@ For each task:
      the outcome is met
    - `<review>` — leave empty (XML tag stays invisible in rendered markdown)
 
-Coupling between tasks is expressed entirely through the `#### Shared Surfaces`
-section of the overview, not through per-task frontmatter. `/pour` derives the
-ordering edges from there at pour time.
+Coupling between tasks is expressed through the `### Files touched by multiple
+tasks` and `### Dependencies` sections of the overview.
 
 ## Open Questions During Design
 
@@ -117,41 +106,38 @@ the question and keep it visible in the spec.
    (by id) and gives one sentence of purpose. Tasks with no dependencies come
    first; downstream tasks follow. This is the rendered reading order a human
    would use to walk the spec.
-4. Write `### Glossary` with terms used consistently in the tasks, and
-   populate a `#### Shared Surfaces` subsection listing the surfaces
-   identified during research. Each entry is a narrative line: the surface
-   name, the linked task ids that touch it, and one sentence explaining why
-   the coupling matters. Example:
-   > **`config.yaml` `retry` block** — touched by
-   > [1-a1b2](1-a1b2-setup.md) (surface owner) and
-   > [3-c4d5](3-c4d5-worker.md); the worker reads retry policy the setup
-   > task writes, so the setup task must land first.
+4. Write `### Glossary` with terms used consistently in the tasks.
+5. Write `### Files touched by multiple tasks` listing files identified
+   during research that more than one task will modify:
+   ```
+   - `src/middleware/auth.ts` — Task 1, Task 3
+   - `src/api/routes.ts` — Task 2, Task 4
+   ```
+6. Write `### Dependencies` with explicit task ordering using arrow notation:
+   ```
+   Task 1 -> Task 3
+   Task 2 -> Task 4
+   ```
+   Arrow reads "must complete before." Only document dependencies that
+   aren't obvious from file overlap — the reader can derive file-based
+   ordering from the previous section.
+7. Update marker to `## Design [COMPLETE]`
 
-   When a surface has a natural owner — the task that creates or first
-   writes it — annotate that task's link with `(surface owner)`. Other
-   linked tasks are readers and will be ordered after the owner. If the
-   surface is a mutual read with no clear creator, omit the marker on
-   every link; the surface then contributes no ordering edge. The marker
-   sits on the link itself (not on a positional "first task in the list")
-   so it survives later reordering.
+## Design Review (optional)
 
-   **Shared Surfaces must NOT contain type shapes, literal sentinel values,
-   concrete config keys beyond the surface name, or any detail the implementer
-   would be the first to know.** If you are tempted to write a shape, that is
-   a sign the content belongs in a task file, not the overview.
-5. Update marker to `## Design [COMPLETE]`
+After writing all task files and the Design section, ask the user:
 
-## Design Review
+> "Design phase complete. Want a review council (code-critic + grug-architect)
+> before finalizing?"
 
-After writing all task files and the Design section, run a review council
-before presenting the spec to the user:
+If the user declines, proceed directly to Post-Design Summary.
+
+If the user accepts, run the council:
 
 1. Launch two Agent sub-agents **in parallel, both foreground, both opus**:
    - **code-critic** — review the full spec (overview + all task files) for
-     gaps, missing shared surfaces, incorrect dependency edges, risks the
-     spec doesn't acknowledge, and whether the tasks eat their own dogfood
-     (i.e., are they outcome-shaped if the spec calls for outcome-shaped
-     tasks?).
+     gaps, missing file overlaps, incorrect dependencies, risks the spec
+     doesn't acknowledge, and whether the tasks are outcome-shaped.
    - **grug-architect** — review for unnecessary complexity, over-decomposition,
      tasks that could be merged, ceremony that doesn't earn its keep, and
      whether the simplest approach was chosen. Challenge anything that smells
@@ -177,7 +163,7 @@ before presenting the spec to the user:
 
    Plus a separate short section for spec-wide concerns (those
    that don't attach to a single task — e.g., scope shape, missing
-   surfaces, deferred work). Keep each bullet to one sentence;
+   dependencies, deferred work). Keep each bullet to one sentence;
    omit the reviewer entirely if they had nothing to say about
    that task. The goal is that the user can decide on scope or
    contract changes after reading this synthesis alone.
@@ -186,7 +172,7 @@ before presenting the spec to the user:
 
    **Non-controversial fixes** — concrete, mechanical, no design
    tradeoff. Apply these directly:
-   - missing shared surface entries
+   - missing file overlap entries
    - stale references after a renumber
    - verification bullets that are procedure-shaped instead of
      observable

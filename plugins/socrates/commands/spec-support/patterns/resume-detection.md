@@ -23,9 +23,11 @@ The user can request to revisit a completed phase (e.g., "revisit Delimit",
 1. Set the target phase's header marker to `[DRAFT]`
 2. Set ALL subsequent phase markers to `[DRAFT]`
 3. If going back to or before Delimit: set `delimit_approved: false` in frontmatter
-4. Preserve the previous content of each reset phase under a
-   `### Previous (superseded)` sub-heading within that section
-5. Resume the journey from the target phase
+4. Resume the journey from the target phase
+
+Edit sections directly — git tracks history. If the reason for revision is
+significant, add a one-line note at the top of the rewritten section:
+*"Revised after discovering X."*
 
 This ensures that downstream phases that depended on the now-changed upstream
 content are re-evaluated rather than silently stale.

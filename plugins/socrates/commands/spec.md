@@ -124,7 +124,7 @@ Each phase has detailed instructions in `spec-support/phases/<phase>.md`.
 Key elements:
 - Interview with 3-6 questions (one at a time via AskUserQuestion)
 - Scope triage if multiple issues surface
-- Ackoff Gate: test if this is real problem or symptom (recurrence, upstream, residue tests)
+- Upstream check: could this be caused by something we should address instead?
 - Write structured narrative covering situation, known facts, uncertainties, stakeholders
 
 ### Diagnose
@@ -136,9 +136,9 @@ Key elements:
 Key elements:
 - Challenge surface assertions ("we need X" → why?)
 - Form 2-3 hypotheses, test by trying to disprove them
-- Typed diagnosed items: RC (root cause), NC (non-cause), AC (adjacent constraint)
-- K-T Completeness Audit: IS/IS-NOT table for problem boundaries
-- Write hypotheses, evidence, diagnosed items with HTML anchors
+- Typed diagnosed items: RC (root cause), NC (non-cause, limit 2-3), AC (adjacent constraint)
+- Boundary checkpoint: does the root cause explain why problem occurs here and now?
+- Write hypotheses, evidence, diagnosed items
 
 ### Delimit (STRICT GATE)
 
@@ -163,9 +163,10 @@ Key elements:
 - Ackoff checkpoint: still solving right problem?
 - Always include Status Quo as A1
 - 2-3 additional approaches with varied strategies/tradeoffs
-- Inversion test per approach: what guarantees failure?
-- Decision matrix with typed criteria ([RC1], [AC2], [ID])
+- Decision matrix with criteria tracing to diagnosed items (RC1, AC1, ID)
 - Chosen approach in blockquote with rationale
+- Inversion test on chosen approach: what guarantees failure?
+- Residue check: if we execute perfectly, what's still broken?
 - Use cases table: Actor / Intent / Outcome
 
 ### Design
@@ -176,10 +177,10 @@ Key elements:
 
 Key elements:
 - Parallel sub-agents for codebase exploration and tech research
-- Shared surfaces identification (name surfaces, don't pin shapes)
+- Files touched by multiple tasks + Dependencies sections
 - Task IDs: ordinal + hash + suffix (e.g., `1-a1b2-setup-middleware`)
 - Task files with `## Outcomes`, `## Verification`, `<review>` sections
-- Design Review council: code-critic + grug-architect (both opus)
+- Optional Design Review council (prompted before finalizing)
 - Separate mechanical fixes from judgment calls
 - Post-design summary: neutral options, no urgency
 

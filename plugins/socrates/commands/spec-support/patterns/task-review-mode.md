@@ -12,16 +12,11 @@ When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
 1. Read the review comments in `<review>`
 2. Regenerate the `## Outcomes` and/or `## Verification` sections based on feedback
 3. Clear the `<review>` section (set back to empty)
-4. Increment `revisions` in frontmatter (e.g., 0 → 1, 1 → 2). If the
-   field is missing on a pre-existing task file, add it with the
-   incremented value (treat absence as 0).
-5. Present the changes to the user for confirmation
-6. Write the updated task file
+4. Present the changes to the user for confirmation
+5. Write the updated task file
 
 The task stays at `status: draft` throughout review iterations. The user
-manually changes status to `approved` when satisfied. The `revisions`
-counter is informational — it shows how much a task has been iterated
-on without losing that signal when `<review>` is cleared.
+manually changes status to `approved` when satisfied.
 
 ## Batch Review
 

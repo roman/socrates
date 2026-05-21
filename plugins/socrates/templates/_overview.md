@@ -1,6 +1,7 @@
 ---
 title: <spec name>
 created: <date>
+tags: []
 epic:
 archived:
 delimit_approved: false
@@ -23,35 +24,24 @@ statement.>
 
 <!--
 Each item below carries a typed prefixed identifier (RC1, NC1, AC1,
-...) so subsequent phases can reference it precisely. The decision
-matrix in Direction tags every row with the item ID it traces to,
-or with [ID] for rows that aren't tied to a specific diagnosed
-item (implementation concerns: effort, risk, reversibility).
-
-Each item gets a stable anchor (e.g., <a id="rc1"></a>) so links
-from the matrix don't break when headings are reworded.
+...) so it can be referenced as vocabulary in discussion and the
+decision matrix.
 -->
 
 #### Legend
 
 | Prefix | Name | Meaning |
 | --- | --- | --- |
-| **RC** | Root Cause | A real reason the problem exists. Each one needs to be solved (or deliberately left out) by the chosen approach. |
-| **NC** | Non-Cause | Looked like a cause; turned out not to be. Listed so approaches don't get credit for "solving" it. |
-| **AC** | Adjacent Constraint | A rule from outside this spec that we have to respect. Approaches are judged on whether they preserve it. |
-| **ID** | Implementation Detail | A practical concern (effort, risk, reversibility, time-to-value) not tied to a specific diagnosed item. Used to prefix matrix rows for these criteria. |
+| **RC** | Root Cause | A real reason the problem exists. |
+| **NC** | Non-Cause | Looked like a cause; turned out not to be. Limit to 2-3. |
+| **AC** | Adjacent Constraint | A rule from outside this spec that we must respect. |
+| **ID** | Implementation Detail | Effort, risk, reversibility — not tied to a diagnosed item. |
 
 <!-- Items go here, e.g.:
 
-<a id="rc1"></a>
 #### RC1 — <short title>
 
 <Explanation of what the root cause is and how it manifests.>
-
-<a id="nc1"></a>
-#### NC1 — <short title>
-
-<Explanation, with a clear "Implication for Direction" line.>
 
 -->
 
@@ -77,11 +67,10 @@ its center of gravity.
 ### Decision Matrix
 
 <!--
-Render the matrix in chat first, refine, then persist. Use one
-table. Each row's "Criterion" cell prefixes the criterion text
-with a typed link, e.g. [[RC1](#rc1)] for criteria that trace to
-a diagnosed item, or [ID] for implementation concerns. The legend
-in Diagnose explains the prefixes.
+Render the matrix in chat first, refine, then persist. Each
+criterion should trace to a diagnosed item using the prefix as
+vocabulary (e.g., "Addresses RC1"). Use [ID] for implementation
+concerns.
 
 Cells use 🟢🟡🔴 for ranked aspects, ⚪ for not-applicable, and
 a brief explanation alongside the indicator.
@@ -139,22 +128,23 @@ of its title.>
 <Terms used consistently throughout this spec. Definitions that
 matter for implementation.>
 
-#### Shared Surfaces
+#### Files touched by multiple tasks
 
-<Narrative bulleted list naming cross-task touchpoints by surface
-only — a file, a type name, a config key, a sentinel. Each bullet
-names the surface, links to the tasks that touch it, and says in
-one sentence why the coupling matters.
+<List files that more than one task will modify:
 
-One linked task per entry may be annotated `(surface owner)` — the
-task that creates or owns that surface; other linked tasks are
-readers and follow it. Absence of any marker means the surface is
-a mutual read and contributes no ordering. Multiple owners are
-allowed but rare. The marker must be written explicitly on the
-link itself so it survives link reordering during refinement.
+- `src/middleware/auth.ts` — Task 1, Task 3
+- `src/api/routes.ts` — Task 2, Task 4
+>
 
-Shapes, literal values, type definitions, and concrete config keys
-do NOT belong here — only the surface name.>
+#### Dependencies
+
+<Explicit task ordering using arrow notation:
+
+Task 1 -> Task 3
+Task 2 -> Task 4
+
+Arrow reads "must complete before." Only document dependencies
+that aren't obvious from file overlap.>
 
 ## Technical Addendum
 
