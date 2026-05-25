@@ -5,6 +5,7 @@ tags: []
 epic:
 archived:
 delimit_approved: false
+review_mode: false # gates post-merge review loop; see RALPH.md § Review Mode
 ---
 
 <!-- Voice and structure follow plugins/socrates/voice.md. -->

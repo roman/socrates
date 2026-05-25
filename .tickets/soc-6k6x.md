@@ -1,6 +1,6 @@
 ---
 id: soc-6k6x
-status: open
+status: closed
 deps: [soc-rc5m]
 links: []
 created: 2026-05-25T00:43:14Z
