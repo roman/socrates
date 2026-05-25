@@ -1,6 +1,6 @@
 ---
 id: soc-ooy8
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-05-25T00:40:32Z
