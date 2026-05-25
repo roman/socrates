@@ -7,38 +7,37 @@ ticket: null
 revisions: 1
 ---
 
-# Stamp review_mode default in socrates-init
+# Stamp review_mode default in spec _overview.md template
 
-<outcome>
-Running `/socrates-init` on a project produces an installed RALPH.md
-whose frontmatter contains `review_mode: false`. The install's
-post-run output includes a clear paragraph (not a one-liner)
-explaining what review-mode does, when an operator might want it,
-and how to enable it after install (by editing RALPH.md frontmatter
-directly, or by accepting the prompt that `/spec` will surface on
-its first run with no tickets in flight). No interactive prompt is
-added at install time — discoverability is handled by `/spec` (per
-the hook in task 1), where the operator is already in an
-interactive session and is thinking about lifecycle. Re-running
-init on a project where the operator has set `review_mode: true`
-preserves that value rather than silently overwriting it.
-</outcome>
+## Outcomes
 
-<verification>
-- Running init on a fresh project produces a RALPH.md whose
-  frontmatter contains `review_mode: false`.
-- The init's post-run output includes a paragraph (not a single
-  line) explaining review-mode, naming when the operator might
-  want it, and pointing to RALPH.md frontmatter as the place to
-  flip the flag manually.
-- The post-run output also tells the operator that `/spec` will
-  surface the option on its first run when no tickets are in
-  flight, so the operator does not have to remember the manual
-  edit path.
-- Re-running init on a project where the operator has set
-  `review_mode: true` preserves that value.
-- The init flow remains non-interactive: no prompt is introduced
-  at install time.
-</verification>
+The spec `_overview.md` template at
+`plugins/socrates/templates/_overview.md` carries `review_mode:
+false` in its frontmatter so that every newly created spec — both
+through the `/spec` discoverability hook (which may overwrite the
+value based on the operator's answer) and through any path that
+copies the template directly — starts with the field present and
+defaulted off. A one-line comment beside the field names what it
+controls and points the reader to RALPH.md for the full semantics.
+
+This task is the one-line "defense in depth" companion to task 1's
+`/spec` hook: even if the hook is skipped, refactored, or bypassed,
+the template carries the field with a safe default, and the
+RALPH.md resolver established by task 1 treats the absence of the
+field as `false` anyway.
+
+## Verification
+
+- `plugins/socrates/templates/_overview.md` frontmatter contains
+  `review_mode: false`.
+- A one-line comment near the field names what it controls and
+  links to RALPH.md for the full semantics.
+- Creating a new spec via `/spec` produces an `_overview.md` whose
+  frontmatter carries `review_mode` (its value set by the
+  `/spec` hook from task 1; the template default is the fallback).
+- Existing specs that predate this change keep working: they have
+  no `review_mode` field, and the RALPH.md resolver from task 1
+  treats the absence as `false`, preserving today's behaviour for
+  every existing spec.
 
 <review></review>

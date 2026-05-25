@@ -9,23 +9,29 @@ revisions: 1
 
 # Implement review-mode behaviour in RALPH.md and pair docs
 
-<outcome>
-Target projects that set `review_mode: true` in RALPH.md frontmatter
-run RALPH end-to-end through external review and merge without
-manual session orchestration; projects that leave it `false` (or
-absent) behave exactly as today. The protocol change lands as a
+## Outcomes
+
+Specs that set `review_mode: true` in their own `_overview.md`
+frontmatter run RALPH end-to-end through external review and merge
+without manual session orchestration; specs that leave it `false`
+(or absent), and one-off `tk` tickets with no `Spec overview:`
+link, behave exactly as today. The protocol change lands as a
 single coherent edit to `plugins/socrates/templates/RALPH.md`, the
-matching user-facing notes in `docs/workflow.md` and
-`docs/customization.md`, and a small discoverability hook in
-`plugins/socrates/commands/spec.md`.
+matching user-facing notes in the Socrates project's
+`docs/workflow.md` and `docs/customization.md`, and a small
+discoverability hook in `plugins/socrates/commands/socrates-spec.md`.
 
 Concretely the protocol gains:
 
-- **Frontmatter flag.** A `review_mode: false` field in RALPH.md
-  frontmatter, default `false`, missing-field treated as `false`.
-  The Startup Checklist names how the agent reads it and what
-  conditional behaviours it gates. Existing target projects whose
-  RALPH.md predates this change are unaffected.
+- **Per-spec frontmatter field.** A `review_mode: false` field in
+  the spec's `_overview.md` frontmatter, default `false`,
+  missing-field treated as `false`. RALPH.md describes how the
+  agent resolves the value for a given ticket: when the ticket body
+  carries a `Spec overview:` link, read that spec's `_overview.md`
+  and use its `review_mode`; otherwise default to `false`,
+  preserving today's behaviour for one-off `tk` tickets. RALPH.md
+  itself stays protocol-only and carries no per-project flag, so it
+  remains safe to treat as effectively immutable.
 
 - **URL-based external-reference convention.** A ticket's
   external-ref is the URL of the upstream review artifact (e.g.,
@@ -36,18 +42,22 @@ Concretely the protocol gains:
   assumption, and explicitly states that RALPH does *not* open the
   upstream artifact — humans do.
 
-- **Conditional End-of-Session Gate.** When `review_mode` is on,
-  work done on a ticket results in: tag `awaiting-review` added,
-  upstream-artifact discovery attempted for the current branch, and
-  external-ref set to the discovered URL when found. The ticket is
-  left `in_progress`. If no upstream is discoverable at
-  end-of-session, the agent escalates per the escalation rule
-  below. When `review_mode` is off, the gate behaves identically to
-  today.
+- **Conditional End-of-Session Gate.** When the ticket's linked
+  spec resolves to `review_mode: true`, work done on the ticket
+  results in: tag `awaiting-review` added, upstream-artifact
+  discovery attempted for the current branch, and external-ref set
+  to the discovered URL when found. The ticket is left
+  `in_progress`. If no upstream is discoverable at end-of-session,
+  the agent escalates per the escalation rule below. When the
+  ticket has no spec link or the linked spec resolves to
+  `review_mode: false`, the gate behaves identically to today.
 
-- **External Review Sweep** added to the PM role, gated on
-  `review_mode`. The sweep iterates `awaiting-review`-tagged
-  tickets and handles each by external-ref state:
+- **External Review Sweep** added to the PM role. The sweep is
+  tag-driven, not flag-driven: it iterates every ticket carrying
+  the `awaiting-review` tag, regardless of any spec's current
+  `review_mode` value. A project with no opted-in specs has nothing
+  to sweep, so the sweep is a silent no-op. For each tagged ticket,
+  the agent handles it by external-ref state:
   - **Empty external-ref**: re-attempt upstream discovery for the
     ticket's branch (recoverable from the branch note recorded by
     the gate). If still not found after a reasonable retry window,
@@ -60,10 +70,6 @@ Concretely the protocol gains:
     close-without-merge: escalate.
   - **Inaccessible upstream**: escalate. Never silently close.
 
-  When `review_mode` is flipped from on to off mid-stream, any
-  tickets still tagged `awaiting-review` are escalated on the next
-  PM cycle so they are never silently stranded.
-
 - **Escalation rule (existing primitives only).** When the agent
   escalates, it: (a) appends a structured note to the ticket
   describing what failed and what the agent expects from the human;
@@ -71,10 +77,11 @@ Concretely the protocol gains:
   the loop halts at the end of the current cycle. At the session's
   close, the agent's final output names how the human can review
   the escalations (e.g., "Escalations occurred — run
-  `tk ls --tags needs-human` to triage"). No new protocol surface:
-  `.msgs/` is unchanged, and the existing `.ralph-stop` mechanism
-  is reused. The escalation rule is described once in RALPH.md and
-  referenced from every escalation site.
+  `tk ls --tags needs-human` to triage"). The escalation rule is
+  described once in RALPH.md and referenced from every escalation
+  site. The tags `awaiting-review` and `needs-human` are documented
+  in RALPH.md as reserved by review-mode so other features know
+  not to reuse them.
 
 - **Pinned `tk` mutation mechanism.** `tk` exposes `--external-ref`
   and `--tags` only at create time, and `tk edit` opens `$EDITOR`
@@ -91,36 +98,37 @@ Concretely the protocol gains:
   service. The protocol prose calls this requirement out so a
   reviewer can verify it against a sample ticket walkthrough.
 
-- **`/spec` discoverability hook.** When `/spec` is invoked, the
-  skill checks three conditions: `review_mode` is `false` or absent
-  in RALPH.md frontmatter; the user has not been informed during
-  this session (a session sentinel records the "asked already"
-  state); and there are no tickets in `.tickets/` (no work in
-  flight). When all three hold, the skill prompts the user once
-  with three options — *enable now* (which flips RALPH.md
-  frontmatter to `true`), *not now*, or *don't ask again this
-  session* — before proceeding with the Design in Practice journey.
-  When any condition is false, the prompt is skipped silently. This
-  makes review-mode discoverable at the moment the operator is
-  thinking about lifecycle, without burdening `/init` or
-  interrupting in-flight work. The exact session-sentinel mechanism
-  (env var, `/tmp` file, etc.) is pinned during implementation.
+- **`/spec` discoverability hook.** During the Describe phase of
+  `/spec` (after the spec directory exists), the skill prompts the
+  operator once: "Will this spec's work go through external code
+  review (PRs/MRs)?" The answer stamps `review_mode: true` or
+  `review_mode: false` into the new `_overview.md` frontmatter. The
+  prompt is unconditional during new-spec creation: no session
+  sentinel, no global config to check, no in-flight-work
+  consideration, because the decision is local to the spec being
+  authored. On resume of an existing spec, the prompt is skipped;
+  the operator edits `_overview.md` directly if they change their
+  mind.
 
-- **Pair documentation.** `docs/workflow.md` and
-  `docs/customization.md` describe review-mode for end users, link
-  to RALPH.md as the authoritative protocol description, and do not
-  duplicate its content. README is reviewed; if its high-level
-  pitch references ticket lifecycle, it accommodates review-mode
-  honestly.
+- **Pair documentation in the Socrates source repo.** The Socrates
+  project's own `docs/workflow.md` and `docs/customization.md`
+  describe review-mode for Socrates users reading the project's
+  documentation. They link to RALPH.md as the authoritative
+  protocol description and do not duplicate its content. No
+  documentation is generated into target projects. The Socrates
+  project's README is reviewed; if its high-level pitch references
+  ticket lifecycle, it accommodates review-mode honestly.
 
 - **Install-path divergence acknowledged.** Nix-installed target
-  projects propagate this protocol change automatically;
-  `/init`-installed projects do not. The spec defers the
-  upgrade-flow design to the gap recorded at
+  projects propagate the new RALPH.md protocol behaviours
+  automatically; `/init`-installed projects do not. The spec defers
+  the upgrade-flow design to the gap recorded at
   `docs/gaps/socrates-upgrade-flow.md`. Until that follow-up lands,
-  operators on the `/init` path must re-run `/init` or manually
-  patch RALPH.md frontmatter; the user-facing docs name this
-  explicitly so the divergence is not silent.
+  operators on the `/init` path must re-run `/init` to pick up the
+  updated RALPH.md; existing specs are unaffected because the
+  `review_mode` field is opt-in (a missing field reads as `false`).
+  The user-facing docs name the divergence explicitly so it is not
+  silent.
 
 Validation evidence: as part of landing this task, the implementer
 runs candidate commands against real upstream artifacts on at least
@@ -128,34 +136,42 @@ two distinct hosting services. Caveats discovered (auth
 requirements, rate limits, missing operations, unusual host quirks)
 are folded directly into the protocol prose where relevant — no
 separate spike artifact is produced.
-</outcome>
 
-<verification>
-- `RALPH.md` template starts with a frontmatter block defining
-  `review_mode: false`. The Startup Checklist instructs the agent
-  to read this flag and explains the missing-field-as-false
-  default.
-- The protocol contains a section that defines the URL convention
-  and enumerates the agent operations (list new comments, detect
-  merge, discover for branch, handle missing upstream) without
-  naming any host. The "RALPH does not open upstream artifacts"
-  rule is explicit.
-- The End-of-Session Gate text branches on `review_mode`. The
-  off-branch is byte-equivalent in observable behaviour to today's
-  protocol. The on-branch instructs: tag `awaiting-review`, attempt
-  discovery, set external-ref or escalate, leave the ticket
-  `in_progress`. The branch never opens the upstream artifact.
+## Verification
+
+- The spec `_overview.md` template at
+  `plugins/socrates/templates/_overview.md` carries `review_mode:
+  false` in its frontmatter. RALPH.md describes how the agent
+  resolves a ticket's effective `review_mode`: read the linked
+  spec's `_overview.md` if a `Spec overview:` line exists in the
+  ticket body, otherwise treat as `false`. Missing fields are
+  treated as `false`.
+- RALPH.md contains a section that defines the URL convention and
+  enumerates the agent operations (list new comments, detect merge,
+  discover for branch, handle missing upstream) without naming any
+  host. The "RALPH does not open upstream artifacts" rule is
+  explicit.
+- The End-of-Session Gate text branches on the linked spec's
+  `review_mode`. The off-branch is byte-equivalent in observable
+  behaviour to today's protocol. The on-branch instructs: tag
+  `awaiting-review`, attempt discovery, set external-ref or
+  escalate, leave the ticket `in_progress`. The branch never opens
+  the upstream artifact.
 - The escalation rule is described once in RALPH.md and referenced
   from every escalation site. It uses existing primitives only:
   structured note + `needs-human` tag + `.ralph-stop` + a
-  session-end reminder line in the agent's output. The `.msgs/`
-  mechanism is unchanged.
-- The PM role's External Review Sweep is fully described. Every
+  session-end reminder line in the agent's output.
+- The PM role's External Review Sweep is fully described. It is
+  tag-driven (iterates `awaiting-review`-tagged tickets) and runs
+  unconditionally — a no-op when no tickets carry the tag. Every
   state (empty external-ref, set external-ref, inaccessible
-  upstream, close-without-merge, mid-stream toggle) has a defined
-  agent action that uses the escalation rule where applicable.
-  The sweep is documented as append-only on ticket notes and the
-  no-op case (no new comments, not merged) produces no churn.
+  upstream, close-without-merge) has a defined agent action that
+  uses the escalation rule where applicable. The sweep is
+  documented as append-only on ticket notes and the no-op case
+  (no new comments, not merged) produces no churn.
+- RALPH.md documents `awaiting-review` and `needs-human` as
+  review-mode-reserved tags so other features know not to reuse
+  them.
 - The `tk` mutation mechanism is pinned: the protocol says agents
   edit ticket markdown directly under `.tickets/`, lists the
   permitted frontmatter fields, and points to existing tickets as
@@ -164,22 +180,36 @@ separate spike artifact is produced.
   `tk show` on a hypothetical `awaiting-review` ticket and shows
   it is self-evident.
 - The `/spec` discoverability hook is implemented in
-  `plugins/socrates/commands/spec.md`. The check covers all three
-  conditions (review_mode false/absent, session-sentinel absent,
-  no tickets in flight). The session-sentinel mechanism is pinned.
-  The prompt offers three options. The "enable now" path writes
-  RALPH.md frontmatter idempotently. When any condition is false
-  the prompt is skipped silently.
-- `docs/workflow.md` and `docs/customization.md` cover review-mode
-  in user-facing terms, link to RALPH.md, and do not restate it.
-  The user-facing docs name the install-path divergence and point
-  to `docs/gaps/socrates-upgrade-flow.md`.
+  `plugins/socrates/commands/socrates-spec.md`. During new-spec
+  creation, the skill asks the operator once whether the spec opts
+  into review mode and stamps the answer into `_overview.md`. On
+  resume of an existing spec, the prompt is skipped.
+- The Socrates project's own `docs/workflow.md` and
+  `docs/customization.md` cover review-mode in user-facing terms,
+  link to RALPH.md, and do not restate it. No documentation is
+  generated into target projects. The user-facing docs name the
+  install-path divergence and point to
+  `docs/gaps/socrates-upgrade-flow.md`.
 - `docs/gaps/socrates-upgrade-flow.md` exists and describes the
   install-path divergence as a deferred concern. T1's outcome and
   the user-facing docs reference it.
 - The protocol prose embeds the validation evidence captured
   during implementation (commands, sample output excerpts,
   caveats) so a future reader can reproduce the operations.
-</verification>
+
+**Negative tests (gate rejection verification):**
+
+- A ticket whose linked spec has `review_mode: false` is closed at
+  work-done exactly as today; no `awaiting-review` tag is set, no
+  external-ref is queried, no PM sweep action is taken.
+- A ticket with no `Spec overview:` link in its body defaults to
+  off and behaves identically to today.
+- A ticket tagged `awaiting-review` with an inaccessible upstream
+  (e.g., 404 URL, missing credentials) triggers escalation rather
+  than silent closure. Confirm the `needs-human` tag is set and
+  `.ralph-stop` is created.
+- A ticket tagged `awaiting-review` whose upstream is closed
+  without merge triggers escalation. Confirm the agent does not
+  close the ticket as "done".
 
 <review></review>
