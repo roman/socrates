@@ -90,6 +90,22 @@ Copy overview template and fill frontmatter:
 - `epic:` — leave blank (populated by `/pour`)
 - `archived:` — leave blank
 - `delimit_approved: false`
+- `review_mode:` — set by the review-mode prompt below
+
+### Review-mode prompt (new spec only)
+
+After creating the spec directory and copying the template, ask the
+operator once via AskUserQuestion:
+
+> "Will this spec's work go through external code review (PRs/MRs)?"
+
+Stamp the answer into the new `_overview.md` frontmatter:
+- Yes → `review_mode: true`
+- No → `review_mode: false`
+
+On **resume of an existing spec**, skip this prompt. The operator edits
+`_overview.md` directly if they change their mind. See RALPH.md § Review
+Mode for the full semantics.
 
 ### Check open gaps (new spec only)
 

@@ -1,6 +1,6 @@
 ---
 id: soc-rc5m
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-05-25T00:42:29Z

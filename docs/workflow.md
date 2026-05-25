@@ -81,6 +81,29 @@ Each task follows the phase sequence:
 
 Ralph writes a session handoff to `docs/handoffs/` at the end of each session.
 
+### Review Mode
+
+Specs can opt into external code review by setting `review_mode: true`
+in their `_overview.md` frontmatter. `/spec` asks about this when
+creating a new spec.
+
+When review mode is on, Ralph does not close tickets at "work done."
+Instead, tickets stay `in_progress` and are tagged `awaiting-review`
+until Ralph observes a merge on the upstream PR/MR. Ralph's PM cycle
+polls for new review comments and appends them as ticket notes, so each
+session picks up feedback without manual bridging.
+
+When review mode is off (the default), ticket lifecycle is unchanged.
+
+See RALPH.md § Review Mode for the full protocol.
+
+**Install-path note:** Nix-installed projects pick up the updated
+RALPH.md automatically. `/init`-installed projects must re-run `/init`
+to get the new protocol. Existing specs are unaffected — `review_mode`
+defaults to `false` when absent. See
+`docs/gaps/socrates-upgrade-flow.md` for the deferred upgrade-flow
+design.
+
 ### Controlling Ralph
 
 - **Single iteration**: `./ralph-once.sh` for testing

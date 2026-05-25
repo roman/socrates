@@ -56,6 +56,33 @@ Completed specs live under `docs/specs/archive/` and carry an `archived:`
 frontmatter field; git history preserves everything. Note any archival
 actions in the session handoff.
 
+#### External Review Sweep
+
+Every PM cycle, run this sweep for tickets in external review. It is a
+no-op when no tickets carry the `awaiting-review` tag.
+
+Iterate every ticket tagged `awaiting-review` and handle by external-ref
+state:
+
+**Empty external-ref**: Re-attempt upstream discovery for the ticket's
+branch (the branch name is recorded in the ticket notes by the
+End-of-Session Gate). If discovery still fails, escalate per the
+escalation rule.
+
+**Set external-ref**: Read the upstream artifact at the URL. Append
+every review comment newer than the timestamp of the latest existing
+ticket note as a new note (append-only — never mutate prior notes; this
+rules out races with a concurrent implementer reading the ticket).
+
+- **Merge observed**: remove the `awaiting-review` tag and close the
+  ticket.
+- **Close without merge observed**: escalate per the escalation rule.
+  Never silently close.
+- **No new comments, not merged**: no action (no churn).
+
+**Inaccessible upstream** (auth failure, 404, network error): escalate
+per the escalation rule. Never silently close.
+
 ### Implementer
 
 Pick this role when:
@@ -91,6 +118,163 @@ Pick this role when:
 - Write findings to handoff
 
 Reviewer actions: review code, add comments to tk tickets, update ticket state.
+
+## Review Mode
+
+Review mode extends the ticket lifecycle past "work done" through
+external code review and merge. It is per-spec and opt-in. When off
+(the default), all behaviour is identical to the protocol without this
+section.
+
+### Review-Mode Resolution
+
+When processing a ticket, the agent resolves the effective `review_mode`:
+
+1. If the ticket body contains a `Spec overview:` line, read that
+   spec's `_overview.md` frontmatter. Use its `review_mode` value.
+2. If the field is missing or the ticket has no `Spec overview:` link,
+   treat `review_mode` as `false`.
+
+### External-Ref Convention
+
+A ticket's external-ref is the URL of the upstream review artifact:
+
+```
+https://github.com/user/repo/pull/123
+https://gitlab.com/group/project/-/merge_requests/456
+```
+
+No custom prefix scheme. The agent maps the URL host to the appropriate
+tool (`gh`, `glab`, `curl` to the host's API) using common knowledge.
+The host can also be inferred from `git remote -v` when no URL is set
+yet.
+
+**RALPH does not open upstream artifacts.** Humans create PRs/MRs and
+post them for review. The agent reads their state and comments
+programmatically. The protocol assumes git as the VCS.
+
+### Upstream Discovery
+
+To discover the upstream artifact for a branch:
+
+1. Read the remote URL from `git remote -v` (the `origin` remote).
+2. Identify the host (github.com, gitlab.com, etc.).
+3. Query the host's API for a PR/MR matching the current branch:
+   - **GitHub**: `gh pr list --head <branch> --json url,number,state`
+     or `GET /repos/{owner}/{repo}/pulls?head={owner}:{branch}`
+   - **GitLab**: `glab mr list --source-branch <branch>`
+     or `GET /projects/{id}/merge_requests?source_branch={branch}`
+4. If found, the PR/MR URL is the external-ref.
+
+**Validation caveats** (tested against github.com and gitlab.com):
+
+- `gh` and `glab` require authentication (`gh auth login` /
+  `glab auth login`). Unauthenticated API access via `curl` works for
+  public repos on GitHub (60 req/hr rate limit) but returns 401 on
+  GitLab for most endpoints including MR notes.
+- GitHub uses `state: "open"` / `"closed"` with a separate `merged`
+  boolean. GitLab uses `state: "opened"` / `"merged"` / `"closed"`.
+- GitHub branch-to-PR queries require `{owner}:{branch}` format.
+
+### Reading Review Comments
+
+To list new review comments on an upstream artifact:
+
+- **GitHub**: `gh api repos/{owner}/{repo}/pulls/{n}/comments`
+  (filter by `created_at` against the latest ticket note timestamp).
+  Also check `pulls/{n}/reviews` for review-level feedback.
+- **GitLab**: `GET /projects/{id}/merge_requests/{iid}/notes?order_by=created_at&sort=asc`
+  (requires authentication; filter by `created_at` client-side).
+
+To detect merge:
+
+- **GitHub**: `gh pr view {n} --json merged,mergedAt` or
+  `GET /repos/{owner}/{repo}/pulls/{n}` and check `merged: true`.
+- **GitLab**: `GET /projects/{id}/merge_requests/{iid}` and check
+  `state: "merged"`.
+
+### Ticket Mutation
+
+`tk` exposes `--external-ref` and `--tags` only at create time, and
+`tk edit` opens `$EDITOR` (unsuited to autonomous agents). The agent
+edits ticket markdown directly under `.tickets/<id>.md`.
+
+Permitted frontmatter fields for agent mutation:
+
+- `external-ref` — set to the upstream artifact URL
+- `tags` — append `awaiting-review` or `needs-human`
+
+Use existing tickets in the repo as the schema reference for frontmatter
+format.
+
+### Escalation Rule
+
+When review mode triggers an escalation, the agent:
+
+1. Appends a structured note to the ticket describing what failed and
+   what the agent expects from the human.
+2. Tags the ticket `needs-human`.
+3. Creates `.ralph-stop` so the loop halts at the end of the current
+   cycle.
+
+At session close, the agent's final output names how the human can
+review escalations:
+
+> Escalations occurred — run
+> `tk query '.' | jq -s '[.[] | select(.tags | index("needs-human"))]'`
+> to triage.
+
+This rule is referenced from every escalation site in this protocol
+(External Review Sweep, End-of-Session Gate).
+
+### Reserved Tags
+
+The following tags are reserved by review mode. Other features must not
+reuse them:
+
+- **`awaiting-review`** — set on a ticket at handoff to external review.
+  Removed when the upstream artifact is observed merged.
+- **`needs-human`** — set when the agent escalates a review-mode issue
+  that requires human intervention.
+
+### Self-Evident Ticket View
+
+A fresh Claude session reading `tk show` on an `awaiting-review` ticket
+must be able to name the ticket's state, the upstream URL, and the next
+step from the artifact alone — without consulting RALPH.md or any
+external service.
+
+Example:
+
+```
+---
+id: soc-a1b2
+status: in_progress
+tags: [functional, awaiting-review]
+external-ref: https://github.com/user/repo/pull/42
+---
+# Implement widget caching
+
+...
+
+## Notes
+
+### 2026-05-25T14:30:00Z — branch
+
+Branch: feat/widget-caching
+
+### 2026-05-25T16:00:00Z — review comment (jdoe)
+
+Rename `cache_ttl` to `cache_duration` for clarity.
+
+### 2026-05-25T16:05:00Z — review comment (asmith)
+
+The fallback path doesn't handle expired entries. Add a test.
+```
+
+From this view alone, a fresh session knows: the ticket is in review
+(tag), the PR is at the URL (external-ref), and two comments need
+addressing (notes).
 
 ## Phase Sequence
 
@@ -221,9 +405,30 @@ See handoff format below.
 
 ### 3. tk Updates
 
+For each ticket worked on this cycle, resolve its `review_mode` (see
+Review Mode § Review-Mode Resolution).
+
+**Review-mode off (default):**
+
 - Close tickets that are done
 - Update in-progress tickets with current state
 - Add comments to tickets with findings or blockers
+
+**Review-mode on** (ticket's linked spec has `review_mode: true`):
+
+Do NOT close the ticket. Instead:
+
+1. Tag the ticket `awaiting-review` (edit `.tickets/<id>.md` frontmatter
+   directly; see Review Mode § Ticket Mutation).
+2. Attempt upstream discovery for the current branch (see Review Mode §
+   Upstream Discovery).
+3. If a PR/MR URL is found, set `external-ref` in the ticket
+   frontmatter.
+4. Record the branch name in a ticket note so the PM sweep can
+   re-attempt discovery if needed.
+5. Leave the ticket as `in_progress`.
+6. If upstream discovery fails, escalate per the Review Mode escalation
+   rule.
 
 ## `.msgs/` Inbox
 

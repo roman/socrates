@@ -44,6 +44,17 @@ Add new task types or modify existing ones. The four defaults (feature, docs,
 infrastructure, bug fix) cover most cases, but your project might have others
 (e.g., "migration", "security", "performance").
 
+### Review Mode
+
+Review mode is per-spec, set via `review_mode: true` in `_overview.md`
+frontmatter. `/spec` prompts for this when creating a new spec; edit
+`_overview.md` directly to change it later.
+
+When on, Ralph carries tickets through external review and merge instead
+of closing at work-done. The PM cycle polls the upstream artifact for
+new comments and merge state. See RALPH.md § Review Mode for the full
+protocol.
+
 ### Decision Protocol
 
 Customize when Ralph should escalate. Add project-specific thresholds, like

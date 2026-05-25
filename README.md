@@ -37,7 +37,9 @@ Key principles:
    Spec files freeze after pour; mutable state lives in `.tickets/`.
 
 3. **Ralph loop** — Autonomous sessions pick up ready tickets, implement,
-   verify, commit, and hand off context for the next session.
+   verify, commit, and hand off context for the next session. Specs that
+   opt into review mode extend the loop through external code review and
+   merge.
 
 4. **`/harvest`** — Extracts learnings and gaps from session handoffs into
    durable artifacts (skills, docs, new tickets).
