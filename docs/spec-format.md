@@ -115,14 +115,14 @@ ticket: null                    # set to tk ID after pour (last write)
 ```markdown
 # <Task title>
 
-<outcome>
-What the implementer must achieve — the target state, not the procedure.
-</outcome>
+## Outcomes
 
-<verification>
+- What the implementer must achieve — the target state, not the procedure.
+
+## Verification
+
 - Observable criterion one
 - Observable criterion two
-</verification>
 
 <review></review>
 ```
@@ -155,5 +155,5 @@ without forcing every task through tk.
 
 1. User writes feedback in the `<review>` section
 2. Run `/spec <task-file>` to process feedback
-3. AI regenerates `<outcome>` and `<verification>`, clears `<review>`
+3. AI regenerates `## Outcomes` and `## Verification`, clears `<review>`
 4. Repeat until satisfied, then set `status: approved`

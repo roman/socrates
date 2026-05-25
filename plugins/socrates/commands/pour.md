@@ -101,8 +101,8 @@ For each task in order:
    Spec overview: docs/specs/<spec-dir>/_overview.md
    Spec task:     docs/specs/<spec-dir>/<task-file>.md
 
-   ## Outcome
-   <outcome content>
+   ## Outcomes
+   <outcomes content>
 
    ## Verification
    <verification content>

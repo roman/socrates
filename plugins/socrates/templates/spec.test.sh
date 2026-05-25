@@ -104,10 +104,14 @@ revisions: 0
 ---
 # Task One
 
-<outcome>Do something.</outcome>
-<verification>
+## Outcomes
+
+- Do something.
+
+## Verification
+
 - check it
-</verification>
+
 <review></review>
 TASKEOF
 
@@ -122,10 +126,14 @@ revisions: 0
 ---
 # Task Two
 
-<outcome>Do another thing.</outcome>
-<verification>
+## Outcomes
+
+- Do another thing.
+
+## Verification
+
 - check it
-</verification>
+
 <review>
 This needs the author's attention.
 </review>
@@ -164,10 +172,13 @@ revisions: 0
 ---
 # Poured Task
 
-<outcome>Already poured.</outcome>
-<verification>
+## Outcomes
+
+- Already poured.
+
+## Verification
+
 - done
-</verification>
 <review></review>
 TASKEOF
 
@@ -182,10 +193,13 @@ revisions: 0
 ---
 # Unpoured Task
 
-<outcome>Not poured yet.</outcome>
-<verification>
+## Outcomes
+
+- Not poured yet.
+
+## Verification
+
 - pending
-</verification>
 <review></review>
 TASKEOF
 
