@@ -1,13 +1,19 @@
 ---
-id: 2-e75b-init-stamp-review-mode
-status: poured
+id: soc-6k6x
+status: open
+deps: [soc-rc5m]
+links: []
+created: 2026-05-25T00:43:14Z
+type: task
 priority: 1
-category: functional
-ticket: soc-6k6x
-revisions: 1
+assignee: ralph
+parent: soc-ooy8
+tags: [functional]
 ---
-
 # Stamp review_mode default in spec _overview.md template
+
+Spec overview: docs/specs/2026-04-29-pr-review-loop/_overview.md
+Spec task:     docs/specs/2026-04-29-pr-review-loop/2-e75b-init-stamp-review-mode.md
 
 ## Outcomes
 
@@ -40,4 +46,3 @@ field as `false` anyway.
   treats the absence as `false`, preserving today's behaviour for
   every existing spec.
 
-<review></review>

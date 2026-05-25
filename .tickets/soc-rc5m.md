@@ -1,13 +1,19 @@
 ---
-id: 1-13a3-implement-review-mode
-status: poured
+id: soc-rc5m
+status: open
+deps: []
+links: []
+created: 2026-05-25T00:42:29Z
+type: task
 priority: 0
-category: functional
-ticket: soc-rc5m
-revisions: 1
+assignee: ralph
+parent: soc-ooy8
+tags: [functional]
 ---
-
 # Implement review-mode behaviour in RALPH.md and pair docs
+
+Spec overview: docs/specs/2026-04-29-pr-review-loop/_overview.md
+Spec task:     docs/specs/2026-04-29-pr-review-loop/1-13a3-implement-review-mode.md
 
 ## Outcomes
 
@@ -212,4 +218,3 @@ separate spike artifact is produced.
   without merge triggers escalation. Confirm the agent does not
   close the ticket as "done".
 
-<review></review>
