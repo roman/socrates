@@ -182,6 +182,9 @@ Key elements:
 - Task files with `## Outcomes`, `## Verification`, `<review>` sections
 - Optional Design Review council (prompted before finalizing)
 - Separate mechanical fixes from judgment calls
+- Optional Comprehension Test: fresh-reader sub-agent checks the
+  spec communicates purpose, scope, and what-done-looks-like
+  (sample of two tasks, 2-round auto-revise cap)
 - Post-design summary: neutral options, no urgency
 
 ## Resume Detection

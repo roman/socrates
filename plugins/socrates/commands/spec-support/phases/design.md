@@ -194,6 +194,110 @@ If the user accepts, run the council:
 5. After applying any non-controversial fixes and resolving
    judgment calls, briefly confirm what changed and why.
 
+## Comprehension Test (optional)
+
+After the design review (or directly after writing the Design
+section if the review was skipped), ask the user:
+
+> "Want a comprehension test before finalizing? A fresh sub-agent
+> reads only what an implementer would see and answers whether the
+> spec communicates each task's purpose, scope, and what done
+> looks like."
+
+If the user declines, proceed directly to Post-Design Summary.
+
+The premise: an implementer picks up a task and reads only what's
+reachable from that task — the task file, the spec overview, and
+the project's `claude-gates.md` block in CLAUDE.md. If a fresh
+reader with that material cannot answer questions about the task's
+*purpose*, *scope*, or *what done looks like*, the spec failed to
+communicate those things, even if the answers exist in your head
+as the spec's author.
+
+### Sample selection
+
+Test two tasks per spec:
+
+- The **highest-priority task** (lowest ordinal that isn't pure
+  pre-work or already merged). This is the entry point an
+  implementer is most likely to pick up first.
+- The **task with the most complex why** — the task whose purpose
+  is hardest to reconstruct from the task file alone, typically
+  one that closes an Adjacent Constraint, lands a prerequisite for
+  later work, or whose Outcome reads as a slice rather than as the
+  full motivation. Use your judgment; if two tasks tie, pick the
+  one whose Outcome reframes the why in task-ordering language.
+
+If the spec has fewer than two tasks, test all of them.
+
+### Test execution
+
+For each selected task, launch a fresh sub-agent (general-purpose,
+foreground, sonnet model is enough — this is comprehension, not
+code work). The agent's prompt:
+
+1. **Materials**: paths to the task file, the spec's `_overview.md`,
+   and the project's `CLAUDE.md` (the `claude-gates.md` block is
+   the relevant section). The agent reads only these.
+2. **Questions** — the agent must answer all three:
+   - **Purpose**: in one sentence, what user-facing pain does this
+     task ultimately address? Which Diagnose item (RC/AC) does it
+     serve? Why does this task exist *now* rather than later?
+   - **Scope**: name one thing that is *not* in this task that a
+     reader might mistakenly think is. If nothing comes to mind,
+     say so explicitly.
+   - **Done**: without re-reading the Verification section,
+     describe what an observer would see when this task is done.
+     Then re-read Verification and note any mismatch.
+3. **Output shape**: terse answers, plus a single coverage label
+   per question:
+   - **covered** — the answer is directly findable in the materials
+   - **inferred** — the agent had to reason across sections but got
+     there confidently
+   - **gap** — partial or couldn't answer
+
+   This scale is about whether the spec *communicated* the answer,
+   not how sure the agent is the answer is true. It's a different
+   axis from the confidence ladder in `voice.md` (✅/🟨/🟥), which
+   is why the labels here are words rather than icons.
+
+### Failure handling
+
+A task fails the comprehension test when any answer comes back as
+**gap**. Treat the failure the same way the design review treats
+non-controversial fixes — revise the spec without re-prompting the
+user — with a 2-round cap symmetric with the code-critic rule:
+
+1. **Round 1**: read the agent's answers and identify which spec
+   surface should carry the missing information. The fix is almost
+   always one of:
+   - Tighten the overview's Describe (user-facing pain) or Diagnose
+     (mechanism) so the why is reconstructible.
+   - Reword the task's Outcome to describe the slice without
+     reframing the why in task-ordering language.
+   - Sharpen a Verification bullet so it names an observable
+     artifact, not a procedure.
+
+   Apply the fix and re-run the test on the same task.
+
+2. **Round 2**: if the test still fails, surface the residual gap
+   to the user as a judgment call (not a non-controversial fix),
+   with the agent's transcript and your candidate fix. The user
+   decides whether to apply, defer, or revise differently. Do not
+   loop further.
+
+A task passes the comprehension test when all three answers come
+back as **covered** or **inferred**. Note the result inline
+(one line per tested task) so the user can see what was checked.
+
+### Why this step exists
+
+The spec command authored the spec; of course it knows the why. A
+fresh reader who can only see what an implementer sees is the
+honest test of whether the spec *communicated* the why. This step
+catches the failure mode where the durable why lives only in the
+author's head while the spec body talks about task ordering.
+
 ## Post-Design Summary
 
 After the design review is resolved and all task files are finalized:
