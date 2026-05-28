@@ -54,6 +54,9 @@ Before installing, check which non-Nix-managed files already exist:
 - `.msgs/`
 - `RALPH.md`
 
+Also check:
+- `INTERACTIVE.md`
+
 **If ANY exist** (and are not Nix-managed): Use AskUserQuestion to ask user
 for each existing file whether to:
 - Skip (keep existing)
@@ -89,6 +92,13 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
 3. **Copy RALPH.md** (if not Nix-managed): Copy from the template:
    ```bash
    cp "${TEMPLATE_DIR}/RALPH.md" ./RALPH.md
+   ```
+
+3a. **Copy INTERACTIVE.md** (if not Nix-managed): Copy from the template.
+    Used in interactive (human-driven) sessions. Symmetric with RALPH.md
+    but covers the deltas for human-in-the-chat work:
+   ```bash
+   cp "${TEMPLATE_DIR}/INTERACTIVE.md" ./INTERACTIVE.md
    ```
 
 4. **Append CLAUDE.md discipline gates**: Read the gates template and append
@@ -127,7 +137,7 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
 Confirm all files/directories exist (whether Nix-managed or locally installed):
 - Scripts: ralph.sh, ralph-once.sh, ralph-format.sh
 - Directories: docs/specs/, docs/handoffs/, .msgs/, .tickets/
-- Protocol: RALPH.md
+- Protocols: RALPH.md (autonomous), INTERACTIVE.md (human-driven)
 - Hook: .git/hooks/commit-msg (warning mode)
 
 Report which files are Nix-managed vs locally installed.
