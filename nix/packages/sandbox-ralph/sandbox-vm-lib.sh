@@ -121,7 +121,7 @@ sandbox_start_vm() {
 sandbox_push_branch() {
   echo ">>> Pushing branch '$HOST_BRANCH' into VM"
   GIT_SSH_COMMAND="ssh -F $HOME/.lima/$INSTANCE/ssh.config" \
-    git -C "$PROJECT_ROOT" push \
+    git -C "$PROJECT_ROOT" push --force \
       "lima-$INSTANCE:$GUEST_PROJECT_DIR.git" \
       "HEAD:refs/heads/$HOST_BRANCH"
 }
