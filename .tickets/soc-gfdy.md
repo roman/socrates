@@ -1,25 +1,32 @@
 ---
-id: 2-b01a-define-task-schema
-status: poured
+id: soc-gfdy
+status: open
+deps: []
+links: []
+created: 2026-06-06T22:37:11Z
+type: task
 priority: 0
-category: infrastructure
-ticket: soc-gfdy
+assignee: ralph
+parent: soc-bjda
+tags: [infrastructure]
 ---
-
 # Define the unified task artifact schema
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/2-b01a-define-task-schema.md
+
+## Outcome
 
 - The task template defines the single-artifact schema that serves both
   interactive and autonomous modes: a stable opaque identity token, a
   cosmetic human slug that can change without breaking references, a
-  `status` field whose `draft → approved → closed` transition encodes
+  `status` field whose `draft -> approved -> closed` transition encodes
   the freeze, and an `assignee` field the frontier query filters on.
 - Dependency edges live in task frontmatter with a schema a parser can
   read directly, replacing the prose-derived `Shared Surfaces` edges
   that `/pour` used to compile.
 - The `status` enum drops `poured`; the lifecycle is
-  `draft → approved → closed` plus `cancelled`. `approved` is the
+  `draft -> approved -> closed` plus `cancelled`. `approved` is the
   freeze point after which contract fields (Outcomes, Verification,
   edges) are write-once until the task is explicitly reopened to
   `draft`.
@@ -44,4 +51,3 @@ ticket: soc-gfdy
   task purely through frontmatter, with no entry in the overview's
   prose required for the edge to be machine-readable.
 
-<review></review>

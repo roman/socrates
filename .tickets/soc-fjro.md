@@ -1,14 +1,21 @@
 ---
-id: 1-2e23-record-lifecycle-decision
-status: poured
+id: soc-fjro
+status: open
+deps: []
+links: []
+created: 2026-06-06T22:36:51Z
+type: task
 priority: 0
-category: documentation
-ticket: soc-fjro
+assignee: ralph
+parent: soc-bjda
+tags: [documentation]
 ---
-
 # Record the unified-lifecycle decision
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/1-2e23-record-lifecycle-decision.md
+
+## Outcome
 
 - A new ADR records the decision to collapse the spec/ticket namespace
   split: one task artifact per spec, freeze encoded as a `status` field,
@@ -18,7 +25,7 @@ ticket: soc-fjro
   (tk over beads), with both marked superseded and pointing forward to
   the new record.
 - The ADR states how the freeze invariant survives the collapse: it
-  moves from filesystem location to the `draft → approved` status
+  moves from filesystem location to the `draft -> approved` status
   transition, and the mechanical bypass defense re-aims from path/id
   shape to task status.
 - The ADR records the drain-then-retire decision for tk: in-flight
@@ -37,4 +44,3 @@ ticket: soc-fjro
   why the namespace split was removed without losing the invariant it
   protected.
 
-<review></review>

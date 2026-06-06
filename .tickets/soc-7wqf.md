@@ -1,14 +1,21 @@
 ---
-id: 5-5760-migrate-existing-specs
-status: poured
+id: soc-7wqf
+status: open
+deps: [soc-gfdy, soc-hrj1]
+links: []
+created: 2026-06-06T22:39:00Z
+type: task
 priority: 2
-category: infrastructure
-ticket: soc-7wqf
+assignee: ralph
+parent: soc-bjda
+tags: [infrastructure]
 ---
-
 # Migrate existing specs to the unified schema
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/5-5760-migrate-existing-specs.md
+
+## Outcome
 
 - Every existing in-repo spec is converted to the unified schema so the
   extended `spec` CLI and the re-aimed defenses read consistent fields:
@@ -34,4 +41,3 @@ ticket: soc-7wqf
   matching the overview's recorded edges.
 - No migrated `_overview.md` retains an `epic:` field.
 
-<review></review>

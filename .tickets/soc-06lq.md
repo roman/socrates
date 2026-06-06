@@ -1,14 +1,21 @@
 ---
-id: 4-de92-reaim-defenses-to-status
-status: poured
+id: soc-06lq
+status: open
+deps: [soc-gfdy]
+links: []
+created: 2026-06-06T22:38:27Z
+type: task
 priority: 1
-category: infrastructure
-ticket: soc-06lq
+assignee: ralph
+parent: soc-bjda
+tags: [infrastructure]
 ---
-
 # Re-aim mechanical defenses to task status
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/4-de92-reaim-defenses-to-status.md
+
+## Outcome
 
 - The commit-msg hook stops keying on `.tickets/<ref>.md` file existence
   and instead validates that a commit's `Refs:` names a real task whose
@@ -38,4 +45,3 @@ ticket: soc-06lq
 - The commit-msg hook's output references neither `/pour` nor
   `.tickets/`.
 
-<review></review>

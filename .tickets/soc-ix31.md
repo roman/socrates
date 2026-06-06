@@ -1,14 +1,21 @@
 ---
-id: 8-1109-retire-tk-dependency
-status: poured
+id: soc-ix31
+status: open
+deps: [soc-30rr]
+links: []
+created: 2026-06-06T22:53:01Z
+type: task
 priority: 4
-category: infrastructure
-ticket: soc-ix31
+assignee: ralph
+parent: soc-bjda
+tags: [infrastructure]
 ---
-
 # Retire the tk dependency
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/8-1109-retire-tk-dependency.md
+
+## Outcome
 
 - The tk (wedow/ticket) Nix package and its wiring are removed from the
   flake. The project's `.tickets/` directory is already fully drained
@@ -33,4 +40,3 @@ ticket: soc-ix31
   removal.
 - CLAUDE.md directs contributors to `spec ready` for finding work.
 
-<review></review>

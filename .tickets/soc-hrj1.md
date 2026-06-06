@@ -1,14 +1,21 @@
 ---
-id: 3-1ea5-extend-cli-frontier-queries
-status: poured
+id: soc-hrj1
+status: open
+deps: [soc-gfdy]
+links: []
+created: 2026-06-06T22:37:32Z
+type: task
 priority: 1
-category: functional
-ticket: soc-hrj1
+assignee: ralph
+parent: soc-bjda
+tags: [functional]
 ---
-
 # Extend the spec CLI with frontier and dependent queries
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/3-1ea5-extend-cli-frontier-queries.md
+
+## Outcome
 
 - The in-repo `spec` CLI gains a `ready` subcommand that computes the
   unblocked frontier from the spec directory: it reads task `status`,
@@ -40,4 +47,3 @@ ticket: soc-hrj1
   exit non-zero with a message naming the cycle members.
 - The test suite exercises all of the above and passes.
 
-<review></review>

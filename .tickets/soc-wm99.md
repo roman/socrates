@@ -1,14 +1,21 @@
 ---
-id: 6-a93b-rewrite-protocols
-status: poured
+id: soc-wm99
+status: open
+deps: [soc-hrj1, soc-06lq]
+links: []
+created: 2026-06-06T22:39:35Z
+type: task
 priority: 2
-category: documentation
-ticket: soc-wm99
+assignee: ralph
+parent: soc-bjda
+tags: [documentation]
 ---
-
 # Rewrite protocols for the unified lifecycle
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/6-a93b-rewrite-protocols.md
+
+## Outcome
 
 - RALPH.md and INTERACTIVE.md are rewritten together for the unified
   lifecycle, keeping their existing symmetry. Both protocol files move
@@ -50,4 +57,3 @@ ticket: soc-wm99
 - A search of both files for `pour`, `.tickets`, `tk `, and `epic:`
   returns no operative references.
 
-<review></review>

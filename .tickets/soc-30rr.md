@@ -1,14 +1,21 @@
 ---
-id: 7-4919-remove-pour-reconcile-authoring
-status: poured
+id: soc-30rr
+status: open
+deps: [soc-gfdy, soc-hrj1, soc-7wqf, soc-wm99]
+links: []
+created: 2026-06-06T22:52:35Z
+type: task
 priority: 3
-category: functional
-ticket: soc-30rr
+assignee: ralph
+parent: soc-bjda
+tags: [functional]
 ---
-
 # Remove pour and reconcile spec and init authoring
 
-## Outcomes
+Spec overview: docs/specs/2026-06-06-unified-task-lifecycle/_overview.md
+Spec task:     docs/specs/2026-06-06-unified-task-lifecycle/7-4919-remove-pour-reconcile-authoring.md
+
+## Outcome
 
 - The `/pour` command is removed: its command file is deleted and every
   reference to it across the plugin (command docs, the commands index,
@@ -39,4 +46,3 @@ ticket: soc-30rr
 - `spec status` reports task counts using the `draft / approved /
   closed` vocabulary with no `poured` bucket.
 
-<review></review>
