@@ -1,6 +1,6 @@
 ---
 id: soc-gfdy
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-06-06T22:37:11Z

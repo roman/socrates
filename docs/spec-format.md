@@ -97,16 +97,19 @@ When revisiting a completed phase:
 ## Task File Format
 
 Individual task files live alongside `_overview.md` in the spec directory.
+Each task file is the single artifact for that unit of work across both
+interactive and autonomous modes — there is no second representation.
 
 ### Frontmatter
 
 ```yaml
 ---
-id: a1b2-setup-middleware       # short hash + human suffix
-status: draft                   # draft → approved → poured
+id: a1b2-setup-middleware       # identity token + cosmetic slug
+status: draft                   # draft | approved | closed | cancelled
 priority: 2                     # 0 (highest) to 4
 category: functional            # functional | style | infrastructure | documentation
-ticket: null                    # set to tk ID after pour (last write)
+assignee:                       # who works this task (e.g. "ralph", a human name, or empty)
+deps: [c4d5-worker-queue]       # list of identity tokens (or full ids) this task depends on
 ---
 ```
 
@@ -127,29 +130,62 @@ ticket: null                    # set to tk ID after pour (last write)
 <review></review>
 ```
 
-### ID Generation
+### Identity
 
-IDs are first 4 characters of the SHA-256 hash of the title plus a 2-3 word
-kebab-case human suffix:
+A task id has two parts: a stable **identity token** and a cosmetic
+**human slug**.
+
+- **Identity token**: first 4 hex characters of the SHA-256 hash of the
+  original title. This token is the stable handle — it never changes, even
+  if the task is reordered or the slug is rewritten.
+- **Human slug**: a 2-3 word kebab-case suffix for readability. The slug
+  can be renamed freely; it carries no semantic weight.
 
 ```bash
 echo -n "Setup auth middleware" | sha256sum | cut -c1-4
 # → "a1b2" → id: a1b2-setup-middleware
 ```
 
+Commits reference the identity token in `Refs:` lines (e.g.
+`Refs: a1b2-setup-middleware`). Because the token is position-independent,
+reordering tasks or renaming slugs does not invalidate references.
+
+### Dependencies
+
+Dependency edges live in the `deps` frontmatter field as a YAML list.
+Each entry is the identity token (or full id) of a task that must reach
+`closed` before this task becomes eligible for work. A parser can read
+edges directly from frontmatter — no overview prose is required for an
+edge to be machine-readable.
+
+```yaml
+deps: [c4d5-worker-queue, e6f7-schema-migration]
+```
+
+An empty list (`deps: []`) means the task has no dependencies.
+
 ### Status Lifecycle
 
 | Status | Meaning | Who sets it |
 |--------|---------|-------------|
 | `draft` | Generated or iterating, not yet reviewed | `/spec` (Design phase) |
-| `approved` | Human has signed off, ready to pour | User (manual edit) |
-| `poured` | tk ticket created, spec file is now frozen | `/pour` (last write) |
-| `cancelled` | Abandoned before pour; will not be done | User (manual edit) |
+| `approved` | Contract is frozen, task is eligible for work | User (manual edit) |
+| `closed` | Work is complete | Implementer |
+| `cancelled` | Abandoned; will not be done | User (manual edit) |
 
-After pour, the spec file is a write-once artifact. All mutable state lives
-in `.tickets/`. `cancelled` is a terminal pre-pour state for tasks that
-will never be poured, allowing an epic to reach a fully-closed state
-without forcing every task through tk.
+#### The freeze transition
+
+`draft → approved` is the freeze point. Once a task is `approved`, its
+contract fields — Outcomes, Verification, and `deps` — are write-once.
+Both interactive and autonomous modes honour this: `approved` means "the
+task is settled and safe to implement against."
+
+#### Reopening an approved task
+
+To change an `approved` task's contract, reopen it to `draft` first.
+Reopening signals that the contract has changed and affected dependents
+should be re-checked (the `spec dependents` query identifies which tasks
+depend on a given task). After editing, re-approve to re-freeze.
 
 ### Review Workflow
 
