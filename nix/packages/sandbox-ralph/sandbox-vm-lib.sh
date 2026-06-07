@@ -136,7 +136,7 @@ sandbox_seed_project() {
       git fetch origin
       if git show-ref --verify --quiet 'refs/heads/$HOST_BRANCH'; then
         git checkout '$HOST_BRANCH'
-        git merge --ff-only 'origin/$HOST_BRANCH'
+        git reset --hard 'origin/$HOST_BRANCH'
       else
         git checkout -b '$HOST_BRANCH' 'origin/$HOST_BRANCH'
       fi
