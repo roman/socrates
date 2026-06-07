@@ -573,7 +573,7 @@ echo "=== read-only check ==="
 # Verify the script contains no file-mutating constructs
 script_text=$(cat "$SCRIPT")
 ro_fail=0
-for pattern in 'sed -i' 'tk close' 'tk edit' 'tk create'; do
+for pattern in 'sed -i'; do
   if echo "$script_text" | grep -qF "$pattern"; then
     echo "FAIL - script contains mutating pattern: $pattern"
     ro_fail=$((ro_fail + 1))

@@ -1,6 +1,6 @@
 # Workflow Guide
 
-Socrates structures development into four phases: **Spec → Pour → Ralph → Harvest**.
+Socrates structures development into three phases: **Spec → Ralph → Harvest**.
 Each phase feeds the next, creating a cycle where learnings from implementation
 flow back into future designs.
 
@@ -33,7 +33,7 @@ statement isn't right, you can refine it or go back to Diagnose.
 ### Direction
 
 Multiple approaches are generated (always including status quo), compared via a
-decision matrix (🟢🟡🔴⬜), and you choose one. Use cases capture what users could
+decision matrix, and you choose one. Use cases capture what users could
 accomplish if the problem were solved.
 
 ### Design
@@ -52,32 +52,23 @@ task files with dependencies, implementation steps, and verification criteria.
 to process review feedback on individual tasks. Use `/spec --status` to see
 progress across all specs.
 
-## Phase 2: Pour — Tasks to Tickets
+### Approval
 
-Run `/pour <name>` to transform approved task files into tk tickets.
+Review each task file in `docs/specs/<name>/`. Change `status: draft` to
+`status: approved` for tasks you're satisfied with. The `spec ready` CLI
+shows the unblocked frontier of approved tasks whose dependencies are met.
 
-- Only `status: approved` tasks are poured (draft tasks are skipped)
-- Dependencies from spec files are wired as tk dependencies
-- Multiple tasks get grouped under an epic
-- Task files are frozen with `status: poured` — all mutable state moves to `.tickets/`
-- Safe to re-run: already-poured tasks are skipped
+## Phase 2: Ralph — Autonomous Implementation
 
-### Approval Workflow
-
-Before pouring, review each task file in `docs/specs/<name>/`. Change
-`status: draft` to `status: approved` for tasks you're satisfied with. You can
-pour incrementally — approve and pour a few tasks, then approve more later.
-
-## Phase 3: Ralph — Autonomous Implementation
-
-Run `./ralph.sh` to start the autonomous loop. Ralph picks tasks from `tk ready`,
-implements them following the RALPH.md protocol, and commits the results.
+Run `./ralph.sh` to start the autonomous loop. Ralph picks tasks from
+`spec ready -a ralph`, implements them following the RALPH.md protocol, and
+commits the results.
 
 Each task follows the phase sequence:
-1. **Bearings** — read the ticket, explore the codebase, verify build health
+1. **Bearings** — read the task file, explore the codebase, verify build health
 2. **Implement** — focused changes following existing patterns
 3. **Verify** — run checks appropriate to the task type
-4. **Commit** — conventional commit with `Refs: <tk-id>`
+4. **Commit** — conventional commit with `Refs: <task-id>`
 
 Ralph writes a session handoff to `docs/handoffs/` at the end of each session.
 
@@ -87,13 +78,13 @@ Specs can opt into external code review by setting `review_mode: true`
 in their `_overview.md` frontmatter. `/spec` asks about this when
 creating a new spec.
 
-When review mode is on, Ralph does not close tickets at "work done."
-Instead, tickets stay `in_progress` and are tagged `awaiting-review`
-until Ralph observes a merge on the upstream PR/MR. Ralph's PM cycle
-polls for new review comments and appends them as ticket notes, so each
-session picks up feedback without manual bridging.
+When review mode is on, Ralph does not close tasks at "work done."
+Instead, tasks are tagged `awaiting-review` until Ralph observes a merge
+on the upstream PR/MR. Ralph's PM cycle polls for new review comments
+and appends them as task notes, so each session picks up feedback without
+manual bridging.
 
-When review mode is off (the default), ticket lifecycle is unchanged.
+When review mode is off (the default), task lifecycle is unchanged.
 
 See RALPH.md § Review Mode for the full protocol.
 
@@ -110,7 +101,7 @@ design.
 - **Graceful stop**: `touch .ralph-stop` — Ralph finishes current task then exits
 - **Messages**: Write to `.msgs/<id>.md` to communicate asynchronously
 
-## Phase 4: Harvest — Learnings to Artifacts
+## Phase 3: Harvest — Learnings to Artifacts
 
 Run `/harvest` to extract learnings and gaps from session handoffs.
 
@@ -121,7 +112,6 @@ For each **learning**, you choose where to persist it:
 - Skip
 
 For each **gap**, you choose how to handle it:
-- Create a tk ticket
 - Add to an existing spec for the next design iteration
 - Skip
 
@@ -131,14 +121,14 @@ re-process old handoffs.
 ## The Full Cycle
 
 ```
-Spec → Pour → Ralph → Harvest
-  ↑                      |
-  └──────────────────────┘
-     gaps feed new specs
+Spec → Ralph → Harvest
+  ↑                 |
+  └─────────────────┘
+    gaps feed new specs
 ```
 
 Learnings improve the AI's skills and project conventions. Gaps become new
-tickets or spec inputs. Each cycle makes the next one better.
+spec inputs. Each cycle makes the next one better.
 
 Concerns surfaced during spec design that warrant their own future spec live
 under `docs/gaps/` — one file per deferred concern, refer-back-able when

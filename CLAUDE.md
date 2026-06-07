@@ -5,9 +5,9 @@ building Socrates using Socrates' own principles (dogfooding).
 
 ## Source of Truth
 
-Work is tracked as `tk` tickets under `.tickets/`. Use `tk ready -a ralph` to
-find what to do next. Specs in `docs/specs/` are blueprints; once poured they
-freeze and the ticket is authoritative.
+Work is tracked as task files under `docs/specs/`. Use `spec ready -a ralph`
+to find what to do next. Specs are the single source of truth; task status
+(`draft`, `approved`, `closed`) governs the lifecycle.
 
 The protocol Socrates installs into target projects is `RALPH.md` (template at
 `plugins/socrates/templates/RALPH.md`). Read that file to understand the loop.
@@ -18,7 +18,7 @@ The protocol Socrates installs into target projects is `RALPH.md` (template at
 
 1. Read this file
 2. Read the 3 most recent handoffs in `docs/handoffs/` if context is unclear
-3. Run `tk ready -a ralph` to find work
+3. Run `spec ready -a ralph` to find work
 
 ### Before committing
 
@@ -37,7 +37,7 @@ The protocol Socrates installs into target projects is `RALPH.md` (template at
 - Small and focused — one logical change per commit
 - Conventional commit format (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`)
 - Title explains why; body wraps at 72 chars
-- Include `Refs: <tk-id>` in the body
+- Include `Refs: <task-id>` in the body
 - No `Co-Authored-By` or `Generated with` lines
 
 ## Documentation Scope
@@ -54,6 +54,6 @@ to one machine, it does not belong in project history.
 - Simplicity over flexibility — prefer the boring approach that works
 - Convention over automation — add guardrails only where failure is silent
 - File-per-task over monolithic specs
-- Protocol as reference (RALPH.md), not embedded per ticket
+- Protocol as reference (RALPH.md), not embedded per task
 - Don't duplicate content across files. If a doc only restates another doc,
   delete it and link instead.

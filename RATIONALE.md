@@ -94,17 +94,17 @@ which starts at "what to build."
 
 ### 2. Queryable tasks without a database
 
-We use `tk` (ticket) — a ~1400-line bash script that stores markdown files with YAML
-frontmatter in `.tickets/`. It supports dependencies, priority, assignees, and queries
-like `tk ready` (unblocked tasks) and `tk blocked`. No SQLite, no daemon, no JSONL
-sync layer. Files are the source of truth. Git diff shows exactly what changed.
+Task files live as markdown with YAML frontmatter under `docs/specs/`. The `spec`
+CLI computes the unblocked frontier (`spec ready`), lists dependents, and reports
+status — all by re-deriving state from the filesystem on every call. No SQLite,
+no daemon, no sync layer. Files are the source of truth. Git diff shows exactly
+what changed.
 
 ### 3. Protocol as reference, not as data
 
 The ralph loop follows a phase sequence (bearings → implement → verify → commit) defined
-in RALPH.md. Every session reads the same protocol. Tickets only carry what to do, not
-how to do it. Changing the protocol changes all future sessions immediately — no need to
-re-pour or update existing tickets.
+in RALPH.md. Every session reads the same protocol. Tasks only carry what to do, not
+how to do it. Changing the protocol changes all future sessions immediately.
 
 ### 4. Narrative history via handoffs
 
@@ -116,36 +116,37 @@ project-status-sync's EVENTS.jsonl pipeline.
 ### 5. Incremental review without cognitive overload
 
 Specs produce one file per task (not a monolithic spec file). Each task has its own
-`<review>` tag and a status lifecycle (draft → approved → poured). You review and
-approve tasks individually, pour them incrementally. Five tasks today, five tomorrow.
+`<review>` tag and a status lifecycle (draft → approved → closed). You review and
+approve tasks individually. Five tasks today, five tomorrow.
 
 ### 6. PR feedback loop
 
-A helper script pulls GitHub PR comments and adds them to the relevant `tk` tickets as
-notes. The next ralph session sees the comments when it reads the ticket, addresses the
-feedback, and closes the ticket when the PR is merged or closed. Comments live on the
-ticket — no staging area, no separate file pipeline.
+When review mode is enabled, Ralph's PM cycle polls upstream PRs/MRs for new comments
+and appends them as task notes. The next ralph session sees the comments when it reads
+the task, addresses the feedback, and closes the task when the PR is merged. Comments
+live on the task — no staging area, no separate file pipeline.
 
 ### 7. Compounding knowledge
 
 The `/harvest` command reads recent handoffs, extracts learnings and gaps, and promotes
-them to durable artifacts: skills, CLAUDE.md entries, documentation, or new tickets.
+them to durable artifacts: skills, CLAUDE.md entries, documentation, or new specs.
 Knowledge compounds across sessions rather than being trapped in individual handoffs.
 
 ## Tradeoffs
 
 ### Simplicity over flexibility
 
-- **We choose `tk` over beads.** tk has no dependency graph visualization, no molecule
-  templates, no daemon mode, no multi-format export. But it stores plain files, has no
-  silent write bugs, and does the three things we need: create, query, close.
+- **We choose plain task files over external trackers.** Task files live as markdown
+  with YAML frontmatter under `docs/specs/`. The `spec` CLI re-derives state from the
+  filesystem on every call. No database, no daemon, no sync layer. Plain files have no
+  silent write bugs, and do the three things we need: describe, query, close.
 - **We choose RALPH.md over formulas.** Formulas allow per-task workflow customization.
   RALPH.md applies one protocol to all tasks, but the protocol adapts its ceremony to
   the task type: feature tasks get the full bearings/implement/verify/commit sequence
   with health checks and smoke tests; docs tasks get a lighter sequence (check existing
   docs, write, lint, commit); infrastructure tasks verify builds instead of UI. The
   agent diagnoses the task type and wears the appropriate hat. This is less flexible
-  than arbitrary per-task formulas but covers the real-world cases without per-ticket
+  than arbitrary per-task formulas but covers the real-world cases without per-task
   protocol duplication.
 - **We choose handoffs over event pipelines.** Handoffs are written by the agent at the
   end of each session. No extraction, no aggregation, no synthesis. The tradeoff is
@@ -158,16 +159,15 @@ Convention-based enforcement is simpler than automation but can degrade **silent
 no error, just missing data discovered downstream. Where degradation is invisible, we
 add lightweight guardrails. Where it's visible, we accept convention.
 
-- **Commit messages must include `Refs: <tk-id>`.** Enforced by a **warning hook** that
-  prints a warning if `Refs:` is missing but does not block the commit. This makes
+- **Commit messages must include `Refs: <task-id>`.** Enforced by a **warning hook** that
+  prints a warning if `Refs:` is missing or points to a `draft` task. This makes
   degradation **noisy** — you see the warning immediately — without adding friction to
   every commit. The agent follows the convention via RALPH.md protocol; the hook catches
   the cases where it doesn't.
-- **Task status lifecycle is honor-based.** The agent sets `status: approved` → `poured`
-  in task file frontmatter. There is no enforcement layer preventing a pour of a draft
-  task. The `/pour` command checks status, but a manual `tk create` bypasses it. This
-  degradation is visible (you'd see the task file says `draft` when you review it), so
-  convention is sufficient.
+- **Task status lifecycle is convention-based with a safety net.** The `spec ready`
+  command only surfaces `approved` tasks, and the commit-msg hook warns when a commit
+  references a `draft` task. This degradation is visible (you'd see the warning and the
+  task file says `draft` when you review it), so convention is sufficient.
 - **Handoff writing is a protocol gate, not a hard constraint.** The end-of-session
   checklist in RALPH.md requires a handoff. If the agent's context is exhausted
   mid-task, the handoff may be missing or incomplete. This is acceptable — the next
@@ -198,9 +198,8 @@ add lightweight guardrails. Where it's visible, we accept convention.
 - **No multi-agent coordination.** Socrates supports one ralph instance per project. The
   conflict avoidance in ralph.sh (avoid epics other ralphs are working on) is
   aspirational — it's inherited from choo-choo-ralph but not the primary use case.
-- **No automated archival.** Completed specs stay in `notes/specs/`, closed tickets stay
-  in `.tickets/`, old handoffs stay in `docs/handoffs/`. There is no automated cleanup
-  or archival pipeline. Manual cleanup is expected.
+- **Archival is PM-driven.** Completed specs are moved to `docs/specs/archive/` by the
+  PM Spec Lifecycle Sweep. Old handoffs stay in `docs/handoffs/`.
 
 ## What Socrates is not
 

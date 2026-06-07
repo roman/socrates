@@ -1,6 +1,6 @@
 ---
 id: 1109-retire-tk-dependency
-status: approved
+status: closed
 priority: 4
 category: infrastructure
 assignee: ralph

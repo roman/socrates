@@ -9,13 +9,13 @@ Initialize Socrates in the current project.
 ```
 
 **What it does:**
-- Checks prerequisites: `tk`, `claude`, `jq`, `gh`
-- Runs `tk init` to create `.tickets/`
+- Checks prerequisites: `claude`, `jq`, `gh`
 - Copies shell scripts (ralph.sh, ralph-once.sh, ralph-format.sh)
 - Creates directory structure: `docs/specs/`, `docs/handoffs/`, `.msgs/`
 - Copies RALPH.md protocol file from template
 - Appends discipline gates to CLAUDE.md
-- Installs commit-msg hook (warning mode — warns if `Refs:` is missing)
+- Installs commit-msg hook (warning mode — warns if `Refs:` is missing or
+  points to a `draft` task)
 
 **Nix/devenv detection:** Files managed by Nix (symlinks into `/nix/store/`) are
 skipped. The devenv module handles those.
@@ -59,31 +59,6 @@ any earlier phase.
 
 ---
 
-## /pour
-
-Transform approved spec task files into tk tickets.
-
-```
-/pour                   # list specs with approved tasks
-/pour <name>            # pour approved tasks from a specific spec
-```
-
-**Arguments:**
-
-| Argument | Effect |
-|----------|--------|
-| (none) | Lists specs with approved tasks, asks which to pour |
-| `<name>` | Pours approved tasks from `docs/specs/<name>/` |
-
-**Behavior:**
-- Only `status: approved` tasks are poured (draft skipped, poured skipped)
-- Creates parent epic when 2+ tasks exist
-- Wires dependencies via `tk dep` in topological order
-- Freezes task files: sets `status: poured` and `ticket: <tk-id>`
-- Idempotent: safe to re-run
-
----
-
 ## /harvest
 
 Extract learnings and gaps from session handoffs.
@@ -101,7 +76,6 @@ Extract learnings and gaps from session handoffs.
 - Skip
 
 **For each gap**, you choose:
-- Create a tk ticket
 - Add to an existing spec
 - Skip
 
@@ -120,7 +94,7 @@ These are installed by `/init` and used for the Ralph autonomous loop.
 ./ralph.sh [max_iterations] [--verbose|-v]
 ```
 
-Main autonomous loop. Picks tasks from `tk ready -a ralph`, invokes Claude,
+Main autonomous loop. Picks tasks from `spec ready -a ralph`, invokes Claude,
 formats output. Default: 100 iterations. Exits on `.ralph-stop` file or when
 no tasks remain.
 

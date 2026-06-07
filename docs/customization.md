@@ -50,7 +50,7 @@ Review mode is per-spec, set via `review_mode: true` in `_overview.md`
 frontmatter. `/spec` prompts for this when creating a new spec; edit
 `_overview.md` directly to change it later.
 
-When on, Ralph carries tickets through external review and merge instead
+When on, Ralph carries tasks through external review and merge instead
 of closing at work-done. The PM cycle polls the upstream artifact for
 new comments and merge state. See RALPH.md § Review Mode for the full
 protocol.
@@ -87,9 +87,9 @@ each phase.
 ### Task Template
 
 Edit `templates/task.md` to add fields or sections. The frontmatter fields
-(`id`, `status`, `priority`, `category`, `ticket`) are used by
-`/pour` — keep those. Body sections (`outcome`, `verification`, `review`) are
-also expected by the tooling.
+(`id`, `status`, `priority`, `category`, `assignee`, `deps`) are used by
+the `spec` CLI — keep those. Body sections (`outcome`, `verification`,
+`review`) are also expected by the tooling.
 
 You can add additional frontmatter fields (e.g., `estimated_effort`, `area`)
 or body sections (e.g., `<notes>`, `<references>`).

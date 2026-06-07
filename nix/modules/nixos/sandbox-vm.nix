@@ -8,7 +8,6 @@ inputs:
     jq
     gh
     ripgrep
-    inputs.self.packages.${pkgs.system}.ticket
   ];
 
   nix.settings.experimental-features = [

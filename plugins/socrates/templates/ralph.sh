@@ -38,11 +38,6 @@ while [ "$iteration" -lt "$MAX_ITERATIONS" ]; do
 Read RALPH.md and follow it. Run the Startup Checklist, then triage and
 pick the appropriate role (PM, Engineer, etc.) based on current state.
 
-If you pick Engineer, also check for conflicts with other in-progress
-Ralph agents before claiming a task:
-  tk query '.' | jq -s '[.[] | select(.status == \"in_progress\" and .assignee == \"ralph\")]'
-Avoid tasks that share dependencies with anything already in_progress.
-
 One iteration = complete the chosen work fully (or escalate if blocked).
 
 IMPORTANT: After the work is done, EXIT immediately. Do NOT pick up

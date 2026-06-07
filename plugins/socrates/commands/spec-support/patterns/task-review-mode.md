@@ -33,7 +33,7 @@ When invoked with `--status` or when the user asks for an overview:
    - Whether Delimit is approved
 3. For each spec, scan task files and report counts:
    - `draft` — still iterating
-   - `approved` — ready to pour
+   - `approved` — frozen, ready for work
    - `closed` — work complete
 4. Present as a summary table:
 

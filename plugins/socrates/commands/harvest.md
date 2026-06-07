@@ -5,7 +5,7 @@ description: Extract learnings and gaps from session handoffs into durable artif
 # /harvest — Learnings & Gaps → Durable Artifacts
 
 Scan recent session handoffs, extract learnings and gaps, and help the user
-promote them into persistent locations (skills, CLAUDE.md, docs, tickets).
+promote them into persistent locations (skills, CLAUDE.md, docs).
 
 ## Step 1 — Identify Unharvested Handoffs
 
@@ -85,18 +85,8 @@ Process each learning one at a time. For each, use AskUserQuestion with options:
 
 Process each gap one at a time. For each, use AskUserQuestion with options:
 
-- **"Create tk ticket"** — Create a new ticket for this gap
 - **"Add to spec"** — Add to an existing spec for the next Design phase
 - **"Skip"** — Not actionable or already addressed
-
-### If "Create tk ticket"
-
-1. Ask for a title (or suggest one based on the gap)
-2. Create the ticket:
-   ```bash
-   tk create "<title>" -t task -a ralph --tags gap
-   ```
-3. Report the ticket ID
 
 ### If "Add to spec"
 
@@ -120,7 +110,7 @@ After all learnings and gaps are processed:
    ```
    Harvest complete:
      Learnings: N promoted, M skipped
-     Gaps: K ticketed, J added to specs, L skipped
+     Gaps: J added to specs, L skipped
      Last harvest marker: <filename>
    ```
 

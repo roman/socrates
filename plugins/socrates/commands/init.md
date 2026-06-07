@@ -35,8 +35,8 @@ is_nix_managed() {
 **If missing**: Install it.
 
 This means in a devenv-enabled project, `/init` only handles what the devenv
-module doesn't provide (e.g., `tk init`, content generation for project-specific
-files like RALPH.md).
+module doesn't provide (e.g., content generation for project-specific files
+like RALPH.md).
 
 ## Check for Existing Files
 
