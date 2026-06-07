@@ -1,7 +1,7 @@
 # ADR-001: tk over Beads as Task Backend
 
 **Date**: 2026-04-04
-**Status**: Accepted
+**Status**: Superseded by [ADR-006](006-unified-task-lifecycle.md)
 
 ## Context
 

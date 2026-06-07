@@ -1,7 +1,7 @@
 # ADR-004: Spec and Ticket Namespaces Stay Separate
 
 **Date**: 2026-04-07
-**Status**: Accepted
+**Status**: Superseded by [ADR-006](006-unified-task-lifecycle.md)
 
 ## Context
 

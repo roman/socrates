@@ -1,6 +1,6 @@
 ---
 id: soc-fjro
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-06-06T22:36:51Z
