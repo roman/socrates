@@ -1,6 +1,6 @@
 ---
 id: soc-06lq
-status: open
+status: closed
 deps: [soc-gfdy]
 links: []
 created: 2026-06-06T22:38:27Z

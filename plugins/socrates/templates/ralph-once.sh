@@ -15,9 +15,6 @@ for arg in "$@"; do
   esac
 done
 
-# Signal to spec-read-guard hook that we are inside a ralph cycle.
-export RALPH_SESSION=1
-
 echo "=== Ralph Single Iteration ==="
 
 claude --model "$RALPH_MODEL" --dangerously-skip-permissions --output-format stream-json --verbose -p "

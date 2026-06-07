@@ -117,18 +117,12 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
    ```
    The hook warns when:
    - `Refs:` is missing from the commit message
-   - `Refs:` points to an id that does not exist in `.tickets/` (e.g.
-     a spec task id like `cc1e-synthesis-prompt-caps` that was never poured)
+   - `Refs:` points to an id that does not match any task in `docs/specs/`
+   - `Refs:` points to a task still in `draft` status (contract not frozen)
 
    Both warnings are advisory — they print to stderr and let the commit
-   succeed. They exist to catch the bypass pattern where ralph implements
-   un-poured spec tasks directly.
-
-   **Non-devenv users — preventive PreToolUse hook**: copy
-   `${TEMPLATE_DIR}/spec-read-guard.sh` to `.claude/hooks/spec-read-guard.sh`
-   and add a `PreToolUse` entry in `.claude/settings.json` with matcher
-   `Read|Edit|Write` and `command` pointing at it. Devenv users get this
-   automatically via the socrates module.
+   succeed. They exist to catch commits against tasks whose contract is
+   not yet frozen (still in `draft` status).
 
 6. **Create .msgs/ inbox**: Already done in step 2.
 

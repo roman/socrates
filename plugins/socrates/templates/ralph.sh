@@ -8,9 +8,6 @@ MAX_ITERATIONS=100
 VERBOSE_FLAG=""
 RALPH_MODEL="${RALPH_MODEL:-opus}"
 
-# Signal to spec-read-guard hook that we are inside a ralph cycle.
-export RALPH_SESSION=1
-
 for arg in "$@"; do
   case "$arg" in
   --verbose | -v)
