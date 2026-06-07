@@ -1,7 +1,7 @@
 ---
 title: <spec name>
 created: <date>
-epic:
+tags: []
 archived:
 delimit_approved: false
 ---

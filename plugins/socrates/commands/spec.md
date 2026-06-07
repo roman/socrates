@@ -86,13 +86,27 @@ TODAY=$(date +%Y-%m-%d)
 mkdir -p "docs/specs/${TODAY}-<name>"
 ```
 
-Copy the overview template and fill in frontmatter:
-- Read the template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/_overview.md`
-- Set `title:` to the spec name (human-readable, derived from kebab-case)
-- Set `created:` to today's date (YYYY-MM-DD)
-- Leave `epic:` and `archived:` blank (populated later by `/pour` and PM archival)
-- Set `delimit_approved: false`
-- Write to `docs/specs/${TODAY}-<name>/_overview.md`
+Copy overview template and fill frontmatter:
+- `title:` — human-readable name
+- `created:` — today's date (YYYY-MM-DD)
+- `archived:` — leave blank
+- `delimit_approved: false`
+- `review_mode:` — set by the review-mode prompt below
+
+### Review-mode prompt (new spec only)
+
+After creating the spec directory and copying the template, ask the
+operator once via AskUserQuestion:
+
+> "Will this spec's work go through external code review (PRs/MRs)?"
+
+Stamp the answer into the new `_overview.md` frontmatter:
+- Yes → `review_mode: true`
+- No → `review_mode: false`
+
+On **resume of an existing spec**, skip this prompt. The operator edits
+`_overview.md` directly if they change their mind. See RALPH.md § Review
+Mode for the full semantics.
 
 ### Check open gaps (new spec only)
 

@@ -8,10 +8,7 @@ Set up the Socrates structured design and autonomous development workflow.
 
 ## Pre-requisites Check
 
-1. **Check tk CLI**: Run `tk --version`
-   - If not installed: "Please install tk first. See: https://github.com/wedow/ticket"
-
-2. **Check Claude CLI**: Run `claude --version`
+1. **Check Claude CLI**: Run `claude --version`
    - If not installed: Warn user they'll need it to run Ralph
 
 3. **Check jq**: Run `jq --version`
@@ -19,8 +16,6 @@ Set up the Socrates structured design and autonomous development workflow.
 
 4. **Check gh**: Run `gh --version`
    - If not installed: Warn user they'll need it for PR workflows
-
-5. **Initialize tk**: If `.tickets/` doesn't exist, run `tk init`
 
 ## Nix/devenv Detection
 
@@ -130,7 +125,7 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
 
 Confirm all files/directories exist (whether Nix-managed or locally installed):
 - Scripts: ralph.sh, ralph-once.sh, ralph-format.sh
-- Directories: docs/specs/, docs/handoffs/, .msgs/, .tickets/
+- Directories: docs/specs/, docs/handoffs/, .msgs/
 - Protocols: RALPH.md (autonomous), INTERACTIVE.md (human-driven)
 - Hook: .git/hooks/commit-msg (warning mode)
 
@@ -143,7 +138,6 @@ deferred to Nix/devenv.
 
 Explain next steps:
 1. Use `/socrates:spec` to design a feature through the Design in Practice journey
-2. Review and approve task files in the spec
-3. Use `/socrates:pour` to create tk tickets from approved tasks
-4. Run `./ralph.sh` to start the autonomous loop
-5. Use `/socrates:harvest` to extract learnings from session handoffs
+2. Review and approve task files in the spec (`status: draft` → `status: approved`)
+3. Run `./ralph.sh` to start the autonomous loop
+4. Use `/socrates:harvest` to extract learnings from session handoffs

@@ -12,7 +12,7 @@ Usage: spec <command> [options]
 Commands:
   status              List non-archived specs with phase and task counts
   tasks               List tasks across non-archived specs
-  tasks --status S    Filter tasks by status (draft|approved|poured|cancelled)
+  tasks --status S    Filter tasks by status (draft|approved|closed|cancelled)
   tasks --review      Show only tasks with non-empty <review> blocks
   ready -a ASSIGNEE   Show the unblocked frontier (approved, deps closed)
   dependents ID       Show tasks whose deps reference the given task id
@@ -151,7 +151,7 @@ cmd_status() {
       delimit_approved="-"
     fi
 
-    local draft=0 approved=0 poured=0
+    local draft=0 approved=0 closed=0
     for task_file in "$spec_dir"/[0-9]*-*.md; do
       [[ -f "$task_file" ]] || continue
       local status
@@ -159,14 +159,14 @@ cmd_status() {
       case "$status" in
         draft)    draft=$((draft + 1)) ;;
         approved) approved=$((approved + 1)) ;;
-        poured)   poured=$((poured + 1)) ;;
+        closed)   closed=$((closed + 1)) ;;
       esac
     done
 
     echo "$dirname"
     echo "  Phase:    $phase"
     echo "  Delimit:  $delimit_approved"
-    echo "  Tasks:    ${draft} draft, ${approved} approved, ${poured} poured"
+    echo "  Tasks:    ${draft} draft, ${approved} approved, ${closed} closed"
     echo
   done
 
@@ -200,7 +200,7 @@ cmd_tasks() {
   done
 
   printf "%-30s %-35s %-10s %-4s %-12s %-10s %s\n" \
-    "SPEC" "TASK" "STATUS" "PRI" "CATEGORY" "TICKET" "REVIEW"
+    "SPEC" "TASK" "STATUS" "PRI" "CATEGORY" "ASSIGNEE" "REVIEW"
 
   for spec_dir in "$SPECS_DIR"/*/; do
     [[ -d "$spec_dir" ]] || continue
@@ -213,14 +213,14 @@ cmd_tasks() {
 
       local task_name="${task_file##*/}"
       task_name="${task_name%.md}"
-      local status priority category ticket review_status
+      local status priority category assignee review_status
       status=$(fm_value "$task_file" "status")
       priority=$(fm_value "$task_file" "priority")
       category=$(fm_value "$task_file" "category")
-      ticket=$(fm_value "$task_file" "ticket")
+      assignee=$(fm_value "$task_file" "assignee")
 
-      if [[ -z "$ticket" || "$ticket" == "null" ]]; then
-        ticket="-"
+      if [[ -z "$assignee" ]]; then
+        assignee="-"
       fi
 
       if has_review_content "$task_file"; then
@@ -237,7 +237,7 @@ cmd_tasks() {
       fi
 
       printf "%-30s %-35s %-10s %-4s %-12s %-10s %s\n" \
-        "$dirname" "$task_name" "$status" "$priority" "$category" "$ticket" "$review_status"
+        "$dirname" "$task_name" "$status" "$priority" "$category" "$assignee" "$review_status"
     done
   done
 }

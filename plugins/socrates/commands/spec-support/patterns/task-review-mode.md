@@ -34,12 +34,12 @@ When invoked with `--status` or when the user asks for an overview:
 3. For each spec, scan task files and report counts:
    - `draft` — still iterating
    - `approved` — ready to pour
-   - `poured` — tk ticket exists
+   - `closed` — work complete
 4. Present as a summary table:
 
 ```
 Spec: auth-redesign
   Phase: Direction [COMPLETE] → Design [DRAFT]
   Delimit: approved
-  Tasks: 3 draft, 2 approved, 0 poured
+  Tasks: 3 draft, 2 approved, 0 closed
 ```

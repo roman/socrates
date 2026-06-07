@@ -1,6 +1,6 @@
 ---
 id: 4919-remove-pour-reconcile-authoring
-status: approved
+status: closed
 priority: 3
 category: functional
 assignee: ralph

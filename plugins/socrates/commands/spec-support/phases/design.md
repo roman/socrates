@@ -305,7 +305,6 @@ After the design review is resolved and all task files are finalized:
      `<review>` if changes are needed
    - Run `/spec <task-file>` to process any review feedback
    - Flip `status: draft` → `status: approved` when satisfied
-   - Run `/pour` to create tk tickets from approved tasks
 3. Stop. Do not ask whether the user is ready to approve, do
    not mark any of the above options as recommended, and do not
    imply readiness for the next step. The user moves on their

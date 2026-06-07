@@ -53,7 +53,6 @@ cat > "$FIXTURE/fresh-spec/_overview.md" <<'SPECEOF'
 ---
 title: Fresh Spec
 created: 2026-01-01
-epic:
 archived:
 delimit_approved: false
 ---
@@ -77,7 +76,6 @@ cat > "$FIXTURE/mid-phase-spec/_overview.md" <<'SPECEOF'
 ---
 title: Mid Phase Spec
 created: 2026-01-02
-epic:
 archived:
 delimit_approved: true
 ---
@@ -95,12 +93,12 @@ SPECEOF
 
 cat > "$FIXTURE/mid-phase-spec/1-aaaa-task-one.md" <<'TASKEOF'
 ---
-id: 1-aaaa-task-one
+id: aaaa-task-one
 status: approved
 priority: 0
 category: functional
-ticket: null
-revisions: 0
+assignee: ralph
+deps: []
 ---
 # Task One
 
@@ -117,12 +115,12 @@ TASKEOF
 
 cat > "$FIXTURE/mid-phase-spec/2-bbbb-task-two.md" <<'TASKEOF'
 ---
-id: 2-bbbb-task-two
+id: bbbb-task-two
 status: draft
 priority: 1
 category: documentation
-ticket: null
-revisions: 0
+assignee: ralph
+deps: []
 ---
 # Task Two
 
@@ -139,13 +137,12 @@ This needs the author's attention.
 </review>
 TASKEOF
 
-# Spec 3: poured spec with epic and ticket fields
-mkdir -p "$FIXTURE/poured-spec"
-cat > "$FIXTURE/poured-spec/_overview.md" <<'SPECEOF'
+# Spec 3: closed spec with completed and draft tasks
+mkdir -p "$FIXTURE/closed-spec"
+cat > "$FIXTURE/closed-spec/_overview.md" <<'SPECEOF'
 ---
-title: Poured Spec
+title: Closed Spec
 created: 2026-01-03
-epic: soc-epic1
 archived:
 delimit_approved: true
 ---
@@ -161,20 +158,20 @@ delimit_approved: true
 ## Design [COMPLETE]
 SPECEOF
 
-cat > "$FIXTURE/poured-spec/1-cccc-poured-task.md" <<'TASKEOF'
+cat > "$FIXTURE/closed-spec/1-cccc-closed-task.md" <<'TASKEOF'
 ---
-id: 1-cccc-poured-task
-status: poured
+id: cccc-closed-task
+status: closed
 priority: 0
 category: functional
-ticket: SENTINEL-1
-revisions: 0
+assignee: ralph
+deps: []
 ---
-# Poured Task
+# Closed Task
 
 ## Outcomes
 
-- Already poured.
+- Already closed.
 
 ## Verification
 
@@ -182,20 +179,20 @@ revisions: 0
 <review></review>
 TASKEOF
 
-cat > "$FIXTURE/poured-spec/2-dddd-unpoured-task.md" <<'TASKEOF'
+cat > "$FIXTURE/closed-spec/2-dddd-draft-task.md" <<'TASKEOF'
 ---
-id: 2-dddd-unpoured-task
+id: dddd-draft-task
 status: draft
 priority: 1
 category: infrastructure
-ticket: null
-revisions: 0
+assignee: ralph
+deps: []
 ---
-# Unpoured Task
+# Draft Task
 
 ## Outcomes
 
-- Not poured yet.
+- Still in draft.
 
 ## Verification
 
@@ -209,7 +206,6 @@ cat > "$FIXTURE/archive/old-spec/_overview.md" <<'SPECEOF'
 ---
 title: Archived Spec
 created: 2025-12-01
-epic: soc-old
 archived: 2026-01-15
 delimit_approved: true
 ---
@@ -238,11 +234,11 @@ assert_contains "fresh-spec at Describe [DRAFT]" "Describe [DRAFT]"
 assert_contains "shows mid-phase-spec" "mid-phase-spec"
 assert_contains "mid-phase at Direction [DRAFT]" "Direction [DRAFT]"
 assert_contains "mid-phase delimit approved" "approved"
-assert_contains "shows poured-spec" "poured-spec"
-assert_contains "poured-spec at Design [COMPLETE]" "Design [COMPLETE]"
-assert_contains "poured-spec task counts" "1 draft, 0 approved, 1 poured"
-assert_contains "mid-phase task counts" "1 draft, 1 approved, 0 poured"
-assert_contains "fresh-spec task counts" "0 draft, 0 approved, 0 poured"
+assert_contains "shows closed-spec" "closed-spec"
+assert_contains "closed-spec at Design [COMPLETE]" "Design [COMPLETE]"
+assert_contains "closed-spec task counts" "1 draft, 0 approved, 1 closed"
+assert_contains "mid-phase task counts" "1 draft, 1 approved, 0 closed"
+assert_contains "fresh-spec task counts" "0 draft, 0 approved, 0 closed"
 assert_not_contains "archive excluded from status" "old-spec"
 assert_not_contains "archive excluded from status" "Archived"
 
@@ -251,9 +247,8 @@ echo "=== spec tasks ==="
 
 run "tasks exits 0" 0 env SPECS_DIR="$FIXTURE" bash "$SCRIPT" tasks
 assert_contains "header has SPEC column" "SPEC"
-assert_contains "header has TICKET column" "TICKET"
+assert_contains "header has ASSIGNEE column" "ASSIGNEE"
 assert_contains "header has REVIEW column" "REVIEW"
-assert_contains "shows SENTINEL-1 ticket" "SENTINEL-1"
 assert_contains "shows review pending" "pending"
 assert_contains "shows task-two with review" "2-bbbb-task-two"
 assert_not_contains "archive excluded from tasks" "old-spec"
@@ -264,12 +259,11 @@ echo "=== spec tasks --status ==="
 run "tasks --status approved exits 0" 0 env SPECS_DIR="$FIXTURE" bash "$SCRIPT" tasks --status approved
 assert_contains "shows approved task" "1-aaaa-task-one"
 assert_not_contains "excludes draft task" "2-bbbb-task-two"
-assert_not_contains "excludes poured task" "1-cccc-poured-task"
+assert_not_contains "excludes closed task" "1-cccc-closed-task"
 
-run "tasks --status poured exits 0" 0 env SPECS_DIR="$FIXTURE" bash "$SCRIPT" tasks --status poured
-assert_contains "shows poured task" "1-cccc-poured-task"
-assert_contains "poured task has SENTINEL-1" "SENTINEL-1"
-assert_not_contains "excludes draft from poured filter" "2-dddd-unpoured-task"
+run "tasks --status closed exits 0" 0 env SPECS_DIR="$FIXTURE" bash "$SCRIPT" tasks --status closed
+assert_contains "shows closed task" "1-cccc-closed-task"
+assert_not_contains "excludes draft from closed filter" "2-dddd-draft-task"
 
 echo ""
 echo "=== spec tasks --review ==="
@@ -277,8 +271,8 @@ echo "=== spec tasks --review ==="
 run "tasks --review exits 0" 0 env SPECS_DIR="$FIXTURE" bash "$SCRIPT" tasks --review
 assert_contains "review filter shows task with content" "2-bbbb-task-two"
 assert_not_contains "review filter excludes empty review (task-one)" "1-aaaa-task-one"
-assert_not_contains "review filter excludes empty review (poured)" "1-cccc-poured-task"
-assert_not_contains "review filter excludes empty review (unpoured)" "2-dddd-unpoured-task"
+assert_not_contains "review filter excludes empty review (closed)" "1-cccc-closed-task"
+assert_not_contains "review filter excludes empty review (draft)" "2-dddd-draft-task"
 
 # --- Fixture setup for ready/dependents ---
 # Build a spec with the unified schema: deps, assignee, status lifecycle
@@ -288,7 +282,6 @@ cat > "$FIXTURE/frontier-spec/_overview.md" <<'SPECEOF'
 ---
 title: Frontier Test
 created: 2026-01-10
-epic:
 archived:
 delimit_approved: true
 ---
@@ -532,7 +525,6 @@ cat > "$FIXTURE/cycle-spec/_overview.md" <<'SPECEOF'
 ---
 title: Cycle Test
 created: 2026-01-11
-epic:
 archived:
 delimit_approved: true
 ---
