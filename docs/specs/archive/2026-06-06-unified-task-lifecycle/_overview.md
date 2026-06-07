@@ -2,7 +2,7 @@
 title: Unified Task Lifecycle
 created: 2026-06-06
 tags: []
-archived:
+archived: 2026-06-07
 delimit_approved: true
 ---
 
