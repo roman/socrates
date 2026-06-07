@@ -310,7 +310,7 @@ cmd_ready() {
   fi
 
   # Phase 1: collect all tasks with their metadata
-  declare -A task_status task_assignee task_priority task_file_map task_spec
+  declare -A task_status task_assignee task_priority task_spec
   declare -a task_ids=()
   # deps stored as space-separated strings keyed by task id
   declare -A task_deps
@@ -327,7 +327,6 @@ cmd_ready() {
     task_status["$tid"]="$tstatus"
     task_assignee["$tid"]="$tassignee"
     task_priority["$tid"]="${tpriority:-9}"
-    task_file_map["$tid"]="$task_file"
 
     # Parse spec dirname
     local dir="${task_file%/*}"
