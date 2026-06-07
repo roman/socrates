@@ -1,6 +1,6 @@
 ---
 id: soc-wm99
-status: open
+status: closed
 deps: [soc-hrj1, soc-06lq]
 links: []
 created: 2026-06-06T22:39:35Z

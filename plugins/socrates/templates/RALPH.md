@@ -20,17 +20,17 @@ task cycle — finish the cycle before switching.
 ### PM
 
 Pick this role when:
-- Pending review comments on tk tickets need triage
+- Pending review comments on spec tasks need triage
 - Task states need reconciliation (stale in_progress, missing deps)
 - New work needs scoping but no spec exists yet
 - Specs may have completed since the last PM cycle (run Spec Lifecycle below)
-- **`tk ready -a ralph` is empty** — default to PM and verify everything
-  is consistent (inbox, ticket states, spec lifecycle) before concluding
+- **`spec ready -a ralph` is empty** — default to PM and verify everything
+  is consistent (inbox, task states, spec lifecycle) before concluding
   there is no work. Only after the PM sweep finds nothing actionable
   should the iteration create `.ralph-stop` and exit.
 
-PM actions: triage comments, update ticket states, run the Spec Lifecycle
-sweep, suggest `/spec` or `/pour` runs to the human via `.msgs/`.
+PM actions: triage comments, update task states, run the Spec Lifecycle
+sweep, suggest `/spec` runs to the human via `.msgs/`.
 
 #### Spec Lifecycle Sweep
 
@@ -40,14 +40,12 @@ archive. It is cheap and idempotent.
 **1. Detect completed specs.** For each `docs/specs/*/` directory (excluding
 `docs/specs/archive/`):
 
-- Read `_overview.md` frontmatter. If `epic:` is empty, skip — this spec
-  was never poured.
-- Run `tk show <epic-id>`. If the epic and *all* its children are closed,
-  the spec is complete.
+- Read `_overview.md` frontmatter. If the spec has no task files, skip it.
+- Read every task file in the spec directory and check its `status` field.
+  If every task is `closed` or `cancelled`, the spec is complete.
 
 **2. Archive completed specs.** For each completed spec:
 
-- Close the epic ticket if it is not already closed (`tk close <epic-id>`)
 - Stamp `_overview.md` frontmatter with `archived: YYYY-MM-DD`
 - Move the spec directory into `docs/specs/archive/` (create the archive
   directory if it does not exist): `git mv docs/specs/<dir> docs/specs/archive/<dir>`
@@ -58,24 +56,24 @@ actions in the session handoff.
 
 #### External Review Sweep
 
-Every PM cycle, run this sweep for tickets in external review. It is a
-no-op when no tickets carry the `awaiting-review` tag.
+Every PM cycle, run this sweep for tasks in external review. It is a
+no-op when no tasks carry the `awaiting-review` tag.
 
-Iterate every ticket tagged `awaiting-review` and handle by external-ref
+Iterate every task tagged `awaiting-review` and handle by external-ref
 state:
 
-**Empty external-ref**: Re-attempt upstream discovery for the ticket's
-branch (the branch name is recorded in the ticket notes by the
+**Empty external-ref**: Re-attempt upstream discovery for the task's
+branch (the branch name is recorded in a task note by the
 End-of-Session Gate). If discovery still fails, escalate per the
 escalation rule.
 
 **Set external-ref**: Read the upstream artifact at the URL. Append
 every review comment newer than the timestamp of the latest existing
-ticket note as a new note (append-only — never mutate prior notes; this
-rules out races with a concurrent implementer reading the ticket).
+task note as a new note (append-only — never mutate prior notes; this
+rules out races with a concurrent implementer reading the task).
 
-- **Merge observed**: remove the `awaiting-review` tag and close the
-  ticket.
+- **Merge observed**: remove the `awaiting-review` tag, set `status:
+  closed`, and note the merge in the task.
 - **Close without merge observed**: escalate per the escalation rule.
   Never silently close.
 - **No new comments, not merged**: no action (no churn).
@@ -86,58 +84,56 @@ per the escalation rule. Never silently close.
 ### Implementer
 
 Pick this role when:
-- `tk ready -a ralph` returns tasks
+- `spec ready -a ralph` returns tasks
 - Codebase is healthy (no broken builds, no unresolved conflicts)
 - Clear work to do
 
 Implementer actions: follow the Phase Sequence below for each task.
 
 **Work source rule (strict):** the only valid source of implementation work
-is `tk ready -a ralph`. Spec task files under `docs/specs/<dir>/<id>.md` are
-*blueprints*, not tickets — they describe what `/pour` will create, but they
-are not work items until poured. Do not read a spec task file and implement
-it directly. If a spec is approved but not yet poured, switch to PM and
-escalate to the human via `.msgs/` so they can run `/pour`.
+is `spec ready -a ralph`. This command computes the unblocked frontier:
+tasks whose `status` is `approved`, whose `deps` are all `closed`, and
+whose `assignee` matches. Tasks tagged `awaiting-review` are excluded —
+they are in external review and not eligible for implementation pickup.
+An `approved` task in the spec directory is the work item — read and
+implement against it directly. A `draft` task is not eligible; if you
+encounter one that looks ready, switch to PM and escalate to the human
+via `.msgs/` so they can review and approve it.
 
-The `Refs:` value in your commit must be a real tk ticket id (the filename
-of a file in `.tickets/`, e.g. `<prefix>-xxxx`), never a spec task id like
-`cc1e-synthesis-prompt-caps`. If the commit-msg hook warns about an unknown
-ref, stop and reconcile rather than ignoring it.
-
-A `PreToolUse` hook (`spec-read-guard.sh`) backs this rule mechanically:
-under `RALPH_SESSION=1` (set by `ralph.sh`/`ralph-once.sh`), Read/Edit/Write
-calls against `docs/specs/<dir>/<n>-*.md` are denied. If you see that
-denial, switch to PM and escalate via `.msgs/` — do not try to route around
-it.
+The `Refs:` value in your commit must be the task's identity token (the
+`id` field from the task file's frontmatter, e.g. `a1b2-setup-middleware`).
+If the commit-msg hook warns about an unknown ref, stop and reconcile
+rather than ignoring it.
 
 ### Reviewer
 
 Pick this role when:
 - Implementation is complete but quality check is needed
 - Spawn `code-critic` agent, review findings
-- Write findings to handoff
+- Write findings to the task's `<review>` block
 
-Reviewer actions: review code, add comments to tk tickets, update ticket state.
+Reviewer actions: review code, write feedback into the task's `<review>`
+block, update task state.
 
 ## Review Mode
 
-Review mode extends the ticket lifecycle past "work done" through
+Review mode extends the task lifecycle past "work done" through
 external code review and merge. It is per-spec and opt-in. When off
 (the default), all behaviour is identical to the protocol without this
 section.
 
 ### Review-Mode Resolution
 
-When processing a ticket, the agent resolves the effective `review_mode`:
+When processing a task, the agent resolves the effective `review_mode`:
 
-1. If the ticket body contains a `Spec overview:` line, read that
+1. If the task body contains a `Spec overview:` line, read that
    spec's `_overview.md` frontmatter. Use its `review_mode` value.
-2. If the field is missing or the ticket has no `Spec overview:` link,
+2. If the field is missing or the task has no `Spec overview:` link,
    treat `review_mode` as `false`.
 
 ### External-Ref Convention
 
-A ticket's external-ref is the URL of the upstream review artifact:
+A task's external-ref is the URL of the upstream review artifact:
 
 ```
 https://github.com/user/repo/pull/123
@@ -181,7 +177,7 @@ To discover the upstream artifact for a branch:
 To list new review comments on an upstream artifact:
 
 - **GitHub**: `gh api repos/{owner}/{repo}/pulls/{n}/comments`
-  (filter by `created_at` against the latest ticket note timestamp).
+  (filter by `created_at` against the latest task note timestamp).
   Also check `pulls/{n}/reviews` for review-level feedback.
 - **GitLab**: `GET /projects/{id}/merge_requests/{iid}/notes?order_by=created_at&sort=asc`
   (requires authentication; filter by `created_at` client-side).
@@ -193,36 +189,31 @@ To detect merge:
 - **GitLab**: `GET /projects/{id}/merge_requests/{iid}` and check
   `state: "merged"`.
 
-### Ticket Mutation
+### Task Mutation
 
-`tk` exposes `--external-ref` and `--tags` only at create time, and
-`tk edit` opens `$EDITOR` (unsuited to autonomous agents). The agent
-edits ticket markdown directly under `.tickets/<id>.md`.
+The agent edits task file frontmatter directly under
+`docs/specs/<dir>/<task>.md`.
 
 Permitted frontmatter fields for agent mutation:
 
 - `external-ref` — set to the upstream artifact URL
 - `tags` — append `awaiting-review` or `needs-human`
 
-Use existing tickets in the repo as the schema reference for frontmatter
-format.
-
 ### Escalation Rule
 
 When review mode triggers an escalation, the agent:
 
-1. Appends a structured note to the ticket describing what failed and
+1. Appends a structured note to the task describing what failed and
    what the agent expects from the human.
-2. Tags the ticket `needs-human`.
+2. Tags the task `needs-human`.
 3. Creates `.ralph-stop` so the loop halts at the end of the current
    cycle.
 
 At session close, the agent's final output names how the human can
 review escalations:
 
-> Escalations occurred — run
-> `tk query '.' | jq -s '[.[] | select(.tags | index("needs-human"))]'`
-> to triage.
+> Escalations occurred — search for tasks tagged `needs-human`
+> across `docs/specs/` to triage.
 
 This rule is referenced from every escalation site in this protocol
 (External Review Sweep, End-of-Session Gate).
@@ -232,15 +223,15 @@ This rule is referenced from every escalation site in this protocol
 The following tags are reserved by review mode. Other features must not
 reuse them:
 
-- **`awaiting-review`** — set on a ticket at handoff to external review.
+- **`awaiting-review`** — set on a task at handoff to external review.
   Removed when the upstream artifact is observed merged.
 - **`needs-human`** — set when the agent escalates a review-mode issue
   that requires human intervention.
 
-### Self-Evident Ticket View
+### Self-Evident Task View
 
-A fresh Claude session reading `tk show` on an `awaiting-review` ticket
-must be able to name the ticket's state, the upstream URL, and the next
+A fresh Claude session reading a task file with `awaiting-review` tag
+must be able to name the task's state, the upstream URL, and the next
 step from the artifact alone — without consulting RALPH.md or any
 external service.
 
@@ -248,9 +239,9 @@ Example:
 
 ```
 ---
-id: soc-a1b2
-status: in_progress
-tags: [functional, awaiting-review]
+id: a1b2-widget-caching
+status: approved
+tags: [awaiting-review]
 external-ref: https://github.com/user/repo/pull/42
 ---
 # Implement widget caching
@@ -272,7 +263,7 @@ Rename `cache_ttl` to `cache_duration` for clarity.
 The fallback path doesn't handle expired entries. Add a test.
 ```
 
-From this view alone, a fresh session knows: the ticket is in review
+From this view alone, a fresh session knows: the task is in review
 (tag), the PR is at the URL (external-ref), and two comments need
 addressing (notes).
 
@@ -285,19 +276,17 @@ type — see Task-Type Adaptations below.
 
 Health check and orientation before touching code.
 
-- Read the task's tk ticket (description, comments, dependencies)
-- **If the ticket body contains a `Spec overview:` line, read that
-  `_overview.md` before writing any code.** The ticket body carries the
+- Read the task file (description, outcomes, verification, dependencies)
+- **If the task body contains a `Spec overview:` line, read that
+  `_overview.md` before writing any code.** The task body carries the
   outcome and verification, but the overview carries the *why* — the
   Diagnose root cause, the Delimit problem statement, and the Direction
   approach the spec chose. When you hit a moment requiring deviation from
   the task description (a constraint not anticipated, a cleaner approach
   surfacing mid-work), the overview is what tells you whether your
-  deviation serves the original problem or undermines it. The
-  spec task files (`<n>-*.md`) remain blocked by `spec-read-guard.sh`,
-  but `_overview.md` is unblocked and is the right entry point.
-- Understand the ticket's **Outcome** as the target state to reach and its
-  **Verification** as the contract to satisfy — tickets describe *what* to
+  deviation serves the original problem or undermines it.
+- Understand the task's **Outcome** as the target state to reach and its
+  **Verification** as the contract to satisfy — tasks describe *what* to
   achieve, not *how* to achieve it
 - Read relevant source files and tests
 - Check for in-progress work that might conflict
@@ -313,19 +302,19 @@ step, and nothing is broken before you start.
 
 Focused changes, minimal scope.
 
-- Work toward the ticket's Outcome — use the Verification section to confirm
+- Work toward the task's Outcome — use the Verification section to confirm
   you are on track
 - Follow existing patterns and conventions
 - One logical change at a time
 - Do not refactor surrounding code unless the task requires it
 - Reference actual file paths and function names from Bearings
 
-**Exit criteria**: The change satisfies the ticket's Outcome and is ready to
+**Exit criteria**: The change satisfies the task's Outcome and is ready to
 verify.
 
 ### 3. Verify
 
-Confirm the change satisfies the ticket's Verification contract. Scope adapts
+Confirm the change satisfies the task's Verification contract. Scope adapts
 to task type.
 
 - Walk through each Verification bullet and confirm it holds
@@ -339,14 +328,15 @@ pass.
 ### 4. Commit
 
 Do **one** commit per task cycle that includes everything from this cycle:
-code, tests, ticket updates, handoff, and any progress log. Complete the
-End-of-Session Gate steps (ADR, handoff, tk updates) *before* running
+code, tests, task updates, handoff, and any progress log. Complete the
+End-of-Session Gate steps (ADR, handoff, task updates) *before* running
 `git commit`, then stage and commit them together.
 
 - Conventional commit format: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`
   — pick the type that reflects the primary change (code wins over docs)
 - Message explains why, not what
-- Include `Refs: <tk-id>` in the commit body
+- Include `Refs: <task-id>` in the commit body (identity token from the task
+  file's `id` frontmatter field)
 - One commit per task cycle — never split impl and its docs/handoff
 
 ## Task-Type Adaptations
@@ -381,7 +371,7 @@ Escalate to the human (write to `.msgs/` or handoff) when:
 
 Do NOT:
 - Guess at design decisions
-- Expand scope beyond what the ticket describes
+- Expand scope beyond what the task describes
 - Skip verification because "it's a small change"
 - Continue after 3 failures without escalating
 
@@ -403,30 +393,30 @@ protocol changes, structural changes, tradeoffs with alternatives considered):
 Write a session handoff to `docs/handoffs/YYYY-MM-DD-HHmm-<topic>.md`.
 See handoff format below.
 
-### 3. tk Updates
+### 3. Task Updates
 
-For each ticket worked on this cycle, resolve its `review_mode` (see
+For each task worked on this cycle, resolve its `review_mode` (see
 Review Mode § Review-Mode Resolution).
 
 **Review-mode off (default):**
 
-- Close tickets that are done
-- Update in-progress tickets with current state
-- Add comments to tickets with findings or blockers
+- Close tasks that are done (set `status: closed` in frontmatter)
+- Update in-progress tasks with current state
+- Add notes to tasks with findings or blockers
 
-**Review-mode on** (ticket's linked spec has `review_mode: true`):
+**Review-mode on** (task's linked spec has `review_mode: true`):
 
-Do NOT close the ticket. Instead:
+Do NOT close the task. Instead:
 
-1. Tag the ticket `awaiting-review` (edit `.tickets/<id>.md` frontmatter
-   directly; see Review Mode § Ticket Mutation).
+1. Tag the task `awaiting-review` (edit the task file's frontmatter
+   directly; see Review Mode § Task Mutation).
 2. Attempt upstream discovery for the current branch (see Review Mode §
    Upstream Discovery).
-3. If a PR/MR URL is found, set `external-ref` in the ticket
+3. If a PR/MR URL is found, set `external-ref` in the task
    frontmatter.
-4. Record the branch name in a ticket note so the PM sweep can
+4. Record the branch name in a task note so the PM sweep can
    re-attempt discovery if needed.
-5. Leave the ticket as `in_progress`.
+5. Leave the task as `status: approved`.
 6. If upstream discovery fails, escalate per the Review Mode escalation
    rule.
 

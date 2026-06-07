@@ -19,11 +19,11 @@ why). This file covers what differs from the autonomous loop.
 | Approval gates | In-conversation: `AskUserQuestion` for clarifications, `ExitPlanMode` for plan approval. No `.msgs/` inbox needed. |
 | Failure handling | Surface in chat, name the category (data / impl / config / prompt / criteria / approach), wait for steer. Do not retry the same failed action with tweaks. |
 | Context transfer | Conversation memory carries the session. No mandatory handoff doc unless the user asks. |
-| Work source | The user names the task — by spec task file path, ticket URL, or ad-hoc ask. The user is the gate. The `tk ready -a ralph` work-source rule does not apply. |
+| Work source | The user names the task — by spec task file path or ad-hoc ask. The user is the gate. The `spec ready -a ralph` work-source rule does not apply. |
 
 ## When picking up a spec task
 
-The user has named a task file under `docs/specs/<dir>/<n>-*.md`.
+The user has named a task file under `docs/specs/<dir>/<task>.md`.
 
 1. Read the task file's Outcome and Verification.
 2. Read the spec's `_overview.md` — specifically Describe (user-facing
@@ -38,9 +38,14 @@ The user has named a task file under `docs/specs/<dir>/<n>-*.md`.
 5. Confirm with the user what they want next: refine the task spec, plan
    the implementation, or implement.
 
-The `spec-read-guard.sh` `PreToolUse` hook is RALPH-only (gated on
-`RALPH_SESSION=1`). In an interactive session, reading task files is
-allowed — the human authorized it by naming the task.
+An `approved` task's contract (Outcomes, Verification, deps) is frozen.
+To change it, reopen the task to `draft` first, then re-approve after
+editing. Reopening flags affected dependents — run `spec dependents <id>`
+to see which tasks depend on the reopened one and may need re-checking.
+
+To refine a task iteratively, write feedback in the task's `<review>`
+block, then run `/spec <task-file>` to regenerate Outcomes and
+Verification. Repeat until satisfied, then set `status: approved`.
 
 ## Phase sequence (interactive deltas)
 
@@ -55,7 +60,8 @@ applies. See `RALPH.md` for the full description. The deltas:
 - **Verify**: same checks; report results in chat.
 - **Commit**: only on explicit user request. Follow the project's commit
   conventions (50/72 line lengths, conventional-commits prefix, why-not-
-  what message body, ticket reference if applicable).
+  what message body, `Refs: <task-id>` with the identity token from the
+  task's `id` frontmatter field).
 
 ## Plan mode
 

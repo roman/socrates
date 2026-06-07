@@ -1,6 +1,6 @@
 ---
 id: a93b-rewrite-protocols
-status: approved
+status: closed
 priority: 2
 category: documentation
 assignee: ralph
