@@ -14,6 +14,8 @@ Commands:
   tasks               List tasks across non-archived specs
   tasks --status S    Filter tasks by status (draft|approved|poured|cancelled)
   tasks --review      Show only tasks with non-empty <review> blocks
+  ready -a ASSIGNEE   Show the unblocked frontier (approved, deps closed)
+  dependents ID       Show tasks whose deps reference the given task id
 EOF
 }
 
@@ -39,6 +41,30 @@ fm_value() {
       esac
     fi
   done < "$file"
+}
+
+# Extract a YAML list value by key from a file.
+# Parses "key: [a, b, c]" and prints one item per line.
+# Prints nothing if not found or empty list.
+fm_list() {
+  local file="$1" key="$2"
+  local raw
+  raw=$(fm_value "$file" "$key")
+  # Strip brackets
+  raw="${raw#\[}"
+  raw="${raw%\]}"
+  # Trim whitespace
+  raw="${raw#"${raw%%[![:space:]]*}"}"
+  raw="${raw%"${raw##*[![:space:]]}"}"
+  [[ -z "$raw" ]] && return
+  # Split on commas
+  local IFS=','
+  for item in $raw; do
+    # Trim whitespace from each item
+    item="${item#"${item%%[![:space:]]*}"}"
+    item="${item%"${item##*[![:space:]]}"}"
+    [[ -n "$item" ]] && echo "$item"
+  done
 }
 
 # Detect the current phase from an _overview.md file.
@@ -216,6 +242,220 @@ cmd_tasks() {
   done
 }
 
+# Collect all task files across non-archived specs.
+# Prints absolute paths, one per line.
+all_task_files() {
+  for spec_dir in "$SPECS_DIR"/*/; do
+    [[ -d "$spec_dir" ]] || continue
+    local dirname="${spec_dir%/}"
+    dirname="${dirname##*/}"
+    [[ "$dirname" == "archive" ]] && continue
+    for task_file in "$spec_dir"*.md; do
+      [[ -f "$task_file" ]] || continue
+      local base="${task_file##*/}"
+      [[ "$base" == "_overview.md" ]] && continue
+      echo "$task_file"
+    done
+  done | sort -u
+}
+
+# Match a dep entry against a task id.
+# A dep matches if it equals the full id OR the identity token prefix.
+dep_matches() {
+  local dep="$1" task_id="$2"
+  [[ "$dep" == "$task_id" ]] && return 0
+  # Match by identity token (first component after optional ordinal)
+  local task_token
+  if [[ "$task_id" =~ ^[0-9]+-(.+)$ ]]; then
+    task_token="${BASH_REMATCH[1]}"
+  else
+    task_token="$task_id"
+  fi
+  # The dep might be the full id or just the token part
+  local dep_token
+  if [[ "$dep" =~ ^[0-9]+-(.+)$ ]]; then
+    dep_token="${BASH_REMATCH[1]}"
+  else
+    dep_token="$dep"
+  fi
+  [[ "$dep_token" == "$task_token" ]] && return 0
+  [[ "$dep" == "$task_token" ]] && return 0
+  [[ "$dep_token" == "$task_id" ]] && return 0
+  return 1
+}
+
+cmd_ready() {
+  local filter_assignee=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -a)
+        if [[ $# -lt 2 ]]; then
+          echo "Error: -a requires a value" >&2
+          exit 1
+        fi
+        filter_assignee="$2"
+        shift 2
+        ;;
+      *)
+        echo "Error: unknown option: $1" >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  if [[ -z "$filter_assignee" ]]; then
+    echo "Error: -a ASSIGNEE is required" >&2
+    exit 1
+  fi
+
+  # Phase 1: collect all tasks with their metadata
+  declare -A task_status task_assignee task_priority task_file_map task_spec
+  declare -a task_ids=()
+  # deps stored as space-separated strings keyed by task id
+  declare -A task_deps
+
+  while IFS= read -r task_file; do
+    local tid tstatus tassignee tpriority
+    tid=$(fm_value "$task_file" "id")
+    [[ -z "$tid" ]] && continue
+    tstatus=$(fm_value "$task_file" "status")
+    tassignee=$(fm_value "$task_file" "assignee")
+    tpriority=$(fm_value "$task_file" "priority")
+
+    task_ids+=("$tid")
+    task_status["$tid"]="$tstatus"
+    task_assignee["$tid"]="$tassignee"
+    task_priority["$tid"]="${tpriority:-9}"
+    task_file_map["$tid"]="$task_file"
+
+    # Parse spec dirname
+    local dir="${task_file%/*}"
+    dir="${dir##*/}"
+    task_spec["$tid"]="$dir"
+
+    # Collect deps
+    local deps_str=""
+    while IFS= read -r dep; do
+      deps_str="${deps_str:+$deps_str }$dep"
+    done < <(fm_list "$task_file" "deps")
+    task_deps["$tid"]="$deps_str"
+  done < <(all_task_files)
+
+  # Phase 2: detect cycles via topological sort (Kahn's algorithm)
+  declare -A in_degree
+  declare -A adj  # adjacency: dep -> dependents (space-separated)
+  for tid in "${task_ids[@]}"; do
+    in_degree["$tid"]=0
+  done
+  for tid in "${task_ids[@]}"; do
+    local deps="${task_deps[$tid]:-}"
+    [[ -z "$deps" ]] && continue
+    local count=0
+    for dep in $deps; do
+      # Resolve dep to actual task id
+      for other in "${task_ids[@]}"; do
+        if dep_matches "$dep" "$other"; then
+          count=$((count + 1))
+          adj["$other"]="${adj[$other]:+${adj[$other]} }$tid"
+          break
+        fi
+      done
+    done
+    in_degree["$tid"]=$count
+  done
+
+  # Kahn's: process nodes with in_degree 0
+  local queue=() sorted=()
+  for tid in "${task_ids[@]}"; do
+    [[ "${in_degree[$tid]}" -eq 0 ]] && queue+=("$tid")
+  done
+
+  while [[ ${#queue[@]} -gt 0 ]]; do
+    # Pick the first from queue
+    local current="${queue[0]}"
+    queue=("${queue[@]:1}")
+    sorted+=("$current")
+
+    local neighbors="${adj[$current]:-}"
+    for neighbor in $neighbors; do
+      in_degree["$neighbor"]=$((${in_degree[$neighbor]} - 1))
+      [[ "${in_degree[$neighbor]}" -eq 0 ]] && queue+=("$neighbor")
+    done
+  done
+
+  if [[ ${#sorted[@]} -ne ${#task_ids[@]} ]]; then
+    # Cycle detected — find the tasks still with in_degree > 0
+    local cycle_members=""
+    for tid in "${task_ids[@]}"; do
+      if [[ "${in_degree[$tid]}" -gt 0 ]]; then
+        cycle_members="${cycle_members:+$cycle_members, }$tid"
+      fi
+    done
+    echo "Error: dependency cycle detected among: $cycle_members" >&2
+    exit 1
+  fi
+
+  # Phase 3: filter the frontier — approved, assigned, all deps closed
+  local found=0
+  for tid in "${sorted[@]}"; do
+    [[ "${task_status[$tid]}" != "approved" ]] && continue
+    [[ "${task_assignee[$tid]}" != "$filter_assignee" ]] && continue
+
+    # Check all deps are closed
+    local blocked=0
+    local deps="${task_deps[$tid]:-}"
+    if [[ -n "$deps" ]]; then
+      for dep in $deps; do
+        for other in "${task_ids[@]}"; do
+          if dep_matches "$dep" "$other"; then
+            if [[ "${task_status[$other]}" != "closed" ]]; then
+              blocked=1
+            fi
+            break
+          fi
+        done
+        [[ "$blocked" -eq 1 ]] && break
+      done
+    fi
+    [[ "$blocked" -eq 1 ]] && continue
+
+    found=1
+    local spec="${task_spec[$tid]}"
+    local pri="${task_priority[$tid]}"
+    echo "${spec}  ${tid}  P${pri}"
+  done
+
+  if [[ "$found" -eq 0 ]]; then
+    return 0
+  fi
+}
+
+cmd_dependents() {
+  if [[ $# -lt 1 ]]; then
+    echo "Error: task id required" >&2
+    exit 1
+  fi
+  local target_id="$1"
+
+  local found=0
+  while IFS= read -r task_file; do
+    local tid
+    tid=$(fm_value "$task_file" "id")
+    [[ -z "$tid" ]] && continue
+
+    while IFS= read -r dep; do
+      if dep_matches "$dep" "$target_id"; then
+        found=1
+        local dir="${task_file%/*}"
+        dir="${dir##*/}"
+        echo "${dir}  ${tid}"
+        break
+      fi
+    done < <(fm_list "$task_file" "deps")
+  done < <(all_task_files)
+}
+
 case "${1:-}" in
   status)
     cmd_status
@@ -223,6 +463,14 @@ case "${1:-}" in
   tasks)
     shift
     cmd_tasks "$@"
+    ;;
+  ready)
+    shift
+    cmd_ready "$@"
+    ;;
+  dependents)
+    shift
+    cmd_dependents "$@"
     ;;
   *)
     usage

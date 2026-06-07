@@ -1,6 +1,6 @@
 ---
 id: soc-hrj1
-status: open
+status: closed
 deps: [soc-gfdy]
 links: []
 created: 2026-06-06T22:37:32Z
