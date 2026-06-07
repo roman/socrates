@@ -1,9 +1,10 @@
 ---
-id: 1-58c1-producer-marker-format
-status: poured
+id: 58c1-producer-marker-format
+status: closed
 priority: 1
 category: documentation
-ticket: soc-a41r
+assignee: ralph
+deps: []
 ---
 
 # Add producer marker to Shared Surfaces format

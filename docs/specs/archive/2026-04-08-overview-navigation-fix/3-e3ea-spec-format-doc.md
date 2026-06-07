@@ -1,10 +1,10 @@
 ---
-id: 3-e3ea-spec-format-doc
-status: poured
+id: e3ea-spec-format-doc
+status: closed
 priority: 2
 category: documentation
-depends_on: [1-2435-overview-template-sections]
-ticket: soc-zelc
+assignee: ralph
+deps: [2435-overview-template-sections]
 ---
 
 # Document Execution Order and Shared Surfaces in spec-format.md

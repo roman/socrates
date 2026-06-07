@@ -1,10 +1,10 @@
 ---
-id: 2-d7a7-spec-design-phase-instructions
-status: poured
+id: d7a7-spec-design-phase-instructions
+status: closed
 priority: 1
 category: documentation
-depends_on: [1-2435-overview-template-sections]
-ticket: soc-n2cw
+assignee: ralph
+deps: [2435-overview-template-sections]
 ---
 
 # Update /spec Design phase to produce Execution Order and Shared Surfaces

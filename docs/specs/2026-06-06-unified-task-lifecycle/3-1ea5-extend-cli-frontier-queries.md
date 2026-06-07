@@ -1,9 +1,10 @@
 ---
-id: 3-1ea5-extend-cli-frontier-queries
-status: poured
+id: 1ea5-extend-cli-frontier-queries
+status: closed
 priority: 1
 category: functional
-ticket: soc-hrj1
+assignee: ralph
+deps: [b01a-define-task-schema]
 ---
 
 # Extend the spec CLI with frontier and dependent queries

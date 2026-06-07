@@ -1,9 +1,10 @@
 ---
-id: 2-91d9-update-ralph-protocol
-status: poured
+id: 91d9-update-ralph-protocol
+status: closed
 priority: 1
 category: functional
-ticket: soc-a3hd
+assignee: ralph
+deps: [15a1-rewrite-sizing-and-rename-tags]
 ---
 
 # Update RALPH protocol for outcome-shaped tickets

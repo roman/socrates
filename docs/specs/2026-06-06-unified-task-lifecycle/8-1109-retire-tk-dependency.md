@@ -1,9 +1,10 @@
 ---
-id: 8-1109-retire-tk-dependency
-status: poured
+id: 1109-retire-tk-dependency
+status: approved
 priority: 4
 category: infrastructure
-ticket: soc-ix31
+assignee: ralph
+deps: [4919-remove-pour-reconcile-authoring]
 ---
 
 # Retire the tk dependency

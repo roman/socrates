@@ -1,7 +1,6 @@
 ---
 title: Overview Navigation Fix
 created: 2026-04-08
-epic: soc-nrtu
 archived: 2026-04-08
 delimit_approved: true
 ---

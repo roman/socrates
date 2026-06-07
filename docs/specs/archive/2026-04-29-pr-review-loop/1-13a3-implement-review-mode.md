@@ -1,10 +1,10 @@
 ---
-id: 1-13a3-implement-review-mode
-status: poured
+id: 13a3-implement-review-mode
+status: closed
 priority: 0
 category: functional
-ticket: soc-rc5m
-revisions: 1
+assignee: ralph
+deps: []
 ---
 
 # Implement review-mode behaviour in RALPH.md and pair docs

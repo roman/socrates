@@ -1,10 +1,10 @@
 ---
-id: 1-ac32-build-cli
-status: poured
+id: ac32-build-cli
+status: closed
 priority: 0
 category: functional
-ticket: soc-dw00
-revisions: 4
+assignee: ralph
+deps: []
 ---
 
 # Build the spec-status CLI

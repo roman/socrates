@@ -1,9 +1,10 @@
 ---
-id: 5-5760-migrate-existing-specs
-status: poured
+id: 5760-migrate-existing-specs
+status: closed
 priority: 2
 category: infrastructure
-ticket: soc-7wqf
+assignee: ralph
+deps: [b01a-define-task-schema, 1ea5-extend-cli-frontier-queries]
 ---
 
 # Migrate existing specs to the unified schema

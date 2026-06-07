@@ -1,9 +1,10 @@
 ---
-id: 1-15a1-rewrite-sizing-and-rename-tags
-status: poured
+id: 15a1-rewrite-sizing-and-rename-tags
+status: closed
 priority: 0
 category: functional
-ticket: soc-r1m5
+assignee: ralph
+deps: []
 ---
 
 # Rewrite sizing guidance and rename task body tags

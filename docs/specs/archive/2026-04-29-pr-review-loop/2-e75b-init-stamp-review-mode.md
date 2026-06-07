@@ -1,10 +1,10 @@
 ---
-id: 2-e75b-init-stamp-review-mode
-status: poured
+id: e75b-init-stamp-review-mode
+status: closed
 priority: 1
 category: functional
-ticket: soc-6k6x
-revisions: 1
+assignee: ralph
+deps: [13a3-implement-review-mode]
 ---
 
 # Stamp review_mode default in spec _overview.md template

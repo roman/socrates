@@ -1,9 +1,10 @@
 ---
-id: 2-b01a-define-task-schema
-status: poured
+id: b01a-define-task-schema
+status: closed
 priority: 0
 category: infrastructure
-ticket: soc-gfdy
+assignee: ralph
+deps: []
 ---
 
 # Define the unified task artifact schema

@@ -1,10 +1,10 @@
 ---
-id: 1-2435-overview-template-sections
-status: poured
+id: 2435-overview-template-sections
+status: closed
 priority: 0
 category: documentation
-depends_on: []
-ticket: soc-87bv
+assignee: ralph
+deps: []
 ---
 
 # Add Execution Order and Shared Surfaces sections to overview template

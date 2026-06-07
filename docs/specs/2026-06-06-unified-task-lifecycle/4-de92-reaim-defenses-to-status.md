@@ -1,9 +1,10 @@
 ---
-id: 4-de92-reaim-defenses-to-status
-status: poured
+id: de92-reaim-defenses-to-status
+status: closed
 priority: 1
 category: infrastructure
-ticket: soc-06lq
+assignee: ralph
+deps: [b01a-define-task-schema]
 ---
 
 # Re-aim mechanical defenses to task status

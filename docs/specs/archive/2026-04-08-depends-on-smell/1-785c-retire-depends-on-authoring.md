@@ -1,9 +1,10 @@
 ---
-id: 1-785c-retire-depends-on-authoring
-status: poured
+id: 785c-retire-depends-on-authoring
+status: closed
 priority: 1
 category: documentation
-ticket: soc-cirx
+assignee: ralph
+deps: []
 ---
 
 # Retire depends_on from task authoring surface

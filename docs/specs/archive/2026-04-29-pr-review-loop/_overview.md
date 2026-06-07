@@ -1,7 +1,6 @@
 ---
 title: PR Review Loop
 created: 2026-04-29
-epic: soc-ooy8
 archived: 2026-05-25
 delimit_approved: true
 ---

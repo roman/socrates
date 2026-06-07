@@ -1,9 +1,10 @@
 ---
-id: 6-a93b-rewrite-protocols
-status: poured
+id: a93b-rewrite-protocols
+status: approved
 priority: 2
 category: documentation
-ticket: soc-wm99
+assignee: ralph
+deps: [1ea5-extend-cli-frontier-queries, de92-reaim-defenses-to-status]
 ---
 
 # Rewrite protocols for the unified lifecycle

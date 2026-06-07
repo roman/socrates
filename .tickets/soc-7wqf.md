@@ -1,6 +1,6 @@
 ---
 id: soc-7wqf
-status: open
+status: closed
 deps: [soc-gfdy, soc-hrj1]
 links: []
 created: 2026-06-06T22:39:00Z

@@ -1,7 +1,6 @@
 ---
 title: Spec Sizing Rule
 created: 2026-04-08
-epic: soc-w9x2
 archived: 2026-04-09
 delimit_approved: true
 ---

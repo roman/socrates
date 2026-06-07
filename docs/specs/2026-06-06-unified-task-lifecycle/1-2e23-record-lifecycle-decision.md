@@ -1,9 +1,10 @@
 ---
-id: 1-2e23-record-lifecycle-decision
-status: poured
+id: 2e23-record-lifecycle-decision
+status: closed
 priority: 0
 category: documentation
-ticket: soc-fjro
+assignee: ralph
+deps: []
 ---
 
 # Record the unified-lifecycle decision

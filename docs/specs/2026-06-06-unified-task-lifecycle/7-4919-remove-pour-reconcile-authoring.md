@@ -1,9 +1,10 @@
 ---
-id: 7-4919-remove-pour-reconcile-authoring
-status: poured
+id: 4919-remove-pour-reconcile-authoring
+status: approved
 priority: 3
 category: functional
-ticket: soc-30rr
+assignee: ralph
+deps: [b01a-define-task-schema, 1ea5-extend-cli-frontier-queries, 5760-migrate-existing-specs, a93b-rewrite-protocols]
 ---
 
 # Remove pour and reconcile spec and init authoring

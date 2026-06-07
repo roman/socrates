@@ -2,7 +2,6 @@
 title: Unified Task Lifecycle
 created: 2026-06-06
 tags: []
-epic: soc-bjda
 archived:
 delimit_approved: true
 ---

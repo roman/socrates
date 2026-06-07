@@ -1,9 +1,10 @@
 ---
-id: 2-4968-pour-derives-from-surfaces
-status: poured
+id: 4968-pour-derives-from-surfaces
+status: closed
 priority: 0
 category: functional
-ticket: soc-9vi9
+assignee: ralph
+deps: [58c1-producer-marker-format, 785c-retire-depends-on-authoring]
 ---
 
 # Derive pour ordering from Shared Surfaces

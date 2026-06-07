@@ -1,7 +1,6 @@
 ---
 title: depends-on smell diagnosis
 created: 2026-04-08
-epic: soc-z4r9
 archived: 2026-04-08
 delimit_approved: true
 ---
