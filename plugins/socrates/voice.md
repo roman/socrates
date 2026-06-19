@@ -169,33 +169,21 @@ heading. Use a real heading.
 
 ## Diagnose ID convention
 
-Diagnose items carry typed prefixed identifiers so they can be
-referenced as vocabulary in discussion and the decision matrix:
+Diagnose items carry typed prefixed identifiers so subsequent
+phases can reference them precisely:
 
-- **RC** — Root Cause. A real reason the problem exists.
+- **RC** — Root Cause. A real reason the problem exists. Each one
+  needs to be solved (or deliberately left out) by the chosen
+  approach.
 - **NC** — Non-Cause. Looked like a cause; turned out not to be.
-  Limit to 2-3 items worth documenting.
+  Listed so approaches don't get credit for "solving" it.
 - **AC** — Adjacent Constraint. A rule from outside this spec
-  that we have to respect.
+  that we have to respect. Approaches are judged on whether they
+  preserve it.
 
-Reference items by their prefix in prose: "Addresses RC1" or
-"Solves RC1 and RC2".
-
-## Confidence labels for factual claims
-
-During investigation phases (Describe, Diagnose), assert facts
-with explicit confidence labels. Verified claims use a checkmark;
-unverified claims use squares so they're visually distinct from
-the decision matrix's circles:
-
-- ✅ **Verified** — directly confirmed by reading source code,
-  docs, or running it this session
-- 🟨 **High confidence** — well-established knowledge; unlikely
-  wrong but not verified live
-- 🟥 **Low confidence** — educated guess or extrapolation; treat
-  as a starting hypothesis only
-
-A claim that can't be verified gets a label, not silent acceptance.
+When references appear in subsequent phases (such as decision
+matrix rows), the format is: `[RC1] Description text` with the
+`RC1` hyperlinked back to a stable anchor in the Diagnose section.
 
 ## Verification bullets describe observable facts
 

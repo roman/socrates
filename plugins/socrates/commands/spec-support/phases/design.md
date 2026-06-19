@@ -257,9 +257,7 @@ code work). The agent's prompt:
    - **gap** — partial or couldn't answer
 
    This scale is about whether the spec *communicated* the answer,
-   not how sure the agent is the answer is true. It's a different
-   axis from the confidence ladder in `voice.md` (✅/🟨/🟥), which
-   is why the labels here are words rather than icons.
+   not how sure the agent is the answer is true.
 
 ### Failure handling
 
