@@ -10,7 +10,7 @@ deps: []
 
 # <Task title>
 
-## Outcome
+## Outcomes
 
 <What the implementer must achieve and what changes for the system or
 project when done. State the target, not the procedure.>
