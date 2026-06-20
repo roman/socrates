@@ -56,10 +56,13 @@ matrix:
 
 - **Header**: The problem statement from Delimit
 - **Columns**: Each approach (including status quo as A1)
-- **Rows**: Evaluation criteria. Each criterion should trace to a diagnosed
-  item using the prefix as vocabulary, e.g. "Addresses RC1" or "Solves RC1
-  and RC2". Implementation concerns (effort, risk, reversibility) use `[ID]`
-  as the prefix.
+- **Rows**: Evaluation criteria. Each row's "Criterion" cell prefixes the
+  criterion text with a typed link back to the diagnosed item, e.g.
+  `[[RC1](#rc1)] Reduces opaque sync failures` for criteria that trace to a
+  diagnosed item. Implementation concerns (effort, risk, reversibility,
+  time-to-value) use `[ID]` as the prefix instead of an item ID. The legend
+  that defines the prefixes lives in Diagnose's `### Diagnosed items`
+  subsection.
 - **Cells**: 🟢 (strong), 🟡 (adequate), 🔴 (weak), ⚪ (not applicable),
   with a brief explanation alongside the indicator.
 
@@ -67,8 +70,9 @@ matrix:
 - All-green columns → rationalization, not analysis. Find distinguishing criteria.
 - Criteria that don't differentiate → remove them, they add noise.
 - Solution-biased criteria → criteria should matter regardless of which approach wins.
-- Criteria that don't trace to diagnosed items → signals the matrix is drifting
-  from the diagnosis. Every criterion should address an RC, AC, or be an ID.
+- Criteria with no `[XX]` prefix → either it traces to a Diagnose item (give
+  it the right RC/NC/AC tag) or it's an implementation concern (`[ID]`).
+  Untagged criteria signal the matrix is drifting away from the diagnosis.
 
 **Render the matrix in the chat session BEFORE writing it to the spec file.**
 Markdown table notation is illegible in raw form — the user needs to see it

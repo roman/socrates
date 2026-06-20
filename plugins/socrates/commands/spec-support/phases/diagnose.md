@@ -92,9 +92,16 @@ so it can be referenced as vocabulary in discussion and the decision matrix:
 - **AC** — Adjacent Constraint. A rule from outside this spec that any
   approach must respect.
 
-Number each prefix sequentially (RC1, RC2, NC1, AC1, ...):
+The subsection starts with the legend table from `_overview.md` (the four
+prefixes: RC, NC, AC, ID). Keep it as a table; it's where readers learn what
+the prefixes mean before they hit the decision matrix in Direction.
+
+Number each prefix sequentially (RC1, RC2, NC1, AC1, ...). Each item gets a
+stable HTML anchor immediately above its heading so the decision matrix's
+links don't break when headings are reworded:
 
 ```markdown
+<a id="rc1"></a>
 #### RC1 — Mesh safety enforced at the wrong altitude
 
 <Explanation paragraph.>

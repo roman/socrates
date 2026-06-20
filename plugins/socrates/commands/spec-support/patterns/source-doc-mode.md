@@ -27,18 +27,41 @@ For each phase that can be pre-filled:
 4. If needs adjustment: enter that phase's interview flow with the extracted
    content as a starting point
 
-## Source-doc claims
+## Verifying source-doc claims
 
-Source documents make factual claims about how systems work today.
-Those claims may be stale, wrong, or aspirational.
+Source documents make factual claims about how systems work today
+(file paths, behaviors, configurations, counts). Those claims may be
+stale, wrong, or aspirational. Pre-filling phases without checking them
+inherits the source's errors into the spec.
 
-Trust but flag: pre-fill phases with content as-is, but add a note
-at the top of pre-filled sections:
+Before pre-filling Describe and Diagnose, prompt the user:
 
-> *Pre-filled from [source]. Claims not verified this session.*
+> "I extracted N factual claims from the source doc. Want me to verify
+> them against the codebase before pre-filling, or accept them as-is and
+> flag uncertainty later?"
 
-The Diagnose interview will naturally challenge assumptions — stale
-claims surface there. Explicit verification happens only if needed.
+If the user says verify:
+
+1. List the verifiable claims as a numbered list (e.g., "the chart ships
+   with `crds.keep: false`", "the pipeline emits a
+   `MeshAirProjectExtension` per project").
+2. Spawn a foreground sub-agent (Explore or general-purpose) with the
+   explicit task of confirming each claim against the codebase.
+3. Report findings back inline, stating for each claim whether the
+   codebase confirmed it, contradicted it, or left it unresolved.
+   Refuted claims are reported with the contradicting evidence.
+4. Pre-fill Describe / Diagnose using only confirmed claims as asserted
+   facts. Anything contradicted or unresolved becomes a noted uncertainty
+   in the relevant phase, not a fact.
+
+If the user says accept:
+
+- Pre-fill phases as-is, but add a note at the top of each pre-filled
+  section so the inherited, unverified claims stay visible:
+  > *Pre-filled from [source]. Claims not verified this session.*
+- The Diagnose interview will naturally challenge assumptions, so stale
+  claims tend to surface there. Naming the inheritance is honest and
+  creates a hook to verify later.
 
 ## Gap Detection
 
