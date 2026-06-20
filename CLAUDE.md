@@ -10,7 +10,7 @@ to find what to do next. Specs are the single source of truth; task status
 (`draft`, `approved`, `closed`) governs the lifecycle.
 
 The protocol Socrates installs into target projects is `RALPH.md` (template at
-`plugins/socrates/templates/RALPH.md`). Read that file to understand the loop.
+`nix/ralph/RALPH.md`). Read that file to understand the loop.
 
 ## Session Discipline
 

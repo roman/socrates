@@ -18,7 +18,7 @@ stdenv.mkDerivation {
     # Commands
     cp -r commands $base/
 
-    # Templates (shell scripts + spec/task templates)
+    # Templates (spec/task templates for marketplace plugin)
     cp -r templates $base/
 
     # Voice and structure conventions (referenced by /spec)
@@ -37,7 +37,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "Socrates — structured design and autonomous development for Claude Code";
+    description = "Socrates — structured design for Claude Code";
     platforms = lib.platforms.all;
   };
 }

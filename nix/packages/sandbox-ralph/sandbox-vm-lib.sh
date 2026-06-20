@@ -200,5 +200,5 @@ sandbox_run_ralph() {
         "GIT_AUTHOR_EMAIL=$GIT_AUTHOR_EMAIL" \
         "GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME" \
         "GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL" \
-    bash -lc "cd '$GUEST_PROJECT_DIR' && nix develop --impure --command bash 'plugins/socrates/templates/$SANDBOX_RALPH_INNER_SCRIPT' $*"
+    bash -lc "cd '$GUEST_PROJECT_DIR' && nix develop --impure --command bash 'nix/ralph/$SANDBOX_RALPH_INNER_SCRIPT' $*"
 }

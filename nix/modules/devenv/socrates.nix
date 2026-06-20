@@ -11,6 +11,7 @@ let
   defaultPackage = inputs.self.packages.${pkgs.system}.skills.socrates;
 
   pluginDir = "${cfg.package}/share/claude/skills/socrates";
+  ralphDir = "${inputs.self}/nix/ralph";
 
   mkCommandFiles =
     pkg:
@@ -84,15 +85,15 @@ in
       // (lib.optionalAttrs (builtins.pathExists "${pluginDir}/skills") (mkSkillFiles cfg.package))
       // lib.optionalAttrs cfg.templates.install {
         "ralph.sh" = {
-          text = builtins.readFile "${pluginDir}/templates/ralph.sh";
+          text = builtins.readFile "${ralphDir}/ralph.sh";
           executable = true;
         };
         "ralph-once.sh" = {
-          text = builtins.readFile "${pluginDir}/templates/ralph-once.sh";
+          text = builtins.readFile "${ralphDir}/ralph-once.sh";
           executable = true;
         };
         "ralph-format.sh" = {
-          text = builtins.readFile "${pluginDir}/templates/ralph-format.sh";
+          text = builtins.readFile "${ralphDir}/ralph-format.sh";
           executable = true;
         };
       };

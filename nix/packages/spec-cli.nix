@@ -6,7 +6,7 @@ pkgs.writeShellApplication {
 
   runtimeInputs = with pkgs; [ coreutils ];
 
-  text = builtins.readFile ../../plugins/socrates/templates/spec;
+  text = builtins.readFile ../ralph/spec;
 
   meta = {
     description = "Read-only CLI for Socrates spec/task status";

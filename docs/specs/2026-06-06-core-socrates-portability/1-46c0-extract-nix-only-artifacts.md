@@ -1,6 +1,6 @@
 ---
 id: 46c0-extract-nix-only-artifacts
-status: approved
+status: closed
 priority: 1
 category: infrastructure
 assignee: ralph

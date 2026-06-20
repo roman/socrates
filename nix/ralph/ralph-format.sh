@@ -15,6 +15,7 @@ YELLOW='\033[33m'
 CYAN='\033[36m'
 MAGENTA='\033[35m'
 GRAY='\033[90m'
+# shellcheck disable=SC2034  # WHITE reserved for future use
 WHITE='\033[97m'
 
 # Track tokens for summary
