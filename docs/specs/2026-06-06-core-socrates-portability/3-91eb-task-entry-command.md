@@ -1,6 +1,6 @@
 ---
 id: 91eb-task-entry-command
-status: approved
+status: closed
 priority: 1
 category: functional
 assignee: ralph
