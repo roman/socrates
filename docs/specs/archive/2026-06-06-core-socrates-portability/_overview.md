@@ -2,7 +2,7 @@
 title: Core Socrates portability
 created: 2026-06-06
 tags: []
-archived:
+archived: 2026-06-20
 delimit_approved: true
 review_mode: false # gates post-merge review loop; see RALPH.md § Review Mode
 ---

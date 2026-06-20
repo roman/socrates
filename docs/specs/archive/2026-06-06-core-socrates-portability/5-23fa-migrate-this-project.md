@@ -1,6 +1,6 @@
 ---
 id: 23fa-migrate-this-project
-status: approved
+status: closed
 priority: 1
 category: infrastructure
 assignee: ralph

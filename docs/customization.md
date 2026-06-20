@@ -1,7 +1,7 @@
 # Customization Guide
 
-Socrates installs templates that you own after initialization. Everything is
-customizable.
+Socrates ships as a Claude Code plugin (slash commands and voice rules) plus
+Nix-only Ralph artifacts. Everything below is customizable.
 
 ## Shell Scripts
 
@@ -63,17 +63,18 @@ than 5 files".
 
 ## Handoff Format
 
-Edit `templates/handoff.md` to add project-specific sections. Examples:
+Edit `nix/ralph/handoff.md` to add project-specific sections. Examples:
 - **Metrics** — performance numbers before/after
 - **Migration notes** — for projects with database migrations
 - **Deploy checklist** — for projects with manual deploy steps
 
-## CLAUDE.md Discipline Gates
+## Spec Discipline Kernel
 
-Edit the gates in your project's CLAUDE.md. Common changes:
-- Adjust code-critic configuration (model, rounds)
-- Add project-specific pre-commit checks
-- Add required reading beyond RALPH.md (e.g., architecture docs)
+The discipline kernel (directive hierarchy and code-critic gate) is delivered
+inline by `/spec` and `/socrates-task`. To customize:
+- Adjust code-critic configuration (model, rounds) in your project's CLAUDE.md
+- Add project-specific pre-commit checks in CLAUDE.md
+- Add required reading beyond RALPH.md (e.g., architecture docs) in CLAUDE.md
 
 ## Spec Format
 
