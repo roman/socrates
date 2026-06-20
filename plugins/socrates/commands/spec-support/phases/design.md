@@ -205,7 +205,7 @@ If the user declines, proceed directly to Post-Design Summary.
 
 The premise: an implementer picks up a task and reads only what's
 reachable from that task — the task file, the spec overview, and
-the project's `claude-gates.md` block in CLAUDE.md. If a fresh
+the "Spec discipline kernel" section of `/spec`. If a fresh
 reader with that material cannot answer questions about the task's
 *purpose*, *scope*, or *what done looks like*, the spec failed to
 communicate those things, even if the answers exist in your head
@@ -234,8 +234,8 @@ foreground, sonnet model is enough — this is comprehension, not
 code work). The agent's prompt:
 
 1. **Materials**: paths to the task file, the spec's `_overview.md`,
-   and the project's `CLAUDE.md` (the `claude-gates.md` block is
-   the relevant section). The agent reads only these.
+   and the `/spec` command file (the "Spec discipline kernel"
+   section is the relevant part). The agent reads only these.
 2. **Questions** — the agent must answer all three:
    - **Purpose**: in one sentence, what user-facing pain does this
      task ultimately address? Which Diagnose item (RC/AC) does it

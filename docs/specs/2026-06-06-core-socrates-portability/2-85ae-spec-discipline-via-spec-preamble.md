@@ -1,6 +1,6 @@
 ---
 id: 85ae-spec-discipline-via-spec-preamble
-status: approved
+status: closed
 priority: 1
 category: functional
 assignee: ralph

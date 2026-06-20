@@ -8,6 +8,27 @@ Walk the user through a structured design process that produces a spec overview 
 individual task files. Each phase builds on the previous one, with a strict gate at Delimit
 requiring explicit user approval.
 
+## Spec discipline kernel
+
+<!-- DUPLICATION NOTE: the task-entry command (/socrates-task, T3) inlines
+     the same kernel content below. If you edit this section, update the
+     corresponding section in commands/socrates-task.md as well. -->
+
+Specs in this project carry a directive hierarchy:
+
+- The overview's **Describe** section names the user-facing pain (the durable why).
+- The overview's **Diagnose** section names the mechanism (RC/NC/AC).
+- A task file's **Outcome** describes a slice of work, not the why. Task-ordering language
+  ("prerequisite for X", "must land before Y") is sequencing, not why — do not anchor
+  planning, code comments, or PR descriptions on it.
+
+Before planning or implementing on a task, reconstruct the why from the overview's
+Describe + Diagnose. If the why isn't reconstructible from those sections, ask before
+proceeding.
+
+Before commits on non-trivial changes: spawn the `code-critic` agent (foreground, opus
+model) and address findings in at most 2 rounds.
+
 ## Support files
 
 This command is an orchestrator. Each phase and each reusable mode lives in its own file
