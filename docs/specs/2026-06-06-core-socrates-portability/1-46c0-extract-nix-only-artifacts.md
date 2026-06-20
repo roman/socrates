@@ -3,7 +3,7 @@ id: 46c0-extract-nix-only-artifacts
 status: approved
 priority: 1
 category: infrastructure
-assignee:
+assignee: ralph
 deps: []
 ---
 

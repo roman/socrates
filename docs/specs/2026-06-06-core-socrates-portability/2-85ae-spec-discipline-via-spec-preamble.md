@@ -3,7 +3,7 @@ id: 85ae-spec-discipline-via-spec-preamble
 status: approved
 priority: 1
 category: functional
-assignee:
+assignee: ralph
 deps: []
 ---
 

@@ -3,7 +3,7 @@ id: 23fa-migrate-this-project
 status: approved
 priority: 1
 category: infrastructure
-assignee:
+assignee: ralph
 deps: [46c0-extract-nix-only-artifacts, 85ae-spec-discipline-via-spec-preamble, 91eb-task-entry-command, e82d-trim-socrates-init]
 ---
 

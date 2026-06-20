@@ -3,7 +3,7 @@ id: 91eb-task-entry-command
 status: approved
 priority: 1
 category: functional
-assignee:
+assignee: ralph
 deps: [85ae-spec-discipline-via-spec-preamble]
 ---
 

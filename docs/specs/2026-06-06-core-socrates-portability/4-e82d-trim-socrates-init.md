@@ -3,7 +3,7 @@ id: e82d-trim-socrates-init
 status: approved
 priority: 2
 category: functional
-assignee:
+assignee: ralph
 deps: [85ae-spec-discipline-via-spec-preamble, 91eb-task-entry-command]
 ---
 
