@@ -1,30 +1,5 @@
 # Command Reference
 
-## /init
-
-Initialize Socrates in the current project.
-
-```
-/init
-```
-
-**What it does:**
-- Checks prerequisites: `claude`, `jq`, `gh`
-- Copies shell scripts (ralph.sh, ralph-once.sh, ralph-format.sh)
-- Creates directory structure: `docs/specs/`, `docs/handoffs/`, `.msgs/`
-- Copies RALPH.md protocol file from template
-- Appends discipline gates to CLAUDE.md
-- Installs commit-msg hook (warning mode — warns if `Refs:` is missing or
-  points to a `draft` task)
-
-**Nix/devenv detection:** Files managed by Nix (symlinks into `/nix/store/`) are
-skipped. The devenv module handles those.
-
-**Conflict handling:** If files already exist, you're asked to skip or overwrite
-each one.
-
----
-
 ## /spec
 
 Design a feature through the Design in Practice journey.
@@ -86,7 +61,7 @@ future runs skip already-processed handoffs.
 
 ## Shell Scripts
 
-These are installed by `/init` and used for the Ralph autonomous loop.
+These are part of the Ralph autonomous loop (Nix-only).
 
 ### ralph.sh
 

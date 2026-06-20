@@ -50,17 +50,12 @@ Key principles:
 claude plugin add /path/to/socrates/plugins/socrates
 ```
 
-Then in your project:
-
-```bash
-/socrates:init
-```
+No project setup step is needed. Run `/spec` to start designing; the plugin
+creates `docs/specs/` on first use.
 
 ## Prerequisites
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
-- `jq`
-- `gh` (GitHub CLI)
 
 ## Status
 

@@ -1,6 +1,6 @@
 ---
 id: e82d-trim-socrates-init
-status: approved
+status: closed
 priority: 2
 category: functional
 assignee: ralph

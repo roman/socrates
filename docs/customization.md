@@ -100,5 +100,5 @@ If you use the devenv module, templates are installed from the Nix store and
 are read-only. To customize:
 
 1. Override in your devenv configuration
-2. Or: let `/init` detect the Nix-managed files and skip them, then manually
-   create your customized versions (they won't be overwritten on rebuild)
+2. Or: manually create customized versions alongside the Nix-managed ones
+   (they won't be overwritten on rebuild)

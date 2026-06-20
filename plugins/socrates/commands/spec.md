@@ -84,6 +84,16 @@ The user may provide:
 
 ## Step 1 — Spec Discovery and Setup
 
+### Auto-create spec directory
+
+Before any discovery or creation, ensure the spec root exists:
+
+```bash
+mkdir -p docs/specs
+```
+
+This is the only project-tree write core Socrates ever makes, and only on first use of `/spec`.
+
 ### If no arguments provided
 
 1. Check `docs/specs/` for existing spec directories

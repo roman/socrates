@@ -68,7 +68,7 @@ in
         default = false;
         description = ''
           Install shell script templates (ralph.sh, ralph-once.sh, ralph-format.sh)
-          into the project root. When false, /init copies them manually.
+          into the project root via Nix symlinks.
         '';
       };
     };

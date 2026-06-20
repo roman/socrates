@@ -88,13 +88,6 @@ When review mode is off (the default), task lifecycle is unchanged.
 
 See RALPH.md § Review Mode for the full protocol.
 
-**Install-path note:** Nix-installed projects pick up the updated
-RALPH.md automatically. `/init`-installed projects must re-run `/init`
-to get the new protocol. Existing specs are unaffected — `review_mode`
-defaults to `false` when absent. See
-`docs/gaps/socrates-upgrade-flow.md` for the deferred upgrade-flow
-design.
-
 ### Controlling Ralph
 
 - **Single iteration**: `./ralph-once.sh` for testing
