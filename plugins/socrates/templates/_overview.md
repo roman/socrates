@@ -139,23 +139,6 @@ of its title.>
 <Terms used consistently throughout this spec. Definitions that
 matter for implementation.>
 
-#### Shared Surfaces
-
-<Narrative bulleted list naming cross-task touchpoints by surface
-only — a file, a type name, a config key, a sentinel. Each bullet
-names the surface, links to the tasks that touch it, and says in
-one sentence why the coupling matters.
-
-One linked task per entry may be annotated `(surface owner)` — the
-task that creates or owns that surface; other linked tasks are
-readers and follow it. Absence of any marker means the surface is
-a mutual read and contributes no ordering. Multiple owners are
-allowed but rare. The marker must be written explicitly on the
-link itself so it survives link reordering during refinement.
-
-Shapes, literal values, type definitions, and concrete config keys
-do NOT belong here — only the surface name.>
-
 ## Technical Addendum
 
 <!--

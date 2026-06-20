@@ -18,11 +18,6 @@ Before decomposing, gather context. Launch parallel Agent sub-agents to:
    - Verify assumptions about tools/frameworks
    - Check for known issues or limitations
 
-3. **Files touched by multiple tasks** — While exploring, identify files that
-   more than one task will read or write. Name the file path only — do not
-   record type definitions, literal values, or concrete config keys at the
-   overview level. Those are discovered by the implementer.
-
 Synthesize findings into the `### Context` subsection of the Design section.
 This context informs the task decomposition.
 
@@ -54,25 +49,35 @@ target the same outcome and cannot be verified separately, merge them.
 
 For each task:
 
-1. **Generate an ID**: ordinal prefix (1-based execution order) +
-   short hash (first 4 chars of sha256 of title) + human suffix
-   (2-3 word kebab-case). Example: `1-a1b2-setup-middleware`.
-   Assign ordinals based on logical execution order. Tasks with no
-   dependencies get the lowest ordinals.
+1. **Generate the identity**: short hash (first 4 chars of sha256 of
+   title) + human suffix (2-3 word kebab-case). Example:
+   `a1b2-setup-middleware`. This is what goes in the task's `id:`
+   frontmatter field.
    ```bash
    echo -n "Setup auth middleware" | sha256sum | cut -c1-4
    ```
 
-2. **Create the task file** at `docs/specs/<name>/<id>.md` using the task
-   template from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`.
-   The filename is the full id including the ordinal prefix, so
-   `ls` on the spec directory shows tasks in execution order.
+2. **Assign an ordinal** (1-based execution order) based on logical
+   dependency order. The ordinal does not go in the frontmatter; it
+   only appears in the filename so `ls` on the spec directory shows
+   tasks in execution order. Tasks with no dependencies get the
+   lowest ordinals.
 
-3. **Fill in**:
-   - `id:` — generated ID
+3. **Create the task file** at
+   `docs/specs/<name>/<ordinal>-<id>.md` using the task template
+   from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`.
+   Example filename: `1-a1b2-setup-middleware.md`. Example
+   frontmatter `id:` value: `a1b2-setup-middleware`.
+
+4. **Fill in**:
+   - `id:` — the `<hash>-<suffix>` identity (without the ordinal)
    - `status: draft`
-   - `priority:` — 0 (highest) to 4, based on surface-derived order and criticality
+   - `priority:` — 0 (highest) to 4, based on dependency order and criticality
    - `category:` — functional, style, infrastructure, or documentation
+   - `deps:` — list of upstream task identities (the `<hash>-<suffix>`
+     form) this task depends on; empty list when none. If two tasks
+     touch the same surface and one must land before the other, that
+     ordering is a `dep` — capture it here.
    - Title — clear, action-oriented (starts with a verb)
    - `## Outcomes` — a bulleted list of what the implementer must achieve and
      what changes for the system or project when done. State the target, not
@@ -82,8 +87,10 @@ For each task:
      the outcome is met
    - `<review>` — leave empty (XML tag stays invisible in rendered markdown)
 
-Coupling between tasks is expressed through the `### Files touched by multiple
-tasks` and `### Dependencies` sections of the overview.
+Task dependencies live in each task file's `deps:` frontmatter and are
+the single source of truth. The overview does not track cross-task file
+overlap — an implementer reconstructs it from the task files, and the
+overview stays readable for both humans and agents.
 
 ## Open Questions During Design
 
@@ -107,21 +114,7 @@ the question and keep it visible in the spec.
    first; downstream tasks follow. This is the rendered reading order a human
    would use to walk the spec.
 4. Write `### Glossary` with terms used consistently in the tasks.
-5. Write `### Files touched by multiple tasks` listing files identified
-   during research that more than one task will modify:
-   ```
-   - `src/middleware/auth.ts` — Task 1, Task 3
-   - `src/api/routes.ts` — Task 2, Task 4
-   ```
-6. Write `### Dependencies` with explicit task ordering using arrow notation:
-   ```
-   Task 1 -> Task 3
-   Task 2 -> Task 4
-   ```
-   Arrow reads "must complete before." Only document dependencies that
-   aren't obvious from file overlap — the reader can derive file-based
-   ordering from the previous section.
-7. Update marker to `## Design [COMPLETE]`
+5. Update marker to `## Design [COMPLETE]`
 
 ## Design Review (optional)
 
@@ -136,7 +129,7 @@ If the user accepts, run the council:
 
 1. Launch two Agent sub-agents **in parallel, both foreground, both opus**:
    - **code-critic** — review the full spec (overview + all task files) for
-     gaps, missing file overlaps, incorrect dependencies, risks the spec
+     gaps, incorrect or missing task dependencies, risks the spec
      doesn't acknowledge, and whether the tasks are outcome-shaped.
    - **grug-architect** — review for unnecessary complexity, over-decomposition,
      tasks that could be merged, ceremony that doesn't earn its keep, and
@@ -172,7 +165,7 @@ If the user accepts, run the council:
 
    **Non-controversial fixes** — concrete, mechanical, no design
    tradeoff. Apply these directly:
-   - missing file overlap entries
+   - missing `deps:` entries between tasks that clearly must be ordered
    - stale references after a renumber
    - verification bullets that are procedure-shaped instead of
      observable
