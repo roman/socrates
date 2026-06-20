@@ -7,18 +7,20 @@ headers for phase markers:
 - `[COMPLETE]` — phase done
 - `[APPROVED]` — Delimit phase approved by user
 
-Also check frontmatter `delimit_approved:` field.
+Delimit approval is recorded in two places: the `[APPROVED]` section marker and the
+frontmatter `delimit_approved:` field. The frontmatter field is the authoritative signal;
+treat the marker as its human-readable mirror.
 
-**Resume logic**: Find the first section with `[DRAFT]` marker. That is the
-current phase. Skip all `[COMPLETE]`/`[APPROVED]` phases.
+**Resume logic**: Find the first section with `[DRAFT]` marker. That is the current
+phase. Skip all `[COMPLETE]`/`[APPROVED]` phases.
 
-Tell the user which phase you're resuming at and give a brief recap of what's
-been completed so far (summarize completed sections in 1-2 sentences each).
+Tell the user which phase you're resuming at and give a brief recap of what's been completed
+so far (summarize completed sections in 1-2 sentences each).
 
 ## Going Back
 
-The user can request to revisit a completed phase (e.g., "revisit Delimit",
-"go back to Describe"). When this happens:
+The user can request to revisit a completed phase (e.g., "revisit Delimit", "go back to
+Describe"). When this happens:
 
 1. Set the target phase's header marker to `[DRAFT]`
 2. Set ALL subsequent phase markers to `[DRAFT]`
@@ -27,39 +29,34 @@ The user can request to revisit a completed phase (e.g., "revisit Delimit",
 
 Edit sections directly — git tracks history.
 
-This ensures that downstream phases that depended on the now-changed upstream
-content are re-evaluated rather than silently stale.
+This ensures that downstream phases that depended on the now-changed upstream content are
+re-evaluated rather than silently stale.
 
 ## Automatic walk-back on detected conflict
 
-The user can also reach a point where their input contradicts a
-decision recorded in an earlier `[COMPLETE]` phase, without
-explicitly asking to revisit it. Examples:
+Sometimes the user's input contradicts a decision recorded in an earlier `[COMPLETE]` or
+`[APPROVED]` phase, even though they did not ask to revisit that phase. Detect this
+yourself. Examples:
 
-- The user reframes the problem during Direction, contradicting
-  the Delimit problem statement.
-- The user introduces a new constraint during Design that would
-  change the Direction comparison.
-- The user discovers a verified fact during Design that
-  contradicts a Diagnose hypothesis.
+- The user reframes the problem during Direction, contradicting the Delimit problem
+  statement.
+- The user introduces a new constraint during Design that would change the Direction
+  comparison.
+- The user discovers a verified fact during Design that contradicts a Diagnose hypothesis.
 
-When this happens, **do not silently roll forward**. Stop, name
-the conflict, and ask the user before unwinding any markers:
+When this happens, **do not silently roll forward**. Stop, name the conflict, and ask the user
+before unwinding any markers:
 
-1. Identify which `[COMPLETE]` (or `[APPROVED]`) section the new
-   input contradicts.
-2. Use AskUserQuestion to surface the conflict explicitly:
-   "This contradicts the Delimit problem statement. Should I
-   walk Direction back to `[DRAFT]` and revisit Delimit, or are
+1. Identify which `[COMPLETE]` (or `[APPROVED]`) section the new input contradicts.
+2. Use AskUserQuestion to surface the conflict explicitly: "This contradicts the Delimit
+   problem statement. Should I walk Direction back to `[DRAFT]` and revisit Delimit, or are
    you adjusting the problem statement deliberately?"
-3. If the user confirms a walk-back, follow the "Going Back"
-   procedure above for the target phase.
-4. If the user says the conflict is intentional and shouldn't
-   reopen earlier phases, log a brief note in the section being
-   currently worked on (e.g., as an "Open assumption" line) so
-   the conflict is visible to readers, and continue.
+3. If the user confirms a walk-back, follow the "Going Back" procedure above for the target
+   phase.
+4. If the user says the conflict is intentional and shouldn't reopen earlier phases, log a
+   brief note in the current phase's section (e.g., an "Open assumption" line) so readers
+   can see the conflict, then continue.
 
-The point is to never let a `[COMPLETE]` marker become a lie. If
-the spec contradicts itself, the contradiction is acknowledged in
-writing — either by walking back the marker, or by recording the
-deliberate divergence.
+The point is to never let a `[COMPLETE]` marker become a lie. If the spec contradicts itself,
+the contradiction is acknowledged in writing — either by walking back the marker, or by
+recording the deliberate divergence.

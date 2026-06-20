@@ -4,10 +4,12 @@ When invoked with `--source <path-or-url>`:
 
 ## Reading the Source
 
-1. If the source is a file path: use Read tool
-2. If the source is a URL: use WebFetch tool
-3. If the source is a ticket URL (Asana, Linear, GitHub issue): use appropriate
-   tool (gh for GitHub issues, WebFetch for others)
+Pick the reader by source type, checking in this order (the branches are
+mutually exclusive):
+
+1. GitHub issue URL → `gh issue view`
+2. Any other URL (web page, Asana, Linear ticket) → WebFetch
+3. Local file path → Read tool
 
 ## Pre-filling Phases
 
@@ -36,7 +38,7 @@ inherits the source's errors into the spec.
 
 Before pre-filling Describe and Diagnose, prompt the user:
 
-> "I extracted N factual claims from the source doc. Want me to verify
+> "I extracted <count> factual claims from the source doc. Want me to verify
 > them against the codebase before pre-filling, or accept them as-is and
 > flag uncertainty later?"
 

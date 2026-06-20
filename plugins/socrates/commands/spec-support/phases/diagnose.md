@@ -92,9 +92,10 @@ so it can be referenced as vocabulary in discussion and the decision matrix:
 - **AC** — Adjacent Constraint. A rule from outside this spec that any
   approach must respect.
 
-The subsection starts with the legend table from `_overview.md` (the four
-prefixes: RC, NC, AC, ID). Keep it as a table; it's where readers learn what
-the prefixes mean before they hit the decision matrix in Direction.
+The subsection starts with the legend table from `_overview.md`, which defines
+all four prefixes — RC, NC, AC, and ID (ID labels implementation-concern rows
+in Direction's decision matrix, not Diagnose items). Keep it as a table; it's
+where readers learn what the prefixes mean before they reach that matrix.
 
 Number each prefix sequentially (RC1, RC2, NC1, AC1, ...). Each item gets a
 stable HTML anchor immediately above its heading so the decision matrix's

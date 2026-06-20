@@ -26,11 +26,11 @@ Pick this role when:
 - Specs may have completed since the last PM cycle (run Spec Lifecycle below)
 - **`spec ready -a ralph` is empty** — default to PM and verify everything
   is consistent (inbox, task states, spec lifecycle) before concluding
-  there is no work. Only after the PM sweep finds nothing actionable
-  should the iteration create `.ralph-stop` and exit.
+  there is no work.
 
 PM actions: triage comments, update task states, run the Spec Lifecycle
-sweep, suggest `/spec` runs to the human via `.msgs/`.
+sweep, suggest `/spec` runs to the human via `.msgs/`. If the sweep finds
+nothing actionable, create `.ralph-stop` and exit (see `.ralph-stop` below).
 
 #### Spec Lifecycle Sweep
 
@@ -70,11 +70,12 @@ escalation rule.
 **Set external-ref**: Read the upstream artifact at the URL. Append
 every review comment newer than the timestamp of the latest existing
 task note as a new note (append-only — never mutate prior notes; this
-rules out races with a concurrent implementer reading the task).
+rules out races with a concurrent implementer reading the task). Then
+handle by the artifact's observed state:
 
 - **Merge observed**: remove the `awaiting-review` tag, set `status:
   closed`, and note the merge in the task.
-- **Close without merge observed**: escalate per the escalation rule.
+- **Closed, no merge observed**: escalate per the escalation rule.
   Never silently close.
 - **No new comments, not merged**: no action (no churn).
 
@@ -91,14 +92,15 @@ Pick this role when:
 Implementer actions: follow the Phase Sequence below for each task.
 
 **Work source rule (strict):** the only valid source of implementation work
-is `spec ready -a ralph`. This command computes the unblocked frontier:
-tasks whose `status` is `approved`, whose `deps` are all `closed`, and
-whose `assignee` matches. Tasks tagged `awaiting-review` are excluded —
-they are in external review and not eligible for implementation pickup.
-An `approved` task in the spec directory is the work item — read and
-implement against it directly. A `draft` task is not eligible; if you
-encounter one that looks ready, switch to PM and escalate to the human
-via `.msgs/` so they can review and approve it.
+is `spec ready -a ralph`, which computes the unblocked frontier.
+
+- A task is eligible when its `status` is `approved`, its `deps` are all
+  `closed`, and its `assignee` matches.
+- Tasks tagged `awaiting-review` are excluded — they are in external review,
+  not eligible for implementation pickup.
+- Implement an eligible task directly against its file in the spec directory.
+- A `draft` task is never eligible. If one looks ready, switch to PM and
+  escalate to the human via `.msgs/` so they can review and approve it.
 
 The `Refs:` value in your commit must be the task's identity token (the
 `id` field from the task file's frontmatter, e.g. `a1b2-setup-middleware`).
@@ -279,12 +281,11 @@ Health check and orientation before touching code.
 - Read the task file (description, outcomes, verification, dependencies)
 - **If the task body contains a `Spec overview:` line, read that
   `_overview.md` before writing any code.** The task body carries the
-  outcome and verification, but the overview carries the *why* — the
-  Diagnose root cause, the Delimit problem statement, and the Direction
-  approach the spec chose. When you hit a moment requiring deviation from
-  the task description (a constraint not anticipated, a cleaner approach
-  surfacing mid-work), the overview is what tells you whether your
-  deviation serves the original problem or undermines it.
+  outcome and verification; the overview carries the *why* — the Diagnose
+  root cause, the Delimit problem statement, and the Direction approach the
+  spec chose. If you must deviate mid-work (an unanticipated constraint, or a
+  cleaner approach surfacing), check the deviation against the overview: does
+  it still serve the original problem?
 - Understand the task's **Outcome** as the target state to reach and its
   **Verification** as the contract to satisfy — tasks describe *what* to
   achieve, not *how* to achieve it

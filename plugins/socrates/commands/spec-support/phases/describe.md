@@ -41,7 +41,9 @@ Instead of interviewing from scratch:
 ## Scope Triage (multi-issue sessions)
 
 When the user surfaces multiple distinct issues during the Describe interview,
-investigate whether they share a root cause before writing the section:
+investigate whether they share a root cause before writing the section. This is
+a lightweight split-vs-keep check, not a full diagnosis — you are only testing
+whether the issues are linked, not solving them:
 
 1. **Name the candidate issues** — list them explicitly for the user.
 2. **Hypothesize a link** — could one cause or amplify the other? State the
@@ -54,7 +56,8 @@ investigate whether they share a root cause before writing the section:
    keep them in one spec. Present your evidence and let the user confirm.
 
 **Do not ask the user whether to split** — investigate first, then recommend
-with evidence. The user validates your conclusion, not does the analysis.
+with evidence. The user validates your conclusion; the user does not do the
+analysis.
 
 If splitting: create multiple spec directories, write separate Describe sections
 for each, and ask the user which to continue with in this session.
@@ -68,6 +71,8 @@ Before writing the Describe section, ask one question:
 
 If yes, surface it to the user before proceeding. Solving the cause may
 dissolve the problem entirely.
+
+## Recurrence Check
 
 If the problem seems familiar, check the overview frontmatter `tags:` of
 existing specs to see if this is a recurring pattern. Recurring problems

@@ -10,18 +10,19 @@ When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
 ## Processing Review Feedback
 
 1. Read the review comments in `<review>`
-2. Regenerate the `## Outcomes` and/or `## Verification` sections based on feedback
+2. Regenerate only the sections the feedback addresses — `## Outcomes`,
+   `## Verification`, or both; leave the others unchanged
 3. Clear the `<review>` section (set back to empty)
 4. Present the changes to the user for confirmation
 5. Write the updated task file
 
-The task stays at `status: draft` throughout review iterations. The user
-manually changes status to `approved` when satisfied.
+The task stays at `status: draft` throughout review iterations. The user manually changes
+status to `approved` when satisfied.
 
 ## Batch Review
 
-If invoked with a spec directory (`/spec docs/specs/<name>/`), check all task
-files for non-empty `<review>` sections and process them sequentially.
+If invoked with a spec directory (`/spec docs/specs/<name>/`), check all task files for
+non-empty `<review>` sections and process them sequentially.
 
 ## Status Summary
 

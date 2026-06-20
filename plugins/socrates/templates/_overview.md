@@ -23,10 +23,12 @@ statement.>
 
 <!--
 Each item below carries a typed prefixed identifier (RC1, NC1, AC1,
-...) so subsequent phases can reference it precisely. The decision
-matrix in Direction tags every row with the item ID it traces to,
-or with [ID] for rows that aren't tied to a specific diagnosed
-item (implementation concerns: effort, risk, reversibility).
+...) so subsequent phases can reference it precisely.
+
+In Direction, every decision-matrix row is tagged with the
+diagnosed-item ID it traces to; rows tied to no specific item use the
+[ID] prefix instead (implementation concerns: effort, risk,
+reversibility). See the Legend below.
 
 Each item gets a stable anchor (e.g., <a id="rc1"></a>) so links
 from the matrix don't break when headings are reworded.
@@ -129,10 +131,9 @@ section.>
 
 ### Execution Order
 
-<Topo-sorted bulleted narrative of task files. Each bullet is a
-clickable link to the task file plus one sentence explaining why
-this task comes next — its purpose in the sequence, not a restatement
-of its title.>
+<Topo-sorted bulleted narrative of task files. Each bullet links to
+the task file and gives one sentence on its role in the sequence (why
+it sits here), not a restatement of its title.>
 
 ### Glossary
 

@@ -114,5 +114,5 @@ After all learnings and gaps are processed:
      Last harvest marker: <filename>
    ```
 
-The `.last-harvest` file should be committed to the repo so that future
-sessions (and other team members) know what's been processed.
+Commit the `.last-harvest` file so future sessions (and other team members)
+know what's been processed.

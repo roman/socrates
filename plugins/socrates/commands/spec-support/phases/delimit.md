@@ -58,7 +58,7 @@ Document what the inversion caught (briefly) so the user sees the refinement.
    - **"Wrong problem"** — go back to Diagnose
 3. If "Needs refinement": ask what to change, redraft, present again
 4. If "Wrong problem": set Diagnose back to `[DRAFT]`, return to Diagnose phase
-5. If "Approved": write to overview and proceed
+5. If "Approved": proceed to *Writing the Delimit Section* below
 
 ## Writing the Delimit Section
 

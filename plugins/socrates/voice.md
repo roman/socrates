@@ -12,10 +12,10 @@ pattern-recognizable tics of LLM-generated text.
 
 ### Move technical detail to a Technical Addendum
 
-The body of a spec uses *concept names* (the names of types, APIs,
-modules, and components a technical reader benefits from
-recognizing). The body does *not* inline file paths, line numbers,
-commit SHAs, or long identifier strings.
+The body of a spec uses *concept names*: the names of types, APIs,
+modules, and components a technical reader recognizes at a glance.
+The body does *not* inline file paths, line numbers, commit SHAs, or
+long identifier strings.
 
 Specs include a `## Technical Addendum` section at the end of
 `_overview.md`. That section is organized by topic (A.1, A.2, ...)
@@ -89,9 +89,8 @@ prose:
 > Deliverable: one shared component library across all surfaces.
 ```
 
-A blockquote scales cleanly to multiple sentences when needed and
-stays distinctly different from heading-weight elements that
-compete with the surrounding paragraph flow.
+A blockquote handles multiple sentences cleanly, and unlike a heading
+it does not compete with the surrounding paragraphs.
 
 ### Wrap-up paragraphs get their own subheading
 
@@ -190,8 +189,9 @@ phases can reference them precisely:
   preserve it.
 
 When references appear in subsequent phases (such as decision
-matrix rows), the format is: `[RC1] Description text` with the
-`RC1` hyperlinked back to a stable anchor in the Diagnose section.
+matrix rows), the format is `[[RC1](#rc1)] Description text` — the
+prefix written as a Markdown link to the item's stable anchor in the
+Diagnose section.
 
 ## Verification bullets describe observable facts
 
@@ -208,8 +208,8 @@ The artifact is the verification, not the act of producing it.
 ## Tasks introducing gates include a negative test
 
 When a task introduces a gate, policy, validation, or any other
-mechanism that's supposed to *reject* something, its verification
-includes a deliberate denial test that confirms the gate actually
-rejects what it should. The test change is reverted before the
-task is closed if it temporarily disables a working production
-path.
+mechanism meant to *reject* something, its verification includes a
+deliberate denial test confirming the gate rejects what it should.
+
+If that denial test temporarily disables a working production path,
+revert the test change before closing the task.

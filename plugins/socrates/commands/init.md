@@ -11,10 +11,10 @@ Set up the Socrates structured design and autonomous development workflow.
 1. **Check Claude CLI**: Run `claude --version`
    - If not installed: Warn user they'll need it to run Ralph
 
-3. **Check jq**: Run `jq --version`
+2. **Check jq**: Run `jq --version`
    - If not installed: "Please install jq for JSON parsing. See: https://jqlang.github.io/jq/"
 
-4. **Check gh**: Run `gh --version`
+3. **Check gh**: Run `gh --version`
    - If not installed: Warn user they'll need it for PR workflows
 
 ## Nix/devenv Detection
@@ -89,14 +89,14 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
    cp "${TEMPLATE_DIR}/RALPH.md" ./RALPH.md
    ```
 
-3a. **Copy INTERACTIVE.md** (if not Nix-managed): Copy from the template.
-    Used in interactive (human-driven) sessions. Symmetric with RALPH.md
-    but covers the deltas for human-in-the-chat work:
+4. **Copy INTERACTIVE.md** (if not Nix-managed): Copy from the template.
+   Used in interactive (human-driven) sessions. Symmetric with RALPH.md
+   but covers the deltas for human-in-the-chat work:
    ```bash
    cp "${TEMPLATE_DIR}/INTERACTIVE.md" ./INTERACTIVE.md
    ```
 
-4. **Append CLAUDE.md discipline gates**: Read the gates template and append
+5. **Append CLAUDE.md discipline gates**: Read the gates template and append
    to CLAUDE.md (or create if it doesn't exist). Skip if CLAUDE.md is
    Nix-managed — in that case, print a message telling the user to add
    these to their Nix source instead:
@@ -104,22 +104,16 @@ TEMPLATE_DIR="${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}"
    cat "${TEMPLATE_DIR}/claude-gates.md" >> CLAUDE.md
    ```
 
-5. **Install commit-msg hook** (warning only, does not block):
+6. **Install commit-msg hook** (warning only, does not block):
    Skip if `.git/hooks/commit-msg` is Nix-managed.
    ```bash
    cp "${TEMPLATE_DIR}/commit-msg.sh" .git/hooks/commit-msg
    chmod +x .git/hooks/commit-msg
    ```
-   The hook warns when:
+   The hook prints an advisory warning (it never blocks the commit) when:
    - `Refs:` is missing from the commit message
-   - `Refs:` points to an id that does not match any task in `docs/specs/`
+   - `Refs:` points to an id that matches no task in `docs/specs/`
    - `Refs:` points to a task still in `draft` status (contract not frozen)
-
-   Both warnings are advisory — they print to stderr and let the commit
-   succeed. They exist to catch commits against tasks whose contract is
-   not yet frozen (still in `draft` status).
-
-6. **Create .msgs/ inbox**: Already done in step 2.
 
 ## Verify Installation
 
