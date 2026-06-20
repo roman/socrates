@@ -21,6 +21,9 @@ stdenv.mkDerivation {
     # Templates (shell scripts + spec/task templates)
     cp -r templates $base/
 
+    # Voice and structure conventions (referenced by /spec)
+    cp voice.md $base/
+
     # Skills (populated in later phases)
     if [ -d skills ] && [ "$(ls -A skills 2>/dev/null)" ]; then
       cp -r skills $base/

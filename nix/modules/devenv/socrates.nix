@@ -99,5 +99,6 @@ in
 
     env.SOCRATES_TEMPLATES = "${pluginDir}/templates";
     env.SOCRATES_SUPPORT = "${pluginDir}/commands/spec-support";
+    env.SOCRATES_VOICE = "${pluginDir}/voice.md";
   };
 }
