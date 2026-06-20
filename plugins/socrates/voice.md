@@ -123,6 +123,14 @@ a thread, a doc — are honest historical fact and may stay named,
 but the body of the spec describes responsibility at the team
 level.
 
+### Do not write confidence labels into the spec
+
+Confidence markers (✅ verified, 🟨 high, 🟥 low) belong in the chat
+summary shown to the user while researching — never in a persisted
+spec file. The spec states today's reality as fact; a claim that
+isn't settled is named as an explicit uncertainty in prose ("not yet
+confirmed: ..."), not tagged with a confidence emoji.
+
 ## AI-ism reduction
 
 Generated prose tends to develop pattern-recognizable tics. Sweep
