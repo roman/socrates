@@ -50,6 +50,10 @@ spec session and apply its guidance throughout. The conventions cover:
 - AI-ism reduction
 - how to mark deliverables and chosen approaches
 
+Task files additionally follow the authoring standard in
+`<support>/references/task-authoring.md` (the nine checks, problem-first titles,
+done-vs-tested), with worked examples in `task-authoring-examples.md` beside it.
+
 ## Pacing principle: do not rush acceptance
 
 This command exists to slow thinking down before doing. The user will sit with drafts,

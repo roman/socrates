@@ -42,6 +42,11 @@ incidental drift"):
 Break the approach into **5-10 implementation tasks** (configurable — the user
 can request more or fewer granularity).
 
+Every task follows the standard in `<support>/references/task-authoring.md`
+(worked bad-versus-good pairs in `task-authoring-examples.md` alongside it).
+Read it before decomposing and run its nine checks before marking any task
+ready.
+
 **Sizing rule**: one task ≈ one outcome slice — a discrete, verifiable change
 in system behaviour or project state. Size by what the implementer must
 *achieve*, not by how many files or commits the work touches.
