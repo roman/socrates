@@ -3,7 +3,6 @@ inputs:
 {
   imports = [
     inputs.nixDir.devenvModules.nixdir-skill
-    (import ../modules/devenv/socrates.nix inputs)
   ];
 
   git-hooks.hooks = {
@@ -16,6 +15,5 @@ inputs:
 
   claude.code.plugins = {
     nixDir.enable = true;
-    socrates.enable = true;
   };
 }

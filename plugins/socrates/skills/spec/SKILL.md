@@ -1,8 +1,9 @@
 ---
-description: Design a feature through the Design in Practice journey (Describe → Diagnose → Delimit → Direction → Design)
+name: spec
+description: Design a feature through the Design in Practice journey (Describe → Diagnose → Delimit → Direction → Design). Use when starting a new spec, scoping a feature, or turning a problem into an approved set of task files.
 ---
 
-# /spec — Design in Practice Journey
+# spec — Design in Practice Journey
 
 Walk the user through a structured design process that produces a spec overview and
 individual task files. Each phase builds on the previous one, with a strict gate at Delimit
@@ -10,9 +11,8 @@ requiring explicit user approval.
 
 ## Spec discipline kernel
 
-<!-- DUPLICATION NOTE: the task-entry command (/socrates-task, T3) inlines
-     the same kernel content below. If you edit this section, update the
-     corresponding section in commands/socrates-task.md as well. -->
+<!-- DUPLICATION NOTE: the task skill inlines the same kernel content. If you
+     edit this section, update skills/task/SKILL.md as well. -->
 
 Specs in this project carry a directive hierarchy:
 
@@ -31,18 +31,18 @@ model) and address findings in at most 2 rounds.
 
 ## Support files
 
-This command is an orchestrator. Each phase and each reusable mode lives in its own file
-under `${SOCRATES_SUPPORT:-${CLAUDE_PLUGIN_ROOT}/commands/spec-support}` (referred to below as
-`<support>`). When a step points to one of these files, read it and follow it as the
-authoritative instructions for that phase or mode. The files are the source of truth; this
-command only sequences them.
+This skill is an orchestrator. Each phase and each reusable mode lives in its own file
+under `../../references` (phases in `references/phases/`, reusable modes in
+`references/patterns/`). When a step points to one of these files, read it and follow it as
+the authoritative instructions for that phase or mode. The files are the source of truth;
+this skill only sequences them.
 
 ## Voice and structure
 
-All prose this command generates (descriptions, hypotheses, approach write-ups, task
+All prose this skill generates (descriptions, hypotheses, approach write-ups, task
 outcomes, etc.) follows the voice and structure conventions in
-`${SOCRATES_VOICE:-${CLAUDE_PLUGIN_ROOT}/voice.md}`.  Read that file once at the start of any
-spec session and apply its guidance throughout. The conventions cover:
+`../../references/voice.md`. Read that file once at the start of any spec session and apply
+its guidance throughout. The conventions cover:
 
 - prose-first structure
 - the Technical Addendum pattern
@@ -51,7 +51,7 @@ spec session and apply its guidance throughout. The conventions cover:
 - how to mark deliverables and chosen approaches
 
 Task files additionally follow the authoring standard in
-`<support>/references/task-authoring.md` (the nine checks, problem-first titles,
+`../../references/task-authoring.md` (the nine checks, problem-first titles,
 done-vs-tested), with worked examples in `task-authoring-examples.md` beside it.
 
 ## Pacing principle: do not rush acceptance
@@ -196,46 +196,46 @@ producing a normal spec directory once the shape of the work is clear.
 When resuming an existing spec, detect the current phase from its section markers and recap
 progress. The support file also covers two cases: the user going back to a completed phase,
 and automatic walk-back when new input contradicts an earlier phase. Read and follow
-`<support>/patterns/resume-detection.md`.
+`../../references/patterns/resume-detection.md`.
 
 ## Step 3 — Describe Phase
 
 Capture the situation as-is, without interpretation or proposed solutions.  Read and follow
-`<support>/phases/describe.md`.
+`../../references/phases/describe.md`.
 
 ## Step 4 — Diagnose Phase
 
 Identify the real problem beneath the situation; challenge assertions and test
-hypotheses. Read and follow `<support>/phases/diagnose.md`.
+hypotheses. Read and follow `../../references/phases/diagnose.md`.
 
 ## Step 5 — Delimit Phase (STRICT GATE)
 
 Produce a crisp problem statement that the user explicitly approves — the only hard gate in
-the journey. Read and follow `<support>/phases/delimit.md`.
+the journey. Read and follow `../../references/phases/delimit.md`.
 
 ## Step 6 — Direction Phase
 
 Generate multiple approaches, compare them in a decision matrix, and choose one; capture use
-cases. Read and follow `<support>/phases/direction.md`.
+cases. Read and follow `../../references/phases/direction.md`.
 
 ## Step 7 — Design Phase
 
 Break the chosen approach into concrete, implementable task files grounded in codebase
-research. Read and follow `<support>/phases/design.md`.
+research. Read and follow `../../references/phases/design.md`.
 
 ## Task Review Mode
 
 When invoked with a task file path or a spec directory, process `<review>` feedback on task
-files. Read and follow `<support>/patterns/task-review-mode.md`.
+files. Read and follow `../../references/patterns/task-review-mode.md`.
 
 ## Status Summary
 
 When invoked with `--status` (or when the user asks for an overview), report each spec's
 current phase and task counts. Read and follow the Status Summary section of
-`<support>/patterns/task-review-mode.md`.
+`../../references/patterns/task-review-mode.md`.
 
 ## Source Doc Mode
 
 When invoked with `--source <path-or-url>`, read the document, optionally verify its claims,
 pre-fill the phases it covers, and resume the journey at the first gap. Read and follow
-`<support>/patterns/source-doc-mode.md`.
+`../../references/patterns/source-doc-mode.md`.

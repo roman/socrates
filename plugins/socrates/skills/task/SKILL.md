@@ -1,17 +1,17 @@
 ---
-description: Entry point for interactive task work — loads the discipline kernel, interactive protocol, and named task context
+name: task
+description: Pick up a spec task for interactive, human-steered work — loads the discipline kernel, interactive protocol, and named task context. Use when implementing or refining a specific spec task in conversation.
 ---
 
-# /socrates-task — Interactive Task Entry
+# task — Interactive Task Entry
 
 Pick up a spec task for interactive work. Takes a task identity as argument (the
 `<hash>-<suffix>` value from a task file's `id:` frontmatter, or the full filename).
 
 ## Spec discipline kernel
 
-<!-- DUPLICATION NOTE: the /spec command (commands/spec.md) inlines the same
-     kernel content below. If you edit this section, update the corresponding
-     section in commands/spec.md as well. -->
+<!-- DUPLICATION NOTE: the spec skill inlines the same kernel content. If you
+     edit this section, update skills/spec/SKILL.md as well. -->
 
 Specs in this project carry a directive hierarchy:
 

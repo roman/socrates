@@ -1,8 +1,9 @@
 ---
-description: Extract learnings and gaps from session handoffs into durable artifacts
+name: harvest
+description: Extract learnings and gaps from session handoffs and promote them into durable artifacts (skills, CLAUDE.md, docs). Use at the end of a work cycle to persist what handoffs surfaced.
 ---
 
-# /harvest — Learnings & Gaps → Durable Artifacts
+# harvest — Learnings & Gaps → Durable Artifacts
 
 Scan recent session handoffs, extract learnings and gaps, and help the user
 promote them into persistent locations (skills, CLAUDE.md, docs).

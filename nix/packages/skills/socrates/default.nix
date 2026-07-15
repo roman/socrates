@@ -9,35 +9,31 @@ stdenv.mkDerivation {
 
   dontBuild = true;
 
+  # socrates is a cohesive multi-skill plugin: the skills under skills/<name>/
+  # cross-link the shared references/ via relative paths (../../references/...),
+  # so the whole tree installs as one directory. The agent-skills module's
+  # mkPluginDir sees the skills/ subdir and wraps it as an @skills-dir plugin
+  # (socrates:spec, socrates:task, socrates:harvest, socrates:pm,
+  # socrates:spec-format), preserving the bundled .claude-plugin/plugin.json.
   installPhase = ''
     runHook preInstall
 
-    base=$out/share/claude/skills/socrates
+    base=$out/share/agents/skills/socrates
     mkdir -p $base
 
-    # Commands
-    cp -r commands $base/
+    cp -r skills $base/
+    cp -r references $base/
 
-    # Templates (spec/task templates for marketplace plugin)
+    # Task/overview templates the spec skill renders from (../../templates/...).
     cp -r templates $base/
 
-    # Voice and structure conventions (referenced by /spec)
-    cp voice.md $base/
-
-    # Skills (populated in later phases)
-    if [ -d skills ] && [ "$(ls -A skills 2>/dev/null)" ]; then
-      cp -r skills $base/
-    fi
-
-    # Plugin manifest
-    mkdir -p $base/.claude-plugin
-    cp .claude-plugin/plugin.json $base/.claude-plugin/
+    cp -r .claude-plugin $base/
 
     runHook postInstall
   '';
 
   meta = {
-    description = "Socrates — structured design for Claude Code";
+    description = "Socrates — structured design and autonomous development for Claude Code";
     platforms = lib.platforms.all;
   };
 }

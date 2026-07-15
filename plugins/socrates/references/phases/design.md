@@ -42,7 +42,7 @@ incidental drift"):
 Break the approach into **5-10 implementation tasks** (configurable — the user
 can request more or fewer granularity).
 
-Every task follows the standard in `<support>/references/task-authoring.md`
+Every task follows the standard in `../task-authoring.md`
 (worked bad-versus-good pairs in `task-authoring-examples.md` alongside it).
 Read it before decomposing and run its nine checks before marking any task
 ready.
@@ -74,7 +74,7 @@ For each task:
 
 3. **Create the task file** at
    `docs/specs/<name>/<ordinal>-<id>.md` using the task template
-   from `${SOCRATES_TEMPLATES:-${CLAUDE_PLUGIN_ROOT}/templates}/task.md`.
+   from `../../templates/task.md`.
    Example filename: `1-a1b2-setup-middleware.md`. Example
    frontmatter `id:` value: `a1b2-setup-middleware`.
 
