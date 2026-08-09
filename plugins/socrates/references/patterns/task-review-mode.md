@@ -10,8 +10,9 @@ When invoked with a task file path (`/spec docs/specs/<name>/<id>.md`):
 ## Processing Review Feedback
 
 1. Read the review comments in `<review>`
-2. Regenerate only the sections the feedback addresses — `## Outcomes`,
-   `## Verification`, or both; leave the others unchanged
+2. Regenerate only the sections the feedback addresses — `## Scope`,
+   `## Outcome`, `## Verification`, or any combination; leave the others
+   unchanged
 3. Clear the `<review>` section (set back to empty)
 4. Present the changes to the user for confirmation
 5. Write the updated task file

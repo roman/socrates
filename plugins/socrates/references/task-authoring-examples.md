@@ -6,7 +6,7 @@ socrates task and rewritten to pass the check it illustrates.
 
 ## Problem-first title (check 2)
 
-A title that names the mechanism forces the reader into Context to learn what's
+A title that names the mechanism forces the reader into Scope to learn what's
 actually wrong. Name the problem; the fix follows in the body.
 
 | Mechanism-first (bad)                                                     | Problem-first (good)                                                              |
@@ -18,12 +18,12 @@ actually wrong. Name the problem; the fix follows in the body.
 | Add the AirProjectPlacement resource as the static-placement input        | Projects with no central Applications have no way to declare their clusters       |
 
 The chosen fix ("stop writing the webhook trigger," "add a per-project flag")
-still lives in the Context or Outcomes. It just isn't the headline.
+still lives in the Scope or Outcome. It just isn't the headline.
 
 ## Done is distinct from tested (check 8)
 
-A task whose Outcomes and Verification say the same thing has written one
-section twice. The Outcomes describe behavior; the Verification describes an
+A task whose Outcome and Verification say the same thing has written one
+section twice. The Outcome describes behavior; the Verification describes an
 observable artifact.
 
 **Bad** — the done-statement and the test are the same sentence:
@@ -106,7 +106,8 @@ mid-task by a question the ticket never answers.
 
 ## Surfacing the rejected alternative (check 9)
 
-A design choice stated without its alternative reads as an assumption.
+A design choice stated without its alternative reads as an assumption. Both
+belong in `## Scope`, next to each other.
 
 **Bad** — the choice is asserted:
 

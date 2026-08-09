@@ -12,7 +12,8 @@ for one cycle at a time, and finish the cycle before switching to another role.
 Pick this role when:
 
 - Pending review comments on spec tasks need triage.
-- Task states have drifted (stale `in_progress`, missing deps).
+- Task states have drifted (work landed but the task is still `approved`, or a
+  `deps` entry names a task that does not exist).
 - New work needs scoping but no spec exists yet.
 - Specs may have completed since the last PM cycle.
 - There is no obvious implementation work — default to PM and verify everything
@@ -21,8 +22,10 @@ Pick this role when:
 ## PM actions
 
 1. **Triage review comments** on spec tasks; route each to the task it concerns.
-2. **Reconcile task states** — close what's done, correct stale `in_progress`,
-   flag missing or broken dependencies.
+2. **Reconcile task states** — set `status: closed` on tasks whose Verification
+   holds, `cancelled` on ones that will not be done, and flag `deps` entries
+   that name a task that does not exist. Reopening a task to `draft` is the
+   human's call, not the PM's.
 3. **Run the Spec Lifecycle sweep** (below).
 4. **Audit working-notes folders** for consistency against the format contract
    (the `spec-format` skill): flat gaps, conforming learning frontmatter, an

@@ -21,15 +21,18 @@ task cycle — finish the cycle before switching.
 
 Pick this role when:
 - Pending review comments on spec tasks need triage
-- Task states need reconciliation (stale in_progress, missing deps)
+- Task states need reconciliation (work landed but the task is still
+  `approved`, or a `deps` entry names a task that does not exist)
 - New work needs scoping but no spec exists yet
 - Specs may have completed since the last PM cycle (run Spec Lifecycle below)
 - **`spec ready -a ralph` is empty** — default to PM and verify everything
   is consistent (inbox, task states, spec lifecycle) before concluding
   there is no work.
 
-PM actions: triage comments, update task states, run the Spec Lifecycle
-sweep, suggest `/spec` runs to the human via `.msgs/`. If the sweep finds
+PM actions: triage comments, reconcile task states — including closing tasks
+whose Verification holds and cancelling ones that will not be done (see Review
+Mode § Task Mutation) — run the Spec Lifecycle sweep, and suggest `/spec` runs
+to the human via `.msgs/`. If the sweep finds
 nothing actionable, create `.ralph-stop` and exit (see `.ralph-stop` below).
 
 #### Spec Lifecycle Sweep
@@ -198,8 +201,20 @@ The agent edits task file frontmatter directly under
 
 Permitted frontmatter fields for agent mutation:
 
+- `status` — `closed` when the task's Verification holds, `cancelled` when the
+  task will not be done. The implementer sets it at the End-of-Session Gate for
+  work it finished this cycle; the PM sets it when reconciling task state and
+  when the External Review Sweep observes a merge. Never set `approved` or
+  `draft` — those transitions belong to the human.
 - `external-ref` — set to the upstream artifact URL
 - `tags` — append `awaiting-review` or `needs-human`
+- `priority` — PM only; rescore when the spec's scope shifts
+- `serves` — PM only; re-point at diagnosed items the overview renumbered or
+  reworded
+
+Never mutated by any role: the frozen contract — `## Scope`, `## Outcome`,
+`## Verification`, and `deps`. Changing one of those means reopening the task
+to `draft`, which is the human's call.
 
 ### Escalation Rule
 
@@ -289,6 +304,10 @@ Health check and orientation before touching code.
 - Understand the task's **Outcome** as the target state to reach and its
   **Verification** as the contract to satisfy — tasks describe *what* to
   achieve, not *how* to achieve it
+- Read the task's **Scope** for the slice boundary and any alternative the
+  task already rejected, and follow its `serves:` field to the diagnosed items
+  in the overview. Read those items in the overview rather than trusting a
+  summary in the task; the overview is the live copy
 - Read relevant source files and tests
 - Check for in-progress work that might conflict
 - Verify the build is healthy

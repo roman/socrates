@@ -79,21 +79,33 @@ For each task:
    frontmatter `id:` value: `a1b2-setup-middleware`.
 
 4. **Fill in**:
+   - `socrates_format: 2`
    - `id:` — the `<hash>-<suffix>` identity (without the ordinal)
    - `status: draft`
-   - `priority:` — 0 (highest) to 4, based on dependency order and criticality
+   - `priority:` — 0 (highest) to 4, scored on what cutting the task would
+     do to the Delimit outcome. Never derive it from dependency order; that
+     is what `deps:` is for. The scale is in `../task-authoring.md`.
    - `category:` — functional, style, infrastructure, or documentation
+   - `serves:` — the diagnosed-item ids from Diagnose (`RC1`, `AC2`, ...)
+     this task addresses. A task that serves none has to justify why it is
+     in the spec.
    - `deps:` — list of upstream task identities (the `<hash>-<suffix>`
      form) this task depends on; empty list when none. If two tasks
      touch the same surface and one must land before the other, that
      ordering is a `dep` — capture it here.
-   - Title — clear, action-oriented (starts with a verb)
-   - `## Outcomes` — a bulleted list of what the implementer must achieve and
+   - Title — states the problem, not the mechanism. See check 2 in
+     `../task-authoring.md`.
+   - `## Scope` — the boundary of this slice, and the alternative rejected
+     for a design choice this task makes on its own. Link to the overview
+     for the why; do not copy it. The overview keeps moving, and a task
+     holding a snapshot of it goes stale silently.
+   - `## Outcome` — a bulleted list of what the implementer must achieve and
      what changes for the system or project when done. State the target, not
      the procedure. Concrete file-path grounding belongs in the overview's
-     Context section, not here — the implementer discovers the how.
+     `### Context`, not here — the implementer discovers the how.
    - `## Verification` — a bulleted list of observable criteria for confirming
-     the outcome is met
+     the outcome is met. Each bullet names the fact to check and the setup
+     that produces the observation.
    - `<review>` — leave empty (XML tag stays invisible in rendered markdown)
 
 Task dependencies live in each task file's `deps:` frontmatter and are
@@ -273,6 +285,11 @@ user — with a 2-round cap symmetric with the code-critic rule:
    always one of:
    - Tighten the overview's Describe (user-facing pain) or Diagnose
      (mechanism) so the why is reconstructible.
+   - Correct the task's `serves:` so it points at the diagnosed items
+     it actually addresses. A purpose answer scored **gap** is often a
+     missing or wrong trace rather than missing prose.
+   - Name the excluded work in the task's `## Scope` when the scope
+     answer is the one that failed.
    - Reword the task's Outcome to describe the slice without
      reframing the why in task-ordering language.
    - Sharpen a Verification bullet so it names an observable

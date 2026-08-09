@@ -85,10 +85,12 @@ Resolve the argument to a task file:
 
 Once the task file is resolved:
 
-1. Read the task file's **Outcomes** and **Verification**.
+1. Read the task file's **Scope**, **Outcome**, and **Verification**.
 2. Find the task's parent spec directory and read its `_overview.md` — specifically
-   **Describe** (user-facing pain), **Diagnose** (RC/NC/AC), and the section that
-   justifies the chosen **Direction**. This is the durable why.
+   the diagnosed items named in the task's `serves:` field, plus **Describe**
+   (user-facing pain), **Diagnose** (RC/NC/AC), and the section that justifies the
+   chosen **Direction**. This is the durable why. Read it from the overview even
+   when the task summarises it; the overview is the live copy.
 3. Reconstruct the directive hierarchy:
    - Main directive (the user-facing why, from Describe + Diagnose).
    - Secondary directive (how this task serves the main directive).
@@ -99,21 +101,24 @@ Once the task file is resolved:
 
 If the task's `status:` is `draft`, warn the user:
 
-> This task's contract (Outcomes, Verification) is not frozen — it may change before
-> approval. Want to proceed anyway, or refine the task first?
+> This task's contract (Scope, Outcome, Verification) is not frozen — it may change
+> before approval. Want to proceed anyway, or refine the task first?
 
 The warning is advisory. The user can direct you to proceed.
 
 ### Approved task contract
 
-An `approved` task's contract (Outcomes, Verification, deps) is frozen. To change it,
-reopen the task to `draft` first, then re-approve after editing. Reopening flags affected
-dependents — run `spec dependents <id>` to see which tasks depend on the reopened one and
-may need re-checking.
+An `approved` task's contract (Scope, Outcome, Verification, deps) is frozen. To change
+it, reopen the task to `draft` first, then re-approve after editing. Reopening flags
+affected dependents — run `spec dependents <id>` to see which tasks depend on the reopened
+one and may need re-checking.
+
+`serves:` and `priority:` stay editable on an approved task. The first tracks an overview
+that keeps moving; the second is a planning judgment, not a contract term.
 
 To refine a task iteratively, write feedback in the task's `<review>` block, then run
-`/spec <task-file>` to regenerate Outcomes and Verification. Repeat until satisfied, then
-set `status: approved`.
+`/spec <task-file>` to regenerate Scope, Outcome, and Verification. Repeat until
+satisfied, then set `status: approved`.
 
 5. Confirm with the user what they want next: refine the task spec, plan the
    implementation, or implement.

@@ -11,6 +11,7 @@ The overview captures the entire Design in Practice journey for a feature.
 
 ```yaml
 ---
+socrates_format: 2         # spec-file shape version; absent means 1
 title: <spec name>
 created: <YYYY-MM-DD>
 delimit_approved: false    # set to true when Delimit phase is approved
@@ -85,11 +86,13 @@ interactive and autonomous modes — there is no second representation.
 
 ```yaml
 ---
+socrates_format: 2              # task-file shape version; absent means 1
 id: a1b2-setup-middleware       # identity token + cosmetic slug
 status: draft                   # draft | approved | closed | cancelled
-priority: 2                     # 0 (highest) to 4
+priority: 2                     # 0 (highest) to 4; scale in task-authoring.md
 category: functional            # functional | style | infrastructure | documentation
 assignee:                       # who works this task (e.g. "ralph", a human name, or empty)
+serves: [RC1, AC2]              # diagnosed-item ids from the overview this task addresses
 deps: [c4d5-worker-queue]       # list of identity tokens (or full ids) this task depends on
 ---
 ```
@@ -99,13 +102,19 @@ deps: [c4d5-worker-queue]       # list of identity tokens (or full ids) this tas
 ```markdown
 # <Task title>
 
-## Outcomes
+## Scope
+
+The boundary of this slice, and the alternative rejected for a design choice
+this task makes on its own. Links to the overview for the why — never a copy
+of it.
+
+## Outcome
 
 - What the implementer must achieve — the target state, not the procedure.
 
 ## Verification
 
-- Observable criterion one
+- Observable criterion one, and the setup that produces the observation
 - Observable criterion two
 
 <review></review>
@@ -130,6 +139,36 @@ echo -n "Setup auth middleware" | sha256sum | cut -c1-4
 Commits reference the identity token in `Refs:` lines (e.g.
 `Refs: a1b2-setup-middleware`). Because the token is position-independent,
 reordering tasks or renaming slugs does not invalidate references.
+
+### Diagnosed-item trace
+
+The `serves` field lists the diagnosed-item ids from the parent overview
+(`RC1`, `NC2`, `AC1`, ...) that this task addresses. It is a pointer, not a
+copy: the task never restates the diagnosed item, so rewording it in the
+overview updates every task that serves it.
+
+```yaml
+serves: [RC1, AC2]
+```
+
+An empty list means the task traces to no diagnosed item, which is a claim
+worth defending — see the priority rules in
+[task-authoring.md](task-authoring.md).
+
+`serves` is deliberately outside the frozen contract. Diagnosed items get
+renumbered and reworded as a spec matures, and re-pointing a task at the
+current id should not require reopening it.
+
+### Shape version
+
+`socrates_format` records which task-file shape a spec was authored in. A file
+with no such field is shape 1: no `## Scope`, no `serves`, a plural
+`## Outcomes` heading, and a `priority` derived partly from dependency order.
+Tools that read task files should treat an absent field as 1 rather than
+assuming the current shape.
+
+Existing files are not migrated. The version marks what a reader should
+expect, so an old spec stays readable without being rewritten.
 
 ### Dependencies
 
@@ -157,7 +196,9 @@ An empty list (`deps: []`) means the task has no dependencies.
 #### The freeze transition
 
 `draft → approved` is the freeze point. Once a task is `approved`, its
-contract fields — Outcomes, Verification, and `deps` — are write-once.
+contract fields — Scope, Outcome, Verification, and `deps` — are
+write-once. `serves` and `priority` stay editable: the first tracks a moving
+overview, the second is a planning judgment that changes as scope shifts.
 Both interactive and autonomous modes honour this: `approved` means "the
 task is settled and safe to implement against."
 
@@ -172,5 +213,6 @@ depend on a given task). After editing, re-approve to re-freeze.
 
 1. User writes feedback in the `<review>` section
 2. Run `/spec <task-file>` to process feedback
-3. AI regenerates `## Outcomes` and `## Verification`, clears `<review>`
+3. AI regenerates the sections the feedback addresses — `## Scope`,
+   `## Outcome`, `## Verification` — and clears `<review>`
 4. Repeat until satisfied, then set `status: approved`

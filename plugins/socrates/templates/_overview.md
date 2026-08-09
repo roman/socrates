@@ -1,4 +1,6 @@
 ---
+# socrates_format: spec-file shape version. Absent means 1.
+socrates_format: 2
 title: <spec name>
 created: <date>
 tags: []
