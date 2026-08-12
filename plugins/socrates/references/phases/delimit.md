@@ -65,12 +65,12 @@ Document what the inversion caught (briefly) so the user sees the refinement.
 On approval:
 
 1. Write the problem statement to the `## Delimit` section
-2. Update marker to `## Delimit [APPROVED]`
+2. Remove `[DRAFT]` from the heading
 3. Update frontmatter: set `delimit_approved: true`
 4. Confirm and preview Direction phase
 
-**Both the marker AND the frontmatter must be set.** Resume detection checks
-`delimit_approved:` in frontmatter as the authoritative signal.
+The bare heading means the phase is complete. The `delimit_approved: true`
+frontmatter field is the authoritative record that the user approved it.
 
 **Important**: Use Edit tool for targeted updates. The frontmatter change and
 section change are two separate edits.

@@ -91,9 +91,9 @@ When the interview is complete:
 3. Ask if they want to adjust anything
 4. Write the final version to the overview file:
    - Replace the `## Describe [DRAFT]` section content with the narrative
-   - Update the marker to `## Describe [COMPLETE]`
+   - Remove `[DRAFT]` from the heading
 5. Confirm completion and preview what comes next (Diagnose phase)
 
 **Important**: Use the Edit tool to update only the Describe section. Do NOT
-rewrite the entire file — other sections must remain as-is with their `[DRAFT]`
+rewrite the entire file. Other incomplete sections must keep their `[DRAFT]`
 markers.

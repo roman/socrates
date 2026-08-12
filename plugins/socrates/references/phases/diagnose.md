@@ -66,8 +66,8 @@ When root causes are identified:
      structure" below.
    - Symptoms vs causes (what looked like the problem vs what actually is)
 2. Present draft to user for review
-3. Write to overview: replace `## Diagnose [DRAFT]` content, update marker to
-   `## Diagnose [COMPLETE]`
+3. Write to overview: replace `## Diagnose [DRAFT]` content and remove
+   `[DRAFT]` from the heading
 4. Confirm completion and preview Delimit phase
 
 **Important**: Use Edit tool on just the Diagnose section. Preserve all other sections.

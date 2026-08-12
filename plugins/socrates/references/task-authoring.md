@@ -28,8 +28,8 @@ Verification).
 
 1. **Valuable** — `serves:` names the diagnosed items whose pain the task
    relieves, and they resolve to real entries in the overview.
-2. **Problem-first** — the title and opening state the problem or outcome, not
-   the mechanism. Lead with what's broken; let the fix follow.
+2. **Outcome-first** — the title names the result or deliverable, not a code
+   mechanism or a dramatic restatement of the diagnosed problem.
 3. **Testable** — Verification lists facts someone can check, never "works
    correctly."
 4. **Small** — one deliverable. If you find yourself writing "and," suspect two
@@ -42,16 +42,19 @@ Verification).
 9. **Negotiable** — when a design choice was made, the rejected alternative and
    its reason are visible.
 
-## The title states the problem, not the fix
+## The title names the outcome
 
-A problem-shaped title makes a task list readable by outcome. Name what's
-broken; the fix follows in the body.
+A task list should tell the reader what the work will produce. Diagnose already
+records what is broken, so repeating the deficiency in every task title makes
+the list harder to scan and encourages slogans such as "has nowhere to live."
 
-- Don't: *Stop auto-triggering the airproject pipeline on push*
-- Do: *Airproject races CD Configs on push and bootstraps a stale cluster list*
+- Don't: *Shipping the controller image auto-activates fanout on every
+  production principal*
+- Do: *Let projects opt into setup ApplicationSet fanout*
 
-The chosen fix still belongs in the task, in the Scope or Outcome, where its
-rationale sits next to it. It just isn't the headline.
+Name the observable result or concrete deliverable. A short imperative is fine
+when it is the clearest form. Keep implementation details in Scope or Outcome,
+where their rationale sits next to them.
 
 ## Scope carries the slice, not the spec
 

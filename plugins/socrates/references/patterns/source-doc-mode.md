@@ -24,8 +24,8 @@ Analyze the document and extract what maps to each Design in Practice phase:
 For each phase that can be pre-filled:
 1. Present the extracted content to the user
 2. Ask if it's accurate or needs adjustment
-3. If accurate: write to overview with `[COMPLETE]` marker (except Delimit which
-   needs explicit approval)
+3. If accurate: write to the overview and remove its `[DRAFT]` marker (except
+   Delimit, which needs explicit approval)
 4. If needs adjustment: enter that phase's interview flow with the extracted
    content as a starting point
 

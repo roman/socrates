@@ -137,7 +137,7 @@ Present use cases to user for confirmation.
    - `### Decision Matrix` — if applicable
    - `### Chosen Approach` — selection and rationale
    - `### Use Cases` — confirmed use cases
-2. Update marker to `## Direction [COMPLETE]`
+2. Remove `[DRAFT]` from the Direction heading
 3. Confirm and preview Design phase
 
 **Important**: Use Edit tool. Replace only the Direction section content.

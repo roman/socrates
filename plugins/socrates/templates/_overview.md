@@ -118,10 +118,18 @@ intentions, not implementation.>
 
 ## Design [DRAFT]
 
+<!--
+Add `### Solution Map` when a small diagram explains the chosen approach more
+clearly than prose. State the question it answers and keep it to roughly 5-8
+nodes or participants. Use MermaidJS. Omit the subsection when it would only
+repeat the text.
+-->
+
 ### Context
 
-<Codebase patterns, integration points, conventions discovered
-during research. Added by parallel sub-agents.
+<Only the codebase patterns, integration points, and conventions that
+materially affect the design and are not already clear from Direction or the
+solution map.
 
 When an Adjacent Constraint (AC) from Diagnose dictates a specific
 encoding (where, how, in which surface), call that out in this
@@ -129,18 +137,17 @@ section.>
 
 ### Tasks
 
-<Summary of generated task files and their relationships.>
+<Topo-sorted view of the generated task files. Link the task identity in the
+first column, use its title as the Outcome when sufficient, and render `deps:`
+from task frontmatter. Do not create a second dependency source.>
 
-### Execution Order
+| Task | Outcome | Depends on | Priority |
+| --- | --- | --- | --- |
 
-<Topo-sorted bulleted narrative of task files. Each bullet links to
-the task file and gives one sentence on its role in the sequence (why
-it sits here), not a restatement of its title.>
-
-### Glossary
-
-<Terms used consistently throughout this spec. Definitions that
-matter for implementation.>
+<!--
+Add `### Glossary` only for terms whose meaning is specific or ambiguous in
+this spec.
+-->
 
 ## Technical Addendum
 

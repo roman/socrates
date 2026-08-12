@@ -51,7 +51,7 @@ its guidance throughout. The conventions cover:
 - how to mark deliverables and chosen approaches
 
 Task files additionally follow the authoring standard in
-`../../references/task-authoring.md` (the nine checks, problem-first titles,
+`../../references/task-authoring.md` (the nine checks, outcome-first titles,
 done-vs-tested), with worked examples in `task-authoring-examples.md` beside it.
 
 ## Pacing principle: do not rush acceptance
@@ -184,8 +184,8 @@ directory or overview file yet. Instead:
    is helpful; offer them via AskUserQuestion alongside an "I'll type my own" option.
 3. With the name set, follow the "Creating a new spec" steps above: create the directory,
    copy the template, fill the frontmatter, and write the overview file. The Describe
-   section lands with the user-approved content already in place and its marker set to
-   `[COMPLETE]`; all other sections remain `[DRAFT]` per the template.
+   section lands with the user-approved content under a bare `## Describe` heading; all
+   other sections remain `[DRAFT]` per the template.
 4. Continue with Step 4 (Diagnose) as usual.
 
 This avoids forcing the user to name a problem they have not yet articulated, while still
@@ -193,10 +193,10 @@ producing a normal spec directory once the shape of the work is clear.
 
 ## Step 2 — Resume Detection and Navigation
 
-When resuming an existing spec, detect the current phase from its section markers and recap
-progress. The support file also covers two cases: the user going back to a completed phase,
-and automatic walk-back when new input contradicts an earlier phase. Read and follow
-`../../references/patterns/resume-detection.md`.
+When resuming an existing spec, find the first section marked `[DRAFT]` and recap progress.
+An unmarked phase is complete. The support file also covers two cases: the user going back
+to a completed phase, and automatic walk-back when new input contradicts an earlier phase.
+Read and follow `../../references/patterns/resume-detection.md`.
 
 ## Step 3 — Describe Phase
 

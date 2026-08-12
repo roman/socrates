@@ -24,8 +24,8 @@ Design a feature through the Design in Practice journey.
 
 **Phases:** Describe → Diagnose → Delimit (strict gate) → Direction → Design
 
-**Resume:** Re-running `/spec <name>` detects completed phases via `[COMPLETE]`
-markers and resumes at the first `[DRAFT]` phase. You can request to go back to
+**Resume:** Re-running `/spec <name>` treats unmarked phases as complete and
+resumes at the first `[DRAFT]` phase. You can request to go back to
 any earlier phase.
 
 **Output:**

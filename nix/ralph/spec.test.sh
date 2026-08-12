@@ -70,7 +70,7 @@ Some situation.
 ## Design [DRAFT]
 SPECEOF
 
-# Spec 2: mid-phase (Delimit APPROVED, Direction DRAFT)
+# Spec 2: mid-phase (Delimit approved, Direction DRAFT)
 mkdir -p "$FIXTURE/mid-phase-spec"
 cat > "$FIXTURE/mid-phase-spec/_overview.md" <<'SPECEOF'
 ---
@@ -80,11 +80,11 @@ archived:
 delimit_approved: true
 ---
 
-## Describe [COMPLETE]
+## Describe
 
-## Diagnose [COMPLETE]
+## Diagnose
 
-## Delimit [APPROVED]
+## Delimit
 
 ## Direction [DRAFT]
 
@@ -147,15 +147,15 @@ archived:
 delimit_approved: true
 ---
 
-## Describe [COMPLETE]
+## Describe
 
-## Diagnose [COMPLETE]
+## Diagnose
 
-## Delimit [APPROVED]
+## Delimit
 
-## Direction [COMPLETE]
+## Direction
 
-## Design [COMPLETE]
+## Design
 SPECEOF
 
 cat > "$FIXTURE/closed-spec/1-cccc-closed-task.md" <<'TASKEOF'
@@ -210,9 +210,30 @@ archived: 2026-01-15
 delimit_approved: true
 ---
 
+## Describe
+
+## Design
+SPECEOF
+
+# Legacy markers remain readable.
+mkdir -p "$FIXTURE/legacy-spec"
+cat > "$FIXTURE/legacy-spec/_overview.md" <<'SPECEOF'
+---
+title: Legacy Spec
+created: 2025-12-15
+archived:
+delimit_approved: true
+---
+
 ## Describe [COMPLETE]
 
-## Design [COMPLETE]
+## Diagnose [COMPLETE]
+
+## Delimit [APPROVED]
+
+## Direction [DRAFT]
+
+## Design [DRAFT]
 SPECEOF
 
 # --- Tests ---
@@ -235,7 +256,9 @@ assert_contains "shows mid-phase-spec" "mid-phase-spec"
 assert_contains "mid-phase at Direction [DRAFT]" "Direction [DRAFT]"
 assert_contains "mid-phase delimit approved" "approved"
 assert_contains "shows closed-spec" "closed-spec"
-assert_contains "closed-spec at Design [COMPLETE]" "Design [COMPLETE]"
+assert_contains "closed-spec at Design" "Design"
+assert_contains "legacy markers remain readable" "legacy-spec"
+assert_contains "legacy spec resumes at Direction [DRAFT]" "Direction [DRAFT]"
 assert_contains "closed-spec task counts" "1 draft, 0 approved, 1 closed"
 assert_contains "mid-phase task counts" "1 draft, 1 approved, 0 closed"
 assert_contains "fresh-spec task counts" "0 draft, 0 approved, 0 closed"
@@ -286,15 +309,15 @@ archived:
 delimit_approved: true
 ---
 
-## Describe [COMPLETE]
+## Describe
 
-## Diagnose [COMPLETE]
+## Diagnose
 
-## Delimit [APPROVED]
+## Delimit
 
-## Direction [COMPLETE]
+## Direction
 
-## Design [COMPLETE]
+## Design
 SPECEOF
 
 # Task A: approved, no deps, assigned to ralph -> should appear in frontier
@@ -529,9 +552,9 @@ archived:
 delimit_approved: true
 ---
 
-## Describe [COMPLETE]
+## Describe
 
-## Design [COMPLETE]
+## Design
 SPECEOF
 
 cat > "$FIXTURE/cycle-spec/m1n2-cycle-x.md" <<'TASKEOF'

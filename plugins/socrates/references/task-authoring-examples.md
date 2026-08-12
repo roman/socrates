@@ -4,21 +4,21 @@ Bad-versus-good pairs for the checks in
 [task-authoring.md](task-authoring.md). Each example is drawn from a real
 socrates task and rewritten to pass the check it illustrates.
 
-## Problem-first title (check 2)
+## Outcome-first title (check 2)
 
-A title that names the mechanism forces the reader into Scope to learn what's
-actually wrong. Name the problem; the fix follows in the body.
+A title should make the task list readable as a set of results. Avoid both code
+mechanisms and dramatic restatements of the diagnosis.
 
-| Mechanism-first (bad)                                                     | Problem-first (good)                                                              |
-|---------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| Stop auto-triggering the airproject pipeline on push                      | Airproject races CD Configs on push and bootstraps a stale cluster list           |
-| Gate the setup-ApplicationSet fanout per project                          | Shipping the controller image auto-activates fanout on every production principal |
-| Guard setup Application pruning against live namespaces                   | Removing a cluster can delete a namespace that still runs workloads               |
-| Maintain a setup ApplicationSet from discovered and explicit destinations | A project's clusters aren't bootstrapped from where it actually deploys           |
-| Add the AirProjectPlacement resource as the static-placement input        | Projects with no central Applications have no way to declare their clusters       |
+| Avoid | Prefer |
+| --- | --- |
+| Stop auto-triggering the airproject pipeline on push | Bootstrap clusters from current CD Configs |
+| Shipping the controller image auto-activates fanout on every production principal | Let projects opt into setup ApplicationSet fanout |
+| Guard setup Application pruning against live namespaces | Preserve live namespaces when removing a cluster |
+| Maintain a setup ApplicationSet from discovered and explicit destinations | Bootstrap discovered and declared destinations |
+| Add the AirProjectPlacement resource as the static-placement input | Let projects declare static cluster placement |
 
-The chosen fix ("stop writing the webhook trigger," "add a per-project flag")
-still lives in the Scope or Outcome. It just isn't the headline.
+The title names the capability or end state. Scope and Outcome carry the chosen
+mechanism and its rationale.
 
 ## Done is distinct from tested (check 8)
 

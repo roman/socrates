@@ -68,19 +68,19 @@ fm_list() {
 }
 
 # Detect the current phase from an _overview.md file.
-# Prints "PhaseName [MARKER]".
-# Logic: the first phase still at [DRAFT] is where work is happening.
-# If no phase is DRAFT, the last phase marker is shown (all complete).
+# Prints "PhaseName [DRAFT]" for an incomplete spec or the final phase name
+# when every phase is complete. Bare headings are complete; legacy COMPLETE
+# and APPROVED markers are accepted as complete.
 detect_phase() {
   local overview="$1"
-  local first_draft="" last_phase="Describe [DRAFT]"
-  local phase_regex='^## (Describe|Diagnose|Delimit|Direction|Design) \[([A-Z]+)\]'
+  local first_draft="" last_phase="Describe"
+  local phase_regex='^## (Describe|Diagnose|Delimit|Direction|Design)( \[([A-Z]+)\])?[[:space:]]*$'
 
   while IFS= read -r line; do
     if [[ "$line" =~ $phase_regex ]]; then
       local name="${BASH_REMATCH[1]}"
-      local marker="${BASH_REMATCH[2]}"
-      last_phase="${name} [${marker}]"
+      local marker="${BASH_REMATCH[3]:-}"
+      last_phase="$name"
       if [[ "$marker" == "DRAFT" && -z "$first_draft" ]]; then
         first_draft="${name} [DRAFT]"
       fi

@@ -18,8 +18,9 @@ Before decomposing, gather context. Launch parallel Agent sub-agents to:
    - Verify assumptions about tools/frameworks
    - Check for known issues or limitations
 
-Synthesize findings into the `### Context` subsection of the Design section.
-This context informs the task decomposition.
+Use the findings to choose the task boundaries and the smallest useful Design
+summary. `### Context` keeps only research that changes how an implementer
+understands the design. Do not turn the research log into overview prose.
 
 Some Adjacent Constraints (AC) from Diagnose dictate a specific *encoding* —
 where the constraint must live in the design (a chart conditional, a
@@ -36,6 +37,43 @@ incidental drift"):
    end of `_overview.md`.
 3. Link them with an anchored reference: `(See [Addendum A.3](#a3) for the
    catalog.)`
+
+## Choose a solution map
+
+After research, decide whether a small solution diagram would explain the
+chosen approach faster than prose. Add one when a reader otherwise has to
+track any of these:
+
+- three or more interacting components or ownership boundaries
+- an ordered exchange whose timing, retries, or failure path matters
+- three or more lifecycle states or guarded transitions
+- several inputs that converge on one decision or fan out to several outputs
+
+Choose the diagram by the question it answers:
+
+- **Data flow** — What inputs produce the result, and where does it go?
+- **Component** — Who owns, reads, writes, or depends on what?
+- **Sequence** — What crosses boundaries, in what order, and what happens on
+  failure?
+- **State** — Which transitions are allowed, and what triggers them?
+
+A task dependency graph explains the implementation plan, not the solution.
+Use one only when the task graph itself is difficult to read from `deps:`.
+
+When the best diagram is clear, add it without asking. Ask the human driver
+only when different diagram types would emphasize meaningfully different
+concerns, the diagram would settle an unresolved design choice, or producing
+it would substantially expand the document.
+
+State the question in one sentence above the diagram. If the question is not
+specific, the diagram has no job and should be omitted.
+
+Default to one diagram. Add a second only when it answers a separate question
+that readers need and combining the two would make both harder to read. Aim
+for 5-8 nodes or participants and do not exceed about 10. Use MermaidJS so
+the source stays reviewable in Markdown. Omit file paths, task ids, test
+cases, and details already covered by nearby prose. If no diagram earns its
+space, omit `### Solution Map` silently.
 
 ## Task Decomposition
 
@@ -93,7 +131,8 @@ For each task:
      form) this task depends on; empty list when none. If two tasks
      touch the same surface and one must land before the other, that
      ordering is a `dep` — capture it here.
-   - Title — states the problem, not the mechanism. See check 2 in
+   - Title — names the outcome or deliverable, not the mechanism or a dramatic
+     restatement of the problem. See check 2 in
      `../task-authoring.md`.
    - `## Scope` — the boundary of this slice, and the alternative rejected
      for a design choice this task makes on its own. Link to the overview
@@ -102,16 +141,15 @@ For each task:
    - `## Outcome` — a bulleted list of what the implementer must achieve and
      what changes for the system or project when done. State the target, not
      the procedure. Concrete file-path grounding belongs in the overview's
-     `### Context`, not here — the implementer discovers the how.
+     Technical Addendum, not here — the implementer discovers the how.
    - `## Verification` — a bulleted list of observable criteria for confirming
      the outcome is met. Each bullet names the fact to check and the setup
      that produces the observation.
    - `<review>` — leave empty (XML tag stays invisible in rendered markdown)
 
-Task dependencies live in each task file's `deps:` frontmatter and are
-the single source of truth. The overview does not track cross-task file
-overlap — an implementer reconstructs it from the task files, and the
-overview stays readable for both humans and agents.
+Task dependencies live in each task file's `deps:` frontmatter and are the
+single source of truth. The overview's task table renders those edges for
+humans but does not define a second dependency graph.
 
 ## Open Questions During Design
 
@@ -126,16 +164,20 @@ the question and keep it visible in the spec.
 
 ## Writing the Design Section
 
-1. Write `### Context` with codebase research findings
-2. Write `### Tasks` with a summary table:
-   | ID | Title | Priority | Category |
-3. Write `### Execution Order` as a topo-sorted bulleted narrative, produced
-   **after** the dependency graph is known. Each line links to the task file
-   (by id) and gives one sentence of purpose. Tasks with no dependencies come
-   first; downstream tasks follow. This is the rendered reading order a human
-   would use to walk the spec.
-4. Write `### Glossary` with terms used consistently in the tasks.
-5. Update marker to `## Design [COMPLETE]`
+1. Write `### Solution Map` when the diagram test above passes. Introduce it
+   with the question it answers, then render the diagram.
+2. Write `### Context` with only the constraints, ownership decisions, and
+   codebase conventions that are not already clear from Direction or the map.
+3. Write `### Tasks` as one topo-sorted table after the dependency graph is
+   known:
+   | Task | Outcome | Depends on | Priority |
+   Use the task identity as the link label. The Outcome cell uses the task's
+   outcome-first title when that is sufficient; add no second paraphrase. Each
+   row renders `deps:` from frontmatter. The table is a view of the task files,
+   not another source of truth.
+4. Add `### Glossary` only for terms whose meaning is specific or ambiguous in
+   this spec.
+5. Remove `[DRAFT]` from the Design heading.
 
 ## Design Review (optional)
 

@@ -212,10 +212,10 @@ add lightweight guardrails. Where it's visible, we accept convention.
 - **Not a code review tool.** The code-review helper gathers PR comments onto tickets —
   it doesn't perform code review. The reviewer role in RALPH.md does lightweight quality
   checks, but it's not a substitute for human code review on a team.
-- **Not a design tool.** The `/spec` command facilitates structured thinking about
-  problems and approaches. It does not produce architecture diagrams, database schemas,
-  or API specifications. Those are artifacts you create during the Direction or Design
-  phases if needed.
+- **Not a general-purpose design tool.** The `/spec` command facilitates structured
+  thinking about problems and approaches. It may add one small solution diagram when
+  that makes the chosen solution easier to understand, but it does not attempt to produce
+  exhaustive architecture diagrams, database schemas, or API specifications.
 - **Not framework-specific.** Socrates makes no assumptions about your programming
   language, framework, or toolchain. The phase sequence (bearings → implement → verify
   → commit) adapts to whatever your project uses for tests, linting, and type checking.

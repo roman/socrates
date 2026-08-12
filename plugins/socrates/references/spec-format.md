@@ -20,13 +20,16 @@ delimit_approved: false    # set to true when Delimit phase is approved
 
 ### Sections and Phase Markers
 
-Each section has a marker in its heading:
+Only incomplete phases carry a marker:
 
-| Marker | Meaning |
+| Heading | Meaning |
 |--------|---------|
-| `[DRAFT]` | Phase not yet completed |
-| `[COMPLETE]` | Phase done |
-| `[APPROVED]` | Delimit phase explicitly approved by user |
+| `## <Phase> [DRAFT]` | Phase not yet completed |
+| `## <Phase>` | Phase complete |
+
+Readers may encounter legacy `[COMPLETE]` and `[APPROVED]` markers. Treat both
+as complete. New and updated specs remove the marker when a phase completes.
+Delimit approval is recorded by `delimit_approved: true` in frontmatter.
 
 #### `## Describe [DRAFT]`
 
@@ -43,8 +46,7 @@ objective.
 
 Crisp 1-2 sentence problem statement: unmet user objectives and their causes.
 Uses observable terms. This is the strict gate — requires explicit user approval.
-When approved, marker becomes `[APPROVED]` and `delimit_approved: true` is set
-in frontmatter.
+When approved, remove `[DRAFT]` and set `delimit_approved: true` in frontmatter.
 
 #### `## Direction [DRAFT]`
 
@@ -60,19 +62,23 @@ Contains four subsections:
 
 Contains these subsections:
 
+- **`### Solution Map`** (conditional) — One small solution diagram when the
+  reader must track several components, interactions, transitions, or
+  converging inputs. State the question it answers and omit it when prose is
+  clearer.
 - **`### Context`** — Codebase patterns, integration points, conventions
-  discovered during research
-- **`### Tasks`** — Summary table of generated task files
-- **`### Execution Order`** — Topo-sorted narrative of task files with links
-  and a one-sentence purpose for each, so a reader can follow the intended
-  build sequence without opening every task
-- **`### Glossary`** — Terms used consistently throughout the spec
+  discovered during research that materially affect the design and are not
+  already clear from Direction or the solution map
+- **`### Tasks`** — Topo-sorted table of task links, short outcomes,
+  dependencies, and priorities
+- **`### Glossary`** (conditional) — Terms with a meaning specific or ambiguous
+  in this spec
 
 ### Going Back
 
 When revisiting a completed phase:
-1. Target phase marker resets to `[DRAFT]`
-2. All subsequent phase markers reset to `[DRAFT]`
+1. Add `[DRAFT]` to the target phase heading
+2. Add `[DRAFT]` to all subsequent phase headings
 3. Previous content preserved under `### Previous (superseded)` sub-heading
 4. If Delimit or earlier: `delimit_approved` resets to `false`
 

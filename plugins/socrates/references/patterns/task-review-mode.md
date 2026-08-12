@@ -32,6 +32,7 @@ When invoked with `--status` or when the user asks for an overview:
 1. Scan `docs/specs/` for all spec directories
 2. For each spec, read `_overview.md` and report:
    - Current phase (first `[DRAFT]` section)
+   - If no phase is `[DRAFT]`, report Design as complete
    - Whether Delimit is approved
 3. For each spec, scan task files and report counts:
    - `draft` — still iterating
@@ -41,7 +42,7 @@ When invoked with `--status` or when the user asks for an overview:
 
 ```
 Spec: auth-redesign
-  Phase: Direction [COMPLETE] → Design [DRAFT]
+  Phase: Design [DRAFT]
   Delimit: approved
   Tasks: 3 draft, 2 approved, 0 closed
 ```
